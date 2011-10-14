@@ -1,0 +1,289 @@
+                                                  
+                                                  
+This is an example of a portfolio.                
+Prices in the `Last' column come from Chart.      
+Use `M-x chart-ses-refresh' to download.          
+                                                  
+                                                  
+  Stock   Quant       Last       Value            
+     GM     500      32.69    16345.00            
+  BRK-A       1      83390    83390.00            
+ BHP.AX     800      20.38    16304.00            
+  ^GSPC      10     1231.2    12312.00            
+                                                  
+   Cash                       10000.00            
+                     Total $ 138351.00            
+                                                  
+                                                  
+                                                  
+                                                  
+                                                  
+Copyright 2005, 2007 Kevin Ryde                   
+                                                  
+This file is part of Chart.                       
+                                                  
+Chart is free software; you can redistribute it   
+and/or modify it under the terms of the GNU       
+General Public License as published by the Free   
+Software Foundation; either version 3, or (at     
+your option) any later version.                   
+                                                  
+Chart is distributed in the hope that it will     
+be useful, but WITHOUT ANY WARRANTY; without      
+even the implied warranty of MERCHANTABILITY or   
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU    
+General Public License for more details.          
+                                                  
+You should have received a copy of the GNU        
+General Public License along with this program.   
+If not, see http://www.gnu.org/licenses/.         
+
+
+(ses-cell A1 nil nil nil nil)
+(ses-cell B1 nil nil nil nil)
+(ses-cell C1 nil nil nil nil)
+(ses-cell D1 nil nil nil nil)
+(ses-cell E1 nil nil nil nil)
+
+(ses-cell A2 nil nil nil nil)
+(ses-cell B2 nil nil nil nil)
+(ses-cell C2 nil nil nil nil)
+(ses-cell D2 nil nil nil nil)
+(ses-cell E2 nil nil nil nil)
+
+(ses-cell A3 "This is an example of a portfolio." "This is an example of a portfolio." nil nil)
+(ses-cell B3 *skip* nil nil nil)
+(ses-cell C3 *skip* nil nil nil)
+(ses-cell D3 *skip* nil nil nil)
+(ses-cell E3 nil nil nil nil)
+
+(ses-cell A4 "Prices in the `Last' column come from Chart." "Prices in the `Last' column come from Chart." nil nil)
+(ses-cell B4 *skip* nil nil nil)
+(ses-cell C4 *skip* nil nil nil)
+(ses-cell D4 *skip* nil nil nil)
+(ses-cell E4 *skip* nil nil nil)
+
+(ses-cell A5 "Use `M-x chart-ses-refresh' to download." "Use `M-x chart-ses-refresh' to download." nil nil)
+(ses-cell B5 *skip* nil nil nil)
+(ses-cell C5 *skip* nil nil nil)
+(ses-cell D5 *skip* nil nil nil)
+(ses-cell E5 *skip* nil nil nil)
+
+(ses-cell A6 nil nil nil nil)
+(ses-cell B6 nil nil nil nil)
+(ses-cell C6 nil nil nil nil)
+(ses-cell D6 nil nil nil nil)
+(ses-cell E6 nil nil nil nil)
+
+(ses-cell A7 nil nil nil nil)
+(ses-cell B7 nil nil nil nil)
+(ses-cell C7 nil nil nil nil)
+(ses-cell D7 nil nil nil nil)
+(ses-cell E7 nil nil nil nil)
+
+(ses-cell A8 "Stock" "Stock" nil nil)
+(ses-cell B8 "Quant" "Quant" nil nil)
+(ses-cell C8 "Last" "Last" nil nil)
+(ses-cell D8 "Value" "Value" nil nil)
+(ses-cell E8 nil nil nil nil)
+
+(ses-cell A9 "GM" "GM" nil (C9))
+(ses-cell B9 500 500 nil (D9))
+(ses-cell C9 32.69 (chart-latest A9) nil (D9))
+(ses-cell D9 16344.999999999998 (* B9 C9) nil (D15))
+(ses-cell E9 nil nil nil nil)
+
+(ses-cell A10 "BRK-A" "BRK-A" nil (C10))
+(ses-cell B10 1 1 nil (D10))
+(ses-cell C10 83390.0 (chart-latest A10) nil (D10))
+(ses-cell D10 83390.0 (* B10 C10) nil (D15))
+(ses-cell E10 nil nil nil nil)
+
+(ses-cell A11 "BHP.AX" "BHP.AX" nil (C11))
+(ses-cell B11 800 800 nil (D11))
+(ses-cell C11 20.38 (chart-latest A11) "%.2f" (D11))
+(ses-cell D11 16304.0 (* B11 C11) nil (D15))
+(ses-cell E11 nil nil nil nil)
+
+(ses-cell A12 "^GSPC" "^GSPC" nil (C12))
+(ses-cell B12 10 10 nil (D12))
+(ses-cell C12 1231.2 (chart-latest A12) nil (D12))
+(ses-cell D12 12312.0 (* B12 C12) nil (D15))
+(ses-cell E12 nil nil nil nil)
+
+(ses-cell A13 nil nil nil nil)
+(ses-cell B13 nil nil nil nil)
+(ses-cell C13 nil nil nil nil)
+(ses-cell D13 nil nil nil (D15))
+(ses-cell E13 nil nil nil nil)
+
+(ses-cell A14 "Cash" "Cash" nil nil)
+(ses-cell B14 nil nil nil nil)
+(ses-cell C14 nil nil nil nil)
+(ses-cell D14 10000 10000 nil (D15))
+(ses-cell E14 nil nil nil nil)
+
+(ses-cell A15 nil nil nil nil)
+(ses-cell B15 nil nil nil nil)
+(ses-cell C15 "Total" "Total" nil nil)
+(ses-cell D15 138351.0 (apply (quote ses+) (ses-range D9 D14)) "$ %.2f" nil)
+(ses-cell E15 nil nil nil nil)
+
+(ses-cell A16 nil nil nil nil)
+(ses-cell B16 nil nil nil nil)
+(ses-cell C16 nil nil nil nil)
+(ses-cell D16 nil nil nil nil)
+(ses-cell E16 nil nil nil nil)
+
+(ses-cell A17 nil nil nil nil)
+(ses-cell B17 nil nil nil nil)
+(ses-cell C17 nil nil nil nil)
+(ses-cell D17 nil nil nil nil)
+(ses-cell E17 nil nil nil nil)
+
+(ses-cell A18 nil nil nil nil)
+(ses-cell B18 nil nil nil nil)
+(ses-cell C18 nil nil nil nil)
+(ses-cell D18 nil nil nil nil)
+(ses-cell E18 nil nil nil nil)
+
+(ses-cell A19 nil nil nil nil)
+(ses-cell B19 nil nil nil nil)
+(ses-cell C19 nil nil nil nil)
+(ses-cell D19 nil nil nil nil)
+(ses-cell E19 nil nil nil nil)
+
+(ses-cell A20 nil nil nil nil)
+(ses-cell B20 nil nil nil nil)
+(ses-cell C20 nil nil nil nil)
+(ses-cell D20 nil nil nil nil)
+(ses-cell E20 nil nil nil nil)
+
+(ses-cell A21 "Copyright 2005, 2007 Kevin Ryde" "Copyright 2005, 2007 Kevin Ryde" nil nil)
+(ses-cell B21 *skip* nil nil nil)
+(ses-cell C21 *skip* nil nil nil)
+(ses-cell D21 *skip* nil nil nil)
+(ses-cell E21 nil nil nil nil)
+
+(ses-cell A22 nil nil nil nil)
+(ses-cell B22 nil nil nil nil)
+(ses-cell C22 nil nil nil nil)
+(ses-cell D22 nil nil nil nil)
+(ses-cell E22 nil nil nil nil)
+
+(ses-cell A23 "This file is part of Chart." "This file is part of Chart." nil nil)
+(ses-cell B23 *skip* nil nil nil)
+(ses-cell C23 *skip* nil nil nil)
+(ses-cell D23 *skip* nil nil nil)
+(ses-cell E23 nil nil nil nil)
+
+(ses-cell A24 nil nil nil nil)
+(ses-cell B24 nil nil nil nil)
+(ses-cell C24 nil nil nil nil)
+(ses-cell D24 nil nil nil nil)
+(ses-cell E24 nil nil nil nil)
+
+(ses-cell A25 "Chart is free software; you can redistribute it" "Chart is free software; you can redistribute it" nil nil)
+(ses-cell B25 *skip* nil nil nil)
+(ses-cell C25 *skip* nil nil nil)
+(ses-cell D25 *skip* nil nil nil)
+(ses-cell E25 *skip* nil nil nil)
+
+(ses-cell A26 "and/or modify it under the terms of the GNU" "and/or modify it under the terms of the GNU" nil nil)
+(ses-cell B26 *skip* nil nil nil)
+(ses-cell C26 *skip* nil nil nil)
+(ses-cell D26 *skip* nil nil nil)
+(ses-cell E26 *skip* nil nil nil)
+
+(ses-cell A27 "General Public License as published by the Free" "General Public License as published by the Free" nil nil)
+(ses-cell B27 *skip* nil nil nil)
+(ses-cell C27 *skip* nil nil nil)
+(ses-cell D27 *skip* nil nil nil)
+(ses-cell E27 *skip* nil nil nil)
+
+(ses-cell A28 "Software Foundation; either version 3, or (at" "Software Foundation; either version 3, or (at" nil nil)
+(ses-cell B28 *skip* nil nil nil)
+(ses-cell C28 *skip* nil nil nil)
+(ses-cell D28 *skip* nil nil nil)
+(ses-cell E28 *skip* nil nil nil)
+
+(ses-cell A29 "your option) any later version." "your option) any later version." nil nil)
+(ses-cell B29 *skip* nil nil nil)
+(ses-cell C29 *skip* nil nil nil)
+(ses-cell D29 *skip* nil nil nil)
+(ses-cell E29 nil nil nil nil)
+
+(ses-cell A30 nil nil nil nil)
+(ses-cell B30 nil nil nil nil)
+(ses-cell C30 nil nil nil nil)
+(ses-cell D30 nil nil nil nil)
+(ses-cell E30 nil nil nil nil)
+
+(ses-cell A31 "Chart is distributed in the hope that it will" "Chart is distributed in the hope that it will" nil nil)
+(ses-cell B31 *skip* nil nil nil)
+(ses-cell C31 *skip* nil nil nil)
+(ses-cell D31 *skip* nil nil nil)
+(ses-cell E31 *skip* nil nil nil)
+
+(ses-cell A32 "be useful, but WITHOUT ANY WARRANTY; without" "be useful, but WITHOUT ANY WARRANTY; without" nil nil)
+(ses-cell B32 *skip* nil nil nil)
+(ses-cell C32 *skip* nil nil nil)
+(ses-cell D32 *skip* nil nil nil)
+(ses-cell E32 *skip* nil nil nil)
+
+(ses-cell A33 "even the implied warranty of MERCHANTABILITY or" "even the implied warranty of MERCHANTABILITY or" nil nil)
+(ses-cell B33 *skip* nil nil nil)
+(ses-cell C33 *skip* nil nil nil)
+(ses-cell D33 *skip* nil nil nil)
+(ses-cell E33 *skip* nil nil nil)
+
+(ses-cell A34 "FITNESS FOR A PARTICULAR PURPOSE.  See the GNU" "FITNESS FOR A PARTICULAR PURPOSE.  See the GNU" nil nil)
+(ses-cell B34 *skip* nil nil nil)
+(ses-cell C34 *skip* nil nil nil)
+(ses-cell D34 *skip* nil nil nil)
+(ses-cell E34 *skip* nil nil nil)
+
+(ses-cell A35 "General Public License for more details." "General Public License for more details." nil nil)
+(ses-cell B35 *skip* nil nil nil)
+(ses-cell C35 *skip* nil nil nil)
+(ses-cell D35 *skip* nil nil nil)
+(ses-cell E35 *skip* nil nil nil)
+
+(ses-cell A36 nil nil nil nil)
+(ses-cell B36 nil nil nil nil)
+(ses-cell C36 nil nil nil nil)
+(ses-cell D36 nil nil nil nil)
+(ses-cell E36 nil nil nil nil)
+
+(ses-cell A37 "You should have received a copy of the GNU" "You should have received a copy of the GNU" nil nil)
+(ses-cell B37 *skip* nil nil nil)
+(ses-cell C37 *skip* nil nil nil)
+(ses-cell D37 *skip* nil nil nil)
+(ses-cell E37 *skip* nil nil nil)
+
+(ses-cell A38 "General Public License along with this program." "General Public License along with this program." nil nil)
+(ses-cell B38 *skip* nil nil nil)
+(ses-cell C38 *skip* nil nil nil)
+(ses-cell D38 *skip* nil nil nil)
+(ses-cell E38 *skip* nil nil nil)
+
+(ses-cell A39 "If not, see http://www.gnu.org/licenses/." "If not, see http://www.gnu.org/licenses/." nil nil)
+(ses-cell B39 *skip* nil nil nil)
+(ses-cell C39 *skip* nil nil nil)
+(ses-cell D39 *skip* nil nil nil)
+(ses-cell E39 *skip* nil nil nil)
+
+(ses-column-widths [7 7 10 11 11])
+(ses-column-printers [nil nil nil "%.2f" nil])
+(ses-default-printer "%.7g")
+(ses-header-row 0)
+
+( ;Global parameters (these are read first)
+ 2 ;SES file-format
+ 39 ;numrows
+ 5 ;numcols
+)
+
+;;; Local Variables:
+;;; mode: ses
+;;; End:
