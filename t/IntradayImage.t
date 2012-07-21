@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -20,7 +20,7 @@
 use 5.008;
 use strict;
 use warnings;
-use Test::More 0.82 tests => 2;
+use Test::More 0.82 tests => 3;
 
 use lib 't';
 use MyTestHelpers;
@@ -48,11 +48,24 @@ if (! $have_test_weaken) { diag "Test::Weaken 2 not available -- $@"; }
 SKIP: {
   $have_test_weaken or skip 'due to no Test::Weaken available', 1;
 
-  my $leaks = Test::Weaken::leaks
-    (sub { return App::Chart::Gtk2::IntradayImage->new });
-  is ($leaks, undef, 'Test::Weaken deep garbage collection');
-  if ($leaks) {
-    diag "Test-Weaken ", explain $leaks;
+  {
+    my $leaks = Test::Weaken::leaks
+      (sub { return App::Chart::Gtk2::IntradayImage->new });
+    is ($leaks, undef, 'Test::Weaken deep garbage collection');
+    if ($leaks) {
+      diag "Test-Weaken ", explain $leaks;
+    }
+  }
+  {
+    my $leaks = Test::Weaken::leaks
+      (sub { return App::Chart::Gtk2::IntradayImage->new
+               (symbol => 'GM',
+                mode => '1d')
+             });
+    is ($leaks, undef, 'Test::Weaken deep garbage collection, with symbol+mode');
+    if ($leaks) {
+      diag "Test-Weaken ", explain $leaks;
+    }
   }
 }
 

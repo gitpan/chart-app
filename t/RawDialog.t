@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -72,7 +72,7 @@ if (! $have_test_weaken) { diag "Test::Weaken 3 not available -- $@"; }
 
 sub my_ignore {
   my ($ref) = @_;
-  return Test::Weaken::ExtraBits::ignore_global_function($ref);
+  return Test::Weaken::ExtraBits::ignore_global_functions($ref);
 }
 
 SKIP: {

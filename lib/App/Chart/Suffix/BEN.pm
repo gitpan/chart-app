@@ -1,6 +1,6 @@
 # Bendigo Stock Exchange (BSX) setups.
 
-# Copyright 2005, 2006, 2007, 2008, 2009, 2010 Kevin Ryde
+# Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -312,7 +312,3 @@ sub quote_parse {
 		   #:update     bendigo-download
 		   #:avail-proc bendigo-available-tdate
 		   #:backto     bendigo-backto)
-
-
-1;
-__END__

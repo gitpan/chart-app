@@ -411,7 +411,6 @@ sub latest_parse {
                   last        => $last,
                   change      => $change,
                   volume      => $volume,
-                  last        => $last,
                   dividend    => $div_amount,
                 };
   }

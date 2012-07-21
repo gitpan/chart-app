@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -26,6 +26,9 @@ use Test::More 0.82 tests => 3;
 use lib 't';
 use MyTestHelpers;
 BEGIN { MyTestHelpers::nowarnings() }
+
+# uncomment this to run the ### lines
+#use Smart::Comments;
 
 require App::Chart::Gtk2::IntradayDialog;
 
@@ -64,32 +67,47 @@ SKIP: {
 my $have_test_weaken = eval "use Test::Weaken 3; 1";
 if (! $have_test_weaken) { diag "Test::Weaken 3 not available -- $@"; }
 
-require Test::Weaken::ExtraBits;
+# Test::Weaken::ExtraBits
+my $have_test_weaken_extrabits = eval "use Test::Weaken::ExtraBits; 1";
+if (! $have_test_weaken_extrabits) {
+  diag "Test::Weaken::ExtraBits not available -- $@";
+}
 
 sub my_ignore {
   my ($ref) = @_;
-  return Test::Weaken::ExtraBits::ignore_global_function($ref);
+  require AppChartTestHelpers;
+  return (Test::Weaken::ExtraBits::ignore_global_functions($ref)
+          || AppChartTestHelpers::ignore_classes($ref, 'App::Chart::Gtk2::Job'));
 }
-
-
 
 SKIP: {
   $have_display
     or skip 'due to no DISPLAY available', 1;
   $have_test_weaken
     or skip 'due to no Test::Weaken 3 available', 1;
+  $have_test_weaken_extrabits
+    or skip 'due to Test::Weaken::ExtraBits not available', 1;
 
   require Test::Weaken::Gtk2;
 
   my $leaks = Test::Weaken::leaks
     ({ constructor => sub {
-         my $dialog = App::Chart::Gtk2::IntradayDialog->new (symbol => 'GM');
+         my $dialog = App::Chart::Gtk2::IntradayDialog->new; # (symbol => 'GM');
+         $dialog->get('symbol');
+         $dialog->set('symbol', 'GM');
+
+         # my @jobs = App::Chart::Gtk2::JobQueue->all_jobs ('App::Chart::Gtk2::Job::Intraday');
+         # ### @jobs
+
+
+         # $dialog->set('symbol', '');
          $dialog->realize;
          return $dialog;
        },
        destructor => \&Test::Weaken::Gtk2::destructor_destroy,
        contents => \&Test::Weaken::Gtk2::contents_container,
        ignore => \&my_ignore,
+       # trace_tracking=> 1,
      });
   is ($leaks, undef, 'Test::Weaken deep garbage collection');
   if ($leaks) {

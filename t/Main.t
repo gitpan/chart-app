@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -82,7 +82,6 @@ SKIP: {
   $have_test_weaken or skip 'due to Test::Weaken 3 not available', 1;
 
   require Test::Weaken::Gtk2;
-  require Test::Weaken::ExtraBits;
 
   my $leaks = Test::Weaken::leaks
     ({ constructor => sub {

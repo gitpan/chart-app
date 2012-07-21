@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -25,7 +25,7 @@ use lib 'inc';
 use MyMakeMakerExtras;
 use MyMakeMakerGettext;
 
-MyMakeMakerExtras::WriteMakefile
+WriteMakefile
   (NAME         => 'chart',
    VERSION_FROM => 'lib/App/Chart.pm',
    ABSTRACT     => 'Stock and commodity charting program.',
@@ -261,11 +261,11 @@ MyMakeMakerExtras::WriteMakefile
    realclean => { FILES => 'TAGS' },
 
    META_MERGE =>
-   { no_index => { directory => [ 'devel', 'doc' ] },
-     recommends => { 'Set::IntSpan::Fast::XS' => '0.05' },
+   { recommends => { 'Set::IntSpan::Fast::XS' => '0.05' },
      resources =>
-     { homepage => 'http://user42.tuxfamily.org/chart/index.html' },
-
+     { homepage => 'http://user42.tuxfamily.org/chart/index.html',
+       license  => 'http://www.gnu.org/licenses/gpl.html',
+     },
      optional_features =>
      { source_FQ =>
        { description => 'Finance::Quote data source.',
@@ -342,9 +342,14 @@ MyMakeMakerExtras::WriteMakefile
                        'Finance::Quote'     => 0,
                      } },
      },
-   },
 
-   MY_NO_HTML => 1,  # save some Makefile size
+     # don't index GET_SIZE() workaround addition to
+     # Gtk2::Ex::Datasheet::DBI::CellRendererText
+     #
+     no_index => { directory => [ 'devel', 'doc' ],
+                   package => [ 'Gtk2::Ex::Datasheet::DBI::CellRendererText' ],
+                 }
+   },
   );
 
 #------------------------------------------------------------------------------
@@ -359,8 +364,7 @@ sub postamble {
 
   $makemaker->{'PO_DOMAIN'} = 'App-Chart';
 
-  my $ret = (MyMakeMakerExtras::postamble($makemaker)
-             . MyMakeMakerGettext::postamble($makemaker));
+  my $ret = MyMakeMakerGettext::postamble($makemaker);
 
   $ret .= <<'HERE';
 

@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               chart
-version:            246
+version:            247
 abstract:           Stock and commodity charting program.
 author:
     - Kevin Ryde <user42@zip.com.au>
@@ -120,12 +120,9 @@ no_index:
         - inc
         - devel
         - doc
-        - xt
-        - devel
-        - examples
-        - junk
-        - maybe
-generated_by:       ExtUtils::MakeMaker version 6.56
+    package:
+        - Gtk2::Ex::Datasheet::DBI::CellRendererText
+generated_by:       ExtUtils::MakeMaker version 6.57_05
 meta-spec:
     url:      http://module-build.sourceforge.net/META-spec-v1.4.html
     version:  1.4
@@ -142,7 +139,6 @@ optional_features:
         description:  Stuff used variously for development.
         requires:
             Business::ISIN:       0
-            Devel::Comments:      0
             Devel::FindRef:       0
             Devel::StackTrace:    1.19
             File::chdir:          0
@@ -154,18 +150,9 @@ optional_features:
             Module::Depends::Intrusive:  0
             Module::ExtractUse:   0
             Module::ScanDeps:     0
-            Parse::CPAN::Meta:    0
             Parse::DebControl:    0
             Pod::Strip:           0
-            Smart::Comments:      0
-            Test::DistManifest:   0
-            Test::Pod:            1.00
-            Test::YAML::Meta:     0.15
             warnings::unused:     0
-            YAML:                 0
-            YAML::Syck:           0
-            YAML::Tiny:           0
-            YAML::XS:             0
     maximum_diagnostics:
         description:  Have as much information as possible in the Help/Diagnostics dialog.
         requires:

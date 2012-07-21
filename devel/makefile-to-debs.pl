@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -38,7 +38,7 @@ use Parse::DebControl;
 use Perl6::Slurp;
 use version;
 
-use Smart::Comments;
+#use Smart::Comments;
 
 # modules in perl from $minimum_perl_version onwards are considered core
 my $minimum_perl_version = version->new('v5.10');

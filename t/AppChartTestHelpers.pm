@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -27,10 +27,26 @@ our %EXPORT_TAGS = (all => \@EXPORT_OK);
 # uncomment this to run the ### lines
 #use Smart::Comments;
 
+sub ignore_classes {
+  my $ref = shift;
+  if (! @_) {
+    require Carp;
+    Carp::croak ('ignore_classes(): no classes given');
+  }
+  require Scalar::Util;
+  if (Scalar::Util::blessed($ref)) {
+    foreach my $class (@_) {
+      if ($ref->isa($class)) {
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
+
 sub ignore_symlists {
   my ($ref) = @_;
-  require Test::Weaken::ExtraBits;
-  return Test::Weaken::ExtraBits::ignore_classes ($ref, 'App::Chart::Gtk2::Symlist');
+  return ignore_classes ($ref, 'App::Chart::Gtk2::Symlist');
 }
 
 sub ignore_all_dbi {
@@ -70,6 +86,34 @@ sub ignore_global_number_formatter {
           && $ref->isa('Number::Format')
           && $ref == App::Chart::number_formatter());
 }
+
+# # =item C<$bool = ignore_module_functions ($ref, $module, $module, ...)>
+# #
+# # Return true if C<$ref> is a coderef to any function in any of the given
+# # modules.
+# #
+# # Each C<$module> is a string like C<My::Module>.  If a module doesn't exist
+# # then it's skipped, so it doesn't matter if the C<My::Module> package is
+# # actually loaded yet.
+# #
+# sub ignore_module_functions {
+#   my $ref = shift;
+#   ref $ref eq 'CODE' or return;
+# 
+#   while (@_) {
+#     my $module = shift;
+#     my $symtabname = "${module}::";
+#     no strict 'refs';
+#     %$symtabname or next;
+#     foreach my $name (keys %$symtabname) {
+#       my $fullname = "${module}::$name";
+#       if (defined &$fullname && $ref == \&$fullname) {
+#         return 1;
+#       }
+#     }
+#   }
+#   return 0;
+# }
 
 1;
 __END__

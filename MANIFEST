@@ -700,7 +700,6 @@ t/Symlist.t
 t/SymlistListModel.t
 t/Sympred.t
 t/TA.t
-t/Test/Weaken/ExtraBits.pm
 t/Texinfo-Util.t
 t/Ticker.t
 t/TickerMain.t
@@ -725,4 +724,14 @@ xt/0-Test-DistManifest.t
 xt/0-Test-Pod.t
 xt/0-Test-YAML-Meta.t
 xt/1-Test-Synopsis.t
+xtools/my-check-copyright-years.sh
+xtools/my-check-file-part-of.sh
+xtools/my-check-spelling.sh
+xtools/my-deb.sh
+xtools/my-diff-prev.sh
+xtools/my-kwalitee.sh
+xtools/my-manifest.sh
+xtools/my-pc.sh
+xtools/my-tags.sh
+xtools/my-wunused.sh
 META.yml                                 Module meta-data (added by MakeMaker)

@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -22,6 +22,33 @@ use Data::Dumper;
 use App::Chart::Database;
 use App::Chart::DBI;
 use App::Chart::Download;
+
+# uncomment this to run the ### lines
+use Smart::Comments;
+
+{
+  my $dbh = App::Chart::DBI->instance();
+  my $sth = $dbh->prepare_cached
+    ('SELECT image, error FROM intraday_image WHERE symbol=? AND mode=?');
+  my $ref;
+  {
+    my $symbol = 'GM';
+    my $mode = '1d';
+    $ref = \$symbol;
+    my ($image, $error) = $dbh->selectrow_array ($sth, undef,
+                                                 $symbol,
+                                                 $mode);
+    $sth->finish();
+
+    ($image, $error) = $dbh->selectrow_array ($sth, undef,
+                                              'BHP.AX',
+                                              '5d');
+    $sth->finish();
+  }
+  Scalar::Util::weaken($ref);
+  ### $ref
+  exit 0;
+}
 
 {
   my $filename = '/tmp/x.sqdb';

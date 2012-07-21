@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -66,9 +66,14 @@ SKIP: {
 my $have_test_weaken = eval "use Test::Weaken 2.002; 1";
 if (! $have_test_weaken) { diag "Test::Weaken 2.002 not available -- $@"; }
 
+# Test::Weaken::ExtraBits
+my $have_test_weaken_extrabits = eval "use Test::Weaken::ExtraBits; 1";
+if (! $have_test_weaken_extrabits) {
+  diag "Test::Weaken::ExtraBits not available -- $@";
+}
+
 sub my_ignores {
   my ($ref) = @_;
-  require Test::Weaken::ExtraBits;
 
   # Class_Singleton for App::Chart::Gtk2::SymlistList
   return (Test::Weaken::ExtraBits::ignore_Class_Singleton($ref)
@@ -81,6 +86,8 @@ sub my_ignores {
 SKIP: {
   $have_test_weaken
     or skip 'due to Test::Weaken 2.002 not available', 1;
+  $have_test_weaken_extrabits
+    or skip 'due to Test::Weaken::ExtraBits not available', 1;
   # display for some width calculations ...
   $have_display
     or skip 'due to no DISPLAY available', 1;

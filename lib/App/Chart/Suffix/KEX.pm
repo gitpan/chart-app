@@ -1,6 +1,6 @@
 # Kansai Commodities Exchange (KEX) setups.     -*- coding: shift_jis -*-
 
-# Copyright 2005, 2006, 2007, 2008, 2009, 2010 Kevin Ryde
+# Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -23,6 +23,7 @@ use Locale::TextDomain 'App-Chart';
 
 use App::Chart::Glib::Ex::MoreUtils;
 use App::Chart;
+use App::Chart::IntradayHandler;
 use App::Chart::Sympred;
 use App::Chart::TZ;
 use App::Chart::Weblink;

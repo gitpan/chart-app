@@ -254,14 +254,14 @@ sub str {
     $str .= "(Devel::Arena -- module not available)\n";
   }
 
-  if (eval { require Devel::SawAmpersand; }) {
+  if (eval { require Devel::SawAmpersand; 1 }) {
     $str .= 'PL_sawampersand is '
       . (Devel::SawAmpersand::sawampersand()
          ? "true, which is bad!"
          : "false, good")
         . " (Devel::SawAmpersand)\n";
   } else {
-    $str .= "(Devel::SawAmpersand not available.)\n";
+    $str .= "(Devel::SawAmpersand -- module not available.)\n";
   }
   $str .= "\n";
 
@@ -534,3 +534,7 @@ Chart; see the file F<COPYING>.  Failing that, see
 L<http://www.gnu.org/licenses/>.
 
 =cut
+
+# Local variables:
+# compile-command: "perl -MApp::Chart::Gtk2::Diagnostics -e 'print App::Chart::Gtk2::Diagnostics->str'"
+# End:

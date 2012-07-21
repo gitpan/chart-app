@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -26,6 +26,7 @@ use App::Chart::Gtk2::JobQueue;
 
 # uncomment this to run the ### lines
 #use Smart::Comments;
+
 
 use Glib::Object::Subclass
   'App::Chart::Gtk2::Job',

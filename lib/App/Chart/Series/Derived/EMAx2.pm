@@ -79,8 +79,9 @@ sub proc {
 #
 # The implementation here does a binary search for the first k satisfying
 # R(k)<=0.001, so it's only moderately fast.  Perhaps there'd be a direct
-# closed-form solution to the equation R(k)=0.001 below, but k*f^k doesn't
-# look like it can rearrange.
+# closed-form solution to the equation R(k)=0.001 below.  The inverse of
+# k*f^k is close to the Lambert W-function.  Is there an easy formula for
+# that?
 #
 sub warmup_count {
   my ($self_or_class, $N) = @_;

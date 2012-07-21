@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -28,6 +28,10 @@ use Gtk2::Ex::Units;
 use Gtk2::Ex::PixbufBits;
 use App::Chart::Database;
 use App::Chart::Gtk2::GUI;
+
+# uncomment this to run the ### lines
+#use Smart::Comments;
+
 
 use Glib::Object::Subclass
   'Gtk2::DrawingArea',
@@ -66,7 +70,12 @@ sub SET_PROPERTY {
 
   my $oldval = $self->{$pname};
   $self->{$pname} = $newval;  # per default GET_PROPERTY
-  if ($oldval eq $newval) { return; }
+  
+  ### stored to: ''.\$self->{$pname}
+
+  if ($oldval eq $newval) {
+    return;
+  }
 
   if ($pname eq 'symbol' || $pname eq 'mode') {
     # new image (or new no image)
@@ -115,7 +124,7 @@ sub _do_expose_event {
   ### pixbuf: "${pix_width}x${pix_height}"
 
   my ($x, $y, $alloc_width, $alloc_height) = $self->allocation->values;
-  ### alloc size: "${alloc_width}x$alloc->height at $x,$y"
+  ### alloc size: "${alloc_width}x${alloc_height} at $x,$y"
 
   # windowed
   $x = 0; $y = 0;
@@ -150,6 +159,8 @@ sub _do_expose_event {
 
 sub _load_pixbuf {
   my ($self) = @_;
+  ### _load_pixbuf() ...
+
   my $symbol = $self->{'symbol'};
   my $mode = $self->{'mode'};
   if (! $symbol || ! $mode) { return  __('(No data)'); }
@@ -157,9 +168,14 @@ sub _load_pixbuf {
   my $dbh = App::Chart::DBI->instance;
   my $sth = $dbh->prepare_cached
     ('SELECT image, error FROM intraday_image WHERE symbol=? AND mode=?');
+
+  # Crib note: Some DBI 1.618 SQLite3 1.35 seems to hold a ref to the
+  # scalars passed to selectrow_array() until the next call.  So use the
+  # local variables since holding onto $self->{'symbol'} looks like a leak.
+  #
   my ($image, $error) = $dbh->selectrow_array ($sth, undef,
-                                               $self->{'symbol'},
-                                               $self->{'mode'});
+                                               $symbol,
+                                               $mode);
   $sth->finish();
   if (! defined $image) { # error message in database
     return $error ||  __('(No data)');

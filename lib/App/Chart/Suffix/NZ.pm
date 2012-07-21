@@ -1,6 +1,6 @@
 # New Zealand Stock Exchange setups.
 
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -25,6 +25,7 @@ use Locale::TextDomain 'App-Chart';
 
 use App::Chart;
 use App::Chart::Database;
+use App::Chart::Google;
 use App::Chart::Download;
 use App::Chart::DownloadHandler;
 use App::Chart::DownloadHandler::DividendsPage;
@@ -67,6 +68,8 @@ App::Chart::setup_source_help
 # during trading 10am to 5pm.
 # (yahoo-quote-lock! yahoo-index-symbol-newzealand?
 # 		   #,(hms->seconds 10 0 0) #,(hms->seconds 17 0 0))
+
+$App::Chart::Google::google_web_pred->add ($pred_shares);
 
 
 #------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -54,6 +54,13 @@ App::Chart::Weblink->new
    desc => __('Open web browser at the Google Finance page for this stock'),
    proc => sub {
      my ($symbol) = @_;
+
+     my $suffix = App::Chart::symbol_suffix ($symbol);
+     if ($suffix eq '.AX') {
+       $symbol = 'ASX:' . App::Chart::symbol_sans_suffix($symbol);
+     } elsif ($suffix eq '.NZ') {
+       $symbol = 'NZE:' . App::Chart::symbol_sans_suffix($symbol);
+     }
 
      return 'http://www.google.com/finance?q='
        . URI::Escape::uri_escape($symbol);

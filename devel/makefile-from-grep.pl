@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -290,7 +290,7 @@ print "devel used: ",    join (', ', keys %devel_used_module), "\n";
 used_vs_makefile ('main',     \%used_module, $makefile_prereq);
 used_vs_makefile ('tests',    \%test_optional_module, $makefile_test_optional);
 used_vs_makefile ('examples', \%examples_used_module, $makefile_examples_prereq);
-used_vs_makefile ('devel',    \%devel_used_module, $makefile_devel_prereq);
+# used_vs_makefile ('devel',    \%devel_used_module, $makefile_devel_prereq);
 
 sub used_vs_makefile {
   my ($name, $usedref, $prereq) = @_;

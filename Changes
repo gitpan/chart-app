@@ -1,4 +1,4 @@
-Copyright 2006, 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+Copyright 2006, 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 This file is part of Chart.
 
@@ -17,6 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+
+Version 247, March 2012
+    - NZ weblink to Google finance
 
 Version 246, October 2011
     - fix --ticker of multiple lists

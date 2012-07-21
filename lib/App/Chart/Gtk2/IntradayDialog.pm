@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -172,6 +172,9 @@ sub INIT_INSTANCE {
 
 sub SET_PROPERTY {
   my ($self, $pspec, $newval) = @_;
+  ### SET_PROPERTY: $pspec->get_name
+  ### newval: ''.\$newval
+
   my $pname = $pspec->get_name;
   $self->{$pname} = $newval;  # per default GET_PROPERTY
 
@@ -518,7 +521,7 @@ L<http://user42.tuxfamily.org/chart/index.html>
 
 =head1 LICENCE
 
-Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 Chart is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

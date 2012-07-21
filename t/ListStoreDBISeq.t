@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -55,8 +55,16 @@ sub hack_clear_new_handle_scratchpad {
 my $have_test_weaken = eval "use Test::Weaken 2.002; 1";
 if (! $have_test_weaken) { diag "Test::Weaken 2.002 not available -- $@"; }
 
+# Test::Weaken::ExtraBits
+my $have_test_weaken_extrabits = eval "use Test::Weaken::ExtraBits; 1";
+if (! $have_test_weaken_extrabits) {
+  diag "Test::Weaken::ExtraBits not available -- $@";
+}
+
 SKIP: {
   $have_test_weaken or skip 'due to no Test::Weaken available', 1;
+  $have_test_weaken_extrabits
+    or skip 'due to Test::Weaken::ExtraBits not available', 1;
 
   require File::Temp;
   require DBI;
@@ -66,7 +74,6 @@ SKIP: {
   my $filename = $fh->filename;
   diag "temp file $filename";
 
-  require Test::Weaken::ExtraBits;
   my $leaks = Test::Weaken::leaks
     ({ constructor => sub {
          my $dbh = DBI->connect ("dbi:SQLite:dbname=$filename",

@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -88,63 +88,61 @@ sub proc {
 1;
 __END__
 
-# maintaining seq ...
-#
-sub fill_part {
-  my ($self, $lo, $hi) = @_;
-  my $parent = $self->{'parent'};
-  my $N = $self->{'N'};
+# # maintaining seq ...
+# #
+# sub fill_part {
+#   my ($self, $lo, $hi) = @_;
+#   my $parent = $self->{'parent'};
+#   my $N = $self->{'N'};
+# 
+#   my $start = $parent->find_before ($lo, $N-1);
+#   $parent->fill ($start, $hi);
+#   my $s = $self->values_array;
+#   my $p = $parent->values_array;
+# 
+#   $hi = min ($hi, $#$p);
+#   if ($#$s < $hi) { $#$s = $hi; }  # pre-extend
+# 
+#   my $pos = 0;
+#   my @seq;
+# 
+#   foreach my $i ($start .. $lo-1) {
+#     my $value = $p->[$i] // next;
+#     $seq[$pos++] = [ $value ];
+#   }
+#   my $count = $pos;
+# 
+#   my @sorted = sort {$a->[0] <=> $b->[0]} @seq;
+#   $#seq = $N-1; # pre-extend
+#   $#sorted = $N-1; # pre-extend
+#   ### warmup to count: $count
+# 
+#   foreach my $t ($lo .. $hi) {
+#     my $value = $p->[$t] // next;
+# 
+#     my $elem = $seq[$pos++];
+#     if ($pos >= $N) { $pos = 0; }
+#     if ($count < $N) { $count++; }
+# 
+#     if ($elem) {
+#       @sorted = grep {$_ != $elem} @sorted;
+#       $elem->[0] = $value;
+#     } else {
+#       $elem = [ $value ];
+#     }
+# 
+#     my $i;
+#     for ($i = 0; $i < $#sorted; $i++) {
+#       if ($sorted[0]->[0] >= $value) {
+#         last;
+#       }
+#     }
+#     splice @sorted, $i,0, $elem;
+# 
+#     $s->[$t] = $sorted[$count/2]->[0];
+#   }
+# }
 
-  my $start = $parent->find_before ($lo, $N-1);
-  $parent->fill ($start, $hi);
-  my $s = $self->values_array;
-  my $p = $parent->values_array;
-
-  $hi = min ($hi, $#$p);
-  if ($#$s < $hi) { $#$s = $hi; }  # pre-extend
-
-  my $pos = 0;
-  my @seq;
-
-  foreach my $i ($start .. $lo-1) {
-    my $value = $p->[$i] // next;
-    $seq[$pos++] = [ $value ];
-  }
-  my $count = $pos;
-
-  my @sorted = sort {$a->[0] <=> $b->[0]} @seq;
-  $#seq = $N-1; # pre-extend
-  $#sorted = $N-1; # pre-extend
-  ### warmup to count: $count
-
-  foreach my $t ($lo .. $hi) {
-    my $value = $p->[$t] // next;
-
-    my $elem = $seq[$pos++];
-    if ($pos >= $N) { $pos = 0; }
-    if ($count < $N) { $count++; }
-
-    if ($elem) {
-      @sorted = grep {$_ != $elem} @sorted;
-      $elem->[0] = $value;
-    } else {
-      $elem = [ $value ];
-    }
-
-    my $i;
-    for ($i = 0; $i < $#sorted; $i++) {
-      if ($sorted[0]->[0] >= $value) {
-        last;
-      }
-    }
-    splice @sorted, $i,0, $elem;
-
-    $s->[$t] = $sorted[$count/2]->[0];
-  }
-}
-
-1;
-__END__
 
 # =head1 NAME
 # 
