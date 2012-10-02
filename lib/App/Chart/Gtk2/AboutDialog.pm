@@ -29,7 +29,7 @@ use App::Chart::Gtk2::GUI;
 
 use Glib::Object::Subclass 'Gtk2::AboutDialog';
 
-our $VERSION = 247;
+our $VERSION = 248;
 
 # this applies to the whole program
 my $copyright_string

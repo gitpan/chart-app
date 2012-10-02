@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -31,14 +31,13 @@ use warnings;
 use Glib::Ex::FreezeNotify;
 use Glib::Ex::SignalIds;
 use Gtk2;
-use Gtk2::Ex::AdjustmentBits 43; # v.43 for set_maybe()
+use Gtk2::Ex::AdjustmentBits 47; # v.47 for set_empty()
 use POSIX ();
 use Scalar::Util;
 
 use App::Chart;
 use App::Chart::Glib::Ex::MoreUtils;
 use App::Chart::Glib::Ex::TieWeakNotify;
-use App::Chart::Gtk2::Ex::AdjustmentBits;
 
 use constant DEBUG => 0;
 
@@ -354,7 +353,10 @@ sub _update_page_size {
   Gtk2::Ex::AdjustmentBits::set_maybe ($self, %values);
 }
 
-*empty = \&App::Chart::Gtk2::Ex::AdjustmentBits::empty;
+sub empty {
+  my ($self) = @_;
+  Gtk2::Ex::AdjustmentBits::set_empty($self);
+}
 sub is_empty {
   my ($self) = @_;
   return ($self->page_size == 0);

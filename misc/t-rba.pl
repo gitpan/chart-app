@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -25,9 +25,40 @@ use App::Chart::Suffix::RBA;
 
 
 
+
+
 {
   my $resp = HTTP::Response->new();
-  my $content = slurp ("$ENV{HOME}/chart/samples/rba/exchange-rates.html.2");
+  my $content = slurp ($ENV{'HOME'}.'/chart/samples/rba/2010-2012.xls?accessed=2012-09-25-10-23-14');
+  #  my $content = slurp ($ENV{'HOME'}.'/chart/samples/rba/2003to2007.xls');
+  #  my $content = slurp ($ENV{'HOME'}.'/chart/samples/rba/2007.xls');
+  print "file ",length($content),"\n";
+  $resp->content ($content);
+  my $h = App::Chart::Suffix::RBA::xls_parse ($resp);
+  print Dumper (\$h);
+  exit 0;
+}
+{
+  my $content = slurp ($ENV{'HOME'}.'/chart/samples/rba/2010-2012.xls?accessed=2012-09-25-10-23-14');
+  # my $content = slurp ($ENV{'HOME'}.'/chart/samples/rba/2007.xls');
+  # my $content = slurp ($ENV{'HOME'}.'/chart/samples/rba/F11hist.2007.xls');
+  print "file ",length($content),"\n";
+  require Spreadsheet::ParseExcel;
+  my $t = time();
+  my $excel = Spreadsheet::ParseExcel::Workbook->Parse (\$content);
+  print "took ",time()-$t,"\n";
+
+  my $worksheets = $excel->{Worksheet};
+  print "worksheets ",scalar(@$worksheets),"\n";
+  my $sheet = $excel->Worksheet (0);
+  my ($minrow, $maxrow) = $sheet->RowRange;
+  my ($mincol, $maxcol) = $sheet->ColRange;
+  print "rows ($minrow, $maxrow) cols ($mincol, $maxcol)\n";
+  exit 0;
+}
+{
+  my $resp = HTTP::Response->new();
+  my $content = slurp ("$ENV{HOME}/chart/samples/rba/exchange-rates.html.3");
   $resp->content($content);
   $resp->content_type('text/html');
   my $h = App::Chart::Suffix::RBA::threeday_parse ($resp);
@@ -47,36 +78,6 @@ use App::Chart::Suffix::RBA;
 
 {
   my $h = App::Chart::Suffix::RBA::historical_info;
-  print Dumper (\$h);
-  exit 0;
-}
-
-
-{
-  my $content = slurp ($ENV{'HOME'}.'/chart/samples/rba/2007.xls');
-  # my $content = slurp ($ENV{'HOME'}.'/chart/samples/rba/F11hist.2007.xls');
-  print "file ",length($content),"\n";
-  require Spreadsheet::ParseExcel;
-  my $t = time();
-  my $excel = Spreadsheet::ParseExcel::Workbook->Parse (\$content);
-  print "took ",time()-$t,"\n";
-
-  my $worksheets = $excel->{Worksheet};
-  print "worksheets ",scalar(@$worksheets),"\n";
-  my $sheet = $excel->Worksheet (0);
-  my ($minrow, $maxrow) = $sheet->RowRange;
-  my ($mincol, $maxcol) = $sheet->ColRange;
-  print "rows ($minrow, $maxrow) cols ($mincol, $maxcol)\n";
-  exit 0;
-}
-
-{
-  my $resp = HTTP::Response->new();
-#  my $content = slurp ($ENV{'HOME'}.'/chart/samples/rba/2003to2007.xls');
-  my $content = slurp ($ENV{'HOME'}.'/chart/samples/rba/2007.xls');
-  print "file ",length($content),"\n";
-  $resp->content ($content);
-  my $h = App::Chart::Suffix::RBA::xls_parse ($resp);
   print Dumper (\$h);
   exit 0;
 }

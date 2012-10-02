@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -60,7 +60,7 @@ use constant::defer _model => sub {
   # hash slice, everything on disk
   @extra{map {s/App::Chart::Gtk2::LineStyle:://;$_}
            Module::Find::findsubmod('App::Chart::Gtk2::LineStyle')} = ();
-  ### extra on on disk: \%extra
+  ### extra on disk: \%extra
   # hash slice, less already known
   delete @extra{Gtk2::Ex::TreeModelBits::column_contents($model,COL_KEY)};
 

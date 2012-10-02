@@ -76,7 +76,7 @@ WriteMakefile
     'Glib' => '1.220',
     'Glib::Object::Subclass' => 0,
 
-    'Glib::Ex::ConnectProperties' => 15, # v.15 tree-selection
+    'Glib::Ex::ConnectProperties' => 18, # v.18 for textbuffer#not-empty
 
     # my Glib-Ex-ObjectBits
     'Glib::Ex::FreezeNotify' => 1,
@@ -96,7 +96,7 @@ WriteMakefile
 
     # my Gtk2-Ex-WidgetBits
     'Gtk2::Ex::WidgetBits'     => 10,
-    'Gtk2::Ex::AdjustmentBits' => 43, # v.43 for set_maybe()
+    'Gtk2::Ex::AdjustmentBits' => 47, # v.47 for set_empty()
     'Gtk2::Ex::ActionTooltips' => 10, # new in version 10
     'Gtk2::Ex::EntryBits'      => 11, # new in version 11
     'Gtk2::Ex::GdkBits'        => 23, # v.23 for window_clear_region
@@ -104,7 +104,9 @@ WriteMakefile
     'Gtk2::Ex::MenuBits'       => 17,             # new in version 17
     'Gtk2::Ex::PixbufBits'     => 35,             # new in version 35
     'Gtk2::Ex::Statusbar::DynamicContext'  => 20, # new in version 20
+    'Gtk2::Ex::Statusbar::Message'         => 47, # new in version 47
     'Gtk2::Ex::Statusbar::MessageUntilKey' => 11, # new in version 11
+    'Gtk2::Ex::TableBits'      => 47,             # new in version 47
     'Gtk2::Ex::TreeModelBits'  => 16,
     'Gtk2::Ex::TreeViewBits'   => 8,              # new in version 8
     'Gtk2::Ex::TextBufferBits' => 18,             # new in version 18

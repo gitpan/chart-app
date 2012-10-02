@@ -3,7 +3,7 @@
 
 
 
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -29,11 +29,11 @@ use Gtk2;
 #use Smart::Comments;
 
 use App::Chart::Glib::Ex::MoreUtils;
-use App::Chart::Gtk2::Ex::Statusbar::Message;
+use Gtk2::Ex::Statusbar::Message;
 use App::Chart::Gtk2::Job;
 
 use Glib::Object::Subclass
-  'App::Chart::Gtk2::Ex::Statusbar::Message',
+  'Gtk2::Ex::Statusbar::Message',
   properties => [ Glib::ParamSpec->scalar
                   ('jobs',
                    'jobs',
@@ -119,10 +119,10 @@ App::Chart::Gtk2::JobStatusbarMessage -- display Job status in a Gtk2::Statusbar
 =head1 OBJECT HIERARCHY
 
 C<App::Chart::Gtk2::JobStatusbarMessage> is a subclass of
-C<App::Chart::Gtk2::Ex::Statusbar::Message>.
+C<Gtk2::Ex::Statusbar::Message>.
 
     Glib::Object
-      App::Chart::Gtk2::Ex::Statusbar::Message
+      Gtk2::Ex::Statusbar::Message
         App::Chart::Gtk2::JobStatusbarMessage
 
 =head1 DESCRIPTION
@@ -139,8 +139,9 @@ C<App::Chart::Gtk2::Ex::Statusbar::Message>.
 
 =head1 SEE ALSO
 
-L<App::Chart::Gtk2::Ex::Statusbar::Message>, L<App::Chart::Gtk2::Job>,
-L<App::Chart::Gtk2::JobQueue>, L<Gtk2::Statusbar>
+L<App::Chart::Gtk2::Job>, L<App::Chart::Gtk2::JobQueue>
+
+L<Gtk2::Statusbar>, L<Gtk2::Ex::Statusbar::Message>
 
 =cut
 

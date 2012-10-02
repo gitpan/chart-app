@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               chart
-version:            247
+version:            248
 abstract:           Stock and commodity charting program.
 author:
     - Kevin Ryde <user42@zip.com.au>
@@ -21,7 +21,7 @@ requires:
     DBI::Const::GetInfoType:  0
     File::HomeDir:        0.61
     Glib:                 1.220
-    Glib::Ex::ConnectProperties:  15
+    Glib::Ex::ConnectProperties:  18
     Glib::Ex::FreezeNotify:  1
     Glib::Ex::ObjectBits:  12
     Glib::Ex::SignalBits:  9
@@ -30,7 +30,7 @@ requires:
     Glib::Object::Subclass:  0
     Gtk2:                 1.220
     Gtk2::Ex::ActionTooltips:  10
-    Gtk2::Ex::AdjustmentBits:  43
+    Gtk2::Ex::AdjustmentBits:  47
     Gtk2::Ex::CrossHair:  17
     Gtk2::Ex::Datasheet::DBI:  0
     Gtk2::Ex::DateSpinner:  2
@@ -51,7 +51,9 @@ requires:
     Gtk2::Ex::NumAxis:    4
     Gtk2::Ex::PixbufBits:  35
     Gtk2::Ex::Statusbar::DynamicContext:  20
+    Gtk2::Ex::Statusbar::Message:  47
     Gtk2::Ex::Statusbar::MessageUntilKey:  11
+    Gtk2::Ex::TableBits:  47
     Gtk2::Ex::TextBufferBits:  18
     Gtk2::Ex::TextView::FollowAppend:  1
     Gtk2::Ex::TickerView:  7

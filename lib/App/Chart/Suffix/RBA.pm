@@ -1,6 +1,6 @@
 # Reserve Bank of Australia setups.
 
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -35,11 +35,10 @@ use App::Chart::Latest;
 use App::Chart::TZ;
 use App::Chart::Weblink;
 
-use constant DEBUG => 0;
+# uncomment this to run the ### lines
+#use Smart::Comments;
 
-
-# Not yet using Finance::Quote::RBA as 
-
+# Not yet using Finance::Quote::RBA
 
 my $pred = App::Chart::Sympred::Suffix->new ('.RBA');
 App::Chart::TZ->sydney->setup_for_symbol ($pred);
@@ -236,24 +235,37 @@ sub historical_parse {
 # but only the part from 1983 back is wanted since there's daily data for
 # 1983 onwards.
 
-my %monthly_fx_to_currency = ( 'JY'   => 'JPY', # japanese yen
-                               # 'USD'
-                               # 'EUR'
-                               'SKW'  => 'KRW', # korean won
-                               # 'NZD'
-                               'CR'   => 'CNY', # chinese renminbi
-                               'UKPS' => 'GBP', # british pound sterling
-                               'NTD'  => 'TWD', # taiwan dollar
-                               'SD'   => 'SGD', # singapore dollar
-                               'IR'   => 'IDR', # indonesian rupiah
-                               # 'HKD'
-                               'MR'   => 'MYR', # malaysian ringgit
-                               # 'SDR'          # special drawing right
-                               # 'TWI'          # trade weighted index
-                             );
+my %monthly_fx_to_currency 
+  = (
+     # 'TWI'          # trade weighted index
+     'CR'   => 'CNY', # chinese renminbi
+     'JY'   => 'JPY', # japanese yen
+     # 'EUR'
+     # 'USD'
+     'SKW'  => 'KRW', # South Korean won
+     'UKPS' => 'GBP', # british pound sterling
+     'SD'   => 'SGD', # singapore dollar
+     'IRE'  => 'INR', # Indian rupee
+     'TB'   => 'THB', # Thai baht
+     # 'NZD'
+     'NTD'  => 'TWD', # taiwan dollar
+     'MR'   => 'MYR', # malaysian ringgit
+     'IR'   => 'IDR', # indonesian rupiah
+     'VD'   => 'VND', # Vietnamese dong
+     'UAED' => 'AED', # UAE dirham
+     'PNGK' => 'PGK', # PNG kina
+     # 'HKD'   # Hong Kong dollar
+     'CD'   => 'CAD', # Canadian dollar
+     'SARD' => 'ZAR', # South African rand
+     'SARY' => 'SAR', # Saudi riyal
+     'SF'   => 'CHF',   # Swiss franc
+     'SK'   => 'SEK', # Swedish krona
+     # 'SDR'          # special drawing right
+    );
 
 sub monthly_parse {
   my ($resp, $stop_iso) = @_;
+  ### RBA monthly_parse() ...
   my $content = $resp->decoded_content(raise_error=>1);
 
   my @data = ();
@@ -266,12 +278,13 @@ sub monthly_parse {
 
   my $excel = Spreadsheet::ParseExcel::Workbook->Parse (\$content);
   my $sheet = $excel->Worksheet (0);
-  if (DEBUG) { print "Sheet (of ",$excel->{'SheetCount'},"): ",
-                 $sheet->{'Name'},"\n"; }
+  ### SheetCount: $excel->{'SheetCount'}
+  ### Name: $sheet->{'Name'}
 
   my ($minrow, $maxrow) = $sheet->RowRange;
   my ($mincol, $maxcol) = $sheet->ColRange;
-  if (DEBUG) { print "  rows $minrow-$maxrow cols $mincol-$maxcol\n"; }
+  ### rows: $minrow, $maxrow
+  ### cols: $mincol, $maxcol
 
   # heading row repeats the filename "F11HIST.XLS" and then the currencies
   # in columns as say "FXRJY"
@@ -280,7 +293,7 @@ sub monthly_parse {
     $cell && $cell->Value eq 'F11HIST.XLS' }
     ($minrow .. $maxrow)
       or die "RBA monthly: headings not found";
-  if (DEBUG) { print "  heading row $heading_row\n"; }
+  ### $heading_row
 
   my @currencies = map {
     my $cell = $sheet->Cell($heading_row,$_);
@@ -288,8 +301,8 @@ sub monthly_parse {
     $currency =~ s/^FXR//;
     ($monthly_fx_to_currency{$currency} || $currency)
   } ($mincol .. $maxcol);
-  if (DEBUG) { print "  currencies ",scalar @currencies,
-                 " ",join(' ',@currencies),"\n"; }
+  ### @currencies
+  ### count: scalar(@currencies)
 
   my %currency_started;
 
@@ -354,6 +367,7 @@ sub iso_weekdays_in_month {
 
 sub xls_parse {
   my ($resp) = @_;
+  ### RBA xls_parse() ...
   my $content = $resp->decoded_content(raise_error=>1);
 
   my @data = ();
@@ -366,18 +380,19 @@ sub xls_parse {
 
   my $excel = Spreadsheet::ParseExcel::Workbook->Parse (\$content);
   my $sheet = $excel->Worksheet (0);
-  if (DEBUG) { print "Sheet: ",$sheet->{'Name'},"\n"; }
+  ### sheet: $sheet->{'Name'}
 
   my ($minrow, $maxrow) = $sheet->RowRange;
   my ($mincol, $maxcol) = $sheet->ColRange;
 
-  # heading row "DAILY 4PM" and the currencies in columns
+  # heading row "DAILY 4PM", or "Mnemonic" and the currencies in columns
   my $heading_row = List::Util::first {
     my $cell = $sheet->Cell($_,$mincol);
-    $cell && $cell->Value eq 'DAILY 4PM' }
+    $cell && ($cell->Value eq 'DAILY 4PM'
+              || $cell->Value eq 'Mnemonic') }
     ($minrow .. $maxrow)
-      or die "RBA historical: headings not found";
-  if (DEBUG) { print "  heading row $heading_row\n"; }
+      or die "RBA historical: currency code headings row not found";
+  ### heading row: $heading_row
 
   foreach my $row ($heading_row+1 .. $maxrow) {
     my $datecell = $sheet->Cell($row,$mincol) or next;
@@ -391,6 +406,9 @@ sub xls_parse {
       my $rate = $cell->Value
         or next;  # skip lots of blanks
       my $currency = $sheet->Cell($heading_row,$col)->Value;
+      $currency =~ s/^FXR//;  # leading "FXR" circa 2012
+      $currency = ($monthly_fx_to_currency{$currency} || $currency);
+
       push @data, { symbol   => "AUD$currency.RBA",
                     currency => $currency,
                     date     => $date,
@@ -419,7 +437,9 @@ sub download {
 
   my $lo_tdate = App::Chart::Download::start_tdate_for_update (@$symbol_list);
   my $hi_tdate = threeday_available_tdate();
-  if (DEBUG) { print "RBA wanting $lo_tdate to $hi_tdate\n"; }
+  ### RBA wanting ...
+  ### $lo_tdate
+  ### $hi_tdate
 
   if ($hi_tdate - $lo_tdate + 1 <= RBA_EXCHANGE_URL_DAYS) {
     App::Chart::Download::status (__('RBA past three days'));

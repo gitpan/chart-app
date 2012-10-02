@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -19,18 +19,31 @@ use 5.008;
 use strict;
 use warnings;
 use Glib;
+use Carp;
 
 sub new {
-  my ($class, $obj, $pname, $value) = @_;
-  my $self = bless [ $obj, $pname, $obj->get_property($pname) ], $class;
-  if (@_ > 3) { $obj->set_property($pname,$value); }
+  my $class = shift;
+  my $obj = shift;
+  if (@_ & 1) {
+    croak 'TempProperty should have an even number of propname+value arguments';
+  }
+  my @self = ($obj);
+  my $self = bless \@self, $class;
+  while (@_) {
+    my $pname = shift;
+    my $value = shift;
+    push @self, $pname, $obj->get_property($pname);
+    $obj->set_property($pname,$value);
+  }
   return $self;
 }
 
 sub DESTROY {
   my ($self) = @_;
-  my ($obj, $pname, $value) = @$self;
-  $obj->set_property($pname,$value);
+  my $obj = shift @$self;
+  while (@$self) {
+    $obj->set_property(shift @$self, shift @$self);
+  }
 }
 
 1;

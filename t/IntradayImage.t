@@ -46,7 +46,7 @@ my $have_test_weaken = eval "use Test::Weaken 2; 1";
 if (! $have_test_weaken) { diag "Test::Weaken 2 not available -- $@"; }
 
 SKIP: {
-  $have_test_weaken or skip 'due to no Test::Weaken available', 1;
+  $have_test_weaken or skip 'due to no Test::Weaken available', 2;
 
   {
     my $leaks = Test::Weaken::leaks

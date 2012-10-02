@@ -20,6 +20,7 @@ devel/closed-form.pl
 devel/consider-historical.pl
 devel/convert-scm.pl
 devel/database-info.pl
+devel/DownloadDialog.t
 devel/ema-omitted-old.pl
 devel/ema-omitted.pl
 devel/fixup-all-list.pl
@@ -29,6 +30,7 @@ devel/generate-gt-names.pl
 devel/generate-indicator-model.pl
 devel/langinfo.c
 devel/lat.pl
+devel/Main.t
 devel/makefile-from-grep.pl
 devel/makefile-to-debs.pl
 devel/meta-read.pl
@@ -55,6 +57,9 @@ devel/run-vacuum-dialog.pl
 devel/run-watchlist.pl
 devel/run-weblink-menu.pl
 devel/scandeps-to-makefile.pl
+devel/Ticker.t
+devel/TickerMain.t
+devel/VacuumDialog.t
 devel/warnings-unused.pl
 devel/weblinks-samples.pl
 doc/chart.omf
@@ -121,7 +126,6 @@ lib/App/Chart/Gtk2/DeleteDialog.pm
 lib/App/Chart/Gtk2/DeleteSymlistDialog.pm
 lib/App/Chart/Gtk2/Diagnostics.pm
 lib/App/Chart/Gtk2/DownloadDialog.pm
-lib/App/Chart/Gtk2/Ex/AdjustmentBits.pm
 lib/App/Chart/Gtk2/Ex/BindingBits.pm
 lib/App/Chart/Gtk2/Ex/CellRendererButton.pm
 lib/App/Chart/Gtk2/Ex/CellRendererTextBits.pm
@@ -141,8 +145,6 @@ lib/App/Chart/Gtk2/Ex/MenuBits.pm
 lib/App/Chart/Gtk2/Ex/MenuItem/EmptyInsensitive.pm
 lib/App/Chart/Gtk2/Ex/NotebookLazyPages.pm
 lib/App/Chart/Gtk2/Ex/RadioGroup.pm
-lib/App/Chart/Gtk2/Ex/Statusbar/Message.pm
-lib/App/Chart/Gtk2/Ex/TableBits.pm
 lib/App/Chart/Gtk2/Ex/TextViewBits.pm
 lib/App/Chart/Gtk2/Ex/ToplevelBits.pm
 lib/App/Chart/Gtk2/Ex/ToplevelSingleton.pm
@@ -572,7 +574,6 @@ misc/t-sma.pl
 misc/t-smarker.pl
 misc/t-span-fast.pl
 misc/t-span.pl
-misc/t-statusbar-message.pl
 misc/t-submenu-sensitive.pl
 misc/t-subprocess.pl
 misc/t-symlist-combobox.pl
@@ -643,7 +644,6 @@ t/DEMA.t
 t/Diagnostics.t
 t/DMI.t
 t/Download.t
-t/DownloadDialog.t
 t/DownloadHandler.t
 t/EMA.t
 t/EMAx2.t
@@ -658,7 +658,6 @@ t/Graph.t
 t/GT-DB-Chart-load.t
 t/GT-DB-Chart.t
 t/GT.t
-t/Gtk2-Ex-AdjustmentBits.t
 t/Gtk2-Ex-ListModelPos.t
 t/Gtk2-Ex-ToplevelSingleton.t
 t/Gtk2-Ex-TreeRowPosition.t
@@ -681,7 +680,6 @@ t/LaguerreFilter.t
 t/LatestHandler.t
 t/ListStoreDBISeq.t
 t/LME.t
-t/Main.t
 t/Manual.t
 t/MLC.t
 t/MX.t
@@ -701,13 +699,10 @@ t/SymlistListModel.t
 t/Sympred.t
 t/TA.t
 t/Texinfo-Util.t
-t/Ticker.t
-t/TickerMain.t
 t/TickerModel.t
 t/Timebase.t
 t/TMA.t
 t/TO.t
-t/VacuumDialog.t
 t/VHF.t
 t/View.t
 t/Volume.t

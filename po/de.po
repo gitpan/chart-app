@@ -778,12 +778,12 @@ msgid "Chart: Download"
 msgstr ""
 
 #: lib/App/Chart/Gtk2/DownloadDialog.pm:74
-#: lib/App/Chart/Gtk2/VacuumDialog.pm:51
+#: lib/App/Chart/Gtk2/VacuumDialog.pm:57
 msgid "_Start"
 msgstr ""
 
 #: lib/App/Chart/Gtk2/DownloadDialog.pm:75
-#: lib/App/Chart/Gtk2/VacuumDialog.pm:52
+#: lib/App/Chart/Gtk2/VacuumDialog.pm:58
 msgid "_Stop"
 msgstr ""
 
@@ -1521,32 +1521,32 @@ msgctxt "manual-node"
 msgid "Annotations"
 msgstr ""
 
-#: lib/App/Chart/Suffix/RBA.pm:47
+#: lib/App/Chart/Suffix/RBA.pm:46
 msgctxt "manual-node"
 msgid "Reserve Bank of Australia"
 msgstr ""
 
-#: lib/App/Chart/Suffix/RBA.pm:58
+#: lib/App/Chart/Suffix/RBA.pm:57
 msgid "_RBA Home Page"
 msgstr ""
 
-#: lib/App/Chart/Suffix/RBA.pm:59
+#: lib/App/Chart/Suffix/RBA.pm:58
 msgid "Open web browser at the Reserve Bank of Australia home page"
 msgstr ""
 
-#: lib/App/Chart/Suffix/RBA.pm:159 lib/App/Chart/Suffix/RBA.pm:425
+#: lib/App/Chart/Suffix/RBA.pm:158 lib/App/Chart/Suffix/RBA.pm:445
 msgid "RBA past three days"
 msgstr ""
 
-#: lib/App/Chart/Suffix/RBA.pm:179
+#: lib/App/Chart/Suffix/RBA.pm:178
 msgid "RBA historical page"
 msgstr ""
 
-#: lib/App/Chart/Suffix/RBA.pm:411
+#: lib/App/Chart/Suffix/RBA.pm:429
 msgid "RBA"
 msgstr ""
 
-#: lib/App/Chart/Suffix/RBA.pm:444
+#: lib/App/Chart/Suffix/RBA.pm:464
 #, perl-brace-format
 msgid "RBA data {filename}"
 msgstr ""
@@ -2443,42 +2443,42 @@ msgctxt "manual-node"
 msgid "Polarized Fractal Efficiency"
 msgstr ""
 
-#: lib/App/Chart/Gtk2/VacuumDialog.pm:50
+#: lib/App/Chart/Gtk2/VacuumDialog.pm:56
 msgid "Chart: Vacuum"
 msgstr ""
 
-#: lib/App/Chart/Gtk2/VacuumDialog.pm:59
+#: lib/App/Chart/Gtk2/VacuumDialog.pm:65
 msgid ""
 "Compact and clean out the database.\n"
 "(May take a while if the database is big.)"
 msgstr ""
 
-#: lib/App/Chart/Gtk2/VacuumDialog.pm:65
+#: lib/App/Chart/Gtk2/VacuumDialog.pm:71
 msgid "Consistency Checks"
 msgstr ""
 
-#: lib/App/Chart/Gtk2/VacuumDialog.pm:71
+#: lib/App/Chart/Gtk2/VacuumDialog.pm:77
 msgid "Compact Files"
 msgstr ""
 
-#: lib/App/Chart/Gtk2/VacuumDialog.pm:77
+#: lib/App/Chart/Gtk2/VacuumDialog.pm:83
 msgid "Verbose"
 msgstr ""
 
-#: lib/App/Chart/Gtk2/VacuumDialog.pm:162
+#: lib/App/Chart/Gtk2/VacuumDialog.pm:166
 msgid "Starting vacuum job"
 msgstr ""
 
-#: lib/App/Chart/Gtk2/VacuumDialog.pm:163
+#: lib/App/Chart/Gtk2/VacuumDialog.pm:167
 msgid "Vacuuming ...\n"
 msgstr ""
 
-#: lib/App/Chart/Gtk2/VacuumDialog.pm:169
+#: lib/App/Chart/Gtk2/VacuumDialog.pm:173
 #: lib/App/Chart/Gtk2/JobsRunningDialog.pm:74
 msgid "Vacuum database"
 msgstr ""
 
-#: lib/App/Chart/Gtk2/VacuumDialog.pm:214
+#: lib/App/Chart/Gtk2/VacuumDialog.pm:218
 msgid "done\n"
 msgstr ""
 

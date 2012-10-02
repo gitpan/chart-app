@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -14,6 +14,11 @@
 # You should have received a copy of the GNU General Public License along
 # with Chart.  If not, see <http://www.gnu.org/licenses/>.
 
+
+# FIXME: consistency checks mark as historical things merely not downloaded
+# for a while
+
+
 package App::Chart::Gtk2::VacuumDialog;
 use 5.010;
 use strict;
@@ -21,8 +26,9 @@ use warnings;
 use Gtk2;
 use Locale::TextDomain ('App-Chart');
 
-use App::Chart::Glib::Ex::MoreUtils;
+use Glib::Ex::ConnectProperties;
 use Gtk2::Ex::Units;
+use App::Chart::Glib::Ex::MoreUtils;
 use App::Chart;
 
 use base 'App::Chart::Gtk2::Ex::ToplevelSingleton';
@@ -48,11 +54,11 @@ sub INIT_INSTANCE {
   my ($self) = @_;
 
   $self->set_title (__('Chart: Vacuum'));
-  $self->add_buttons (__('_Start') => RESPONSE_START,
-                      __('_Stop')  => RESPONSE_STOP,
-                      'gtk-clear' => RESPONSE_CLEAR,
-                      'gtk-close' => 'close',
-                      'gtk-help'  => 'help');
+  $self->add_buttons (__('_Start') => $self->RESPONSE_START,
+                      __('_Stop')  => $self->RESPONSE_STOP,
+                      'gtk-clear'  => $self->RESPONSE_CLEAR,
+                      'gtk-close'  => 'close',
+                      'gtk-help'   => 'help');
   $self->signal_connect (response => \&_do_response);
   my $vbox = $self->vbox;
 
@@ -79,7 +85,11 @@ sub INIT_INSTANCE {
   }
 
   my $textbuf = $self->{'textbuf'} = Gtk2::TextBuffer->new;
-  $textbuf->signal_connect ('changed', \&_do_textbuf_changed, $self);
+
+  # clear button sensitive when there is in fact something to clear
+  Glib::Ex::ConnectProperties->new
+      ([$textbuf, 'textbuffer#not-empty'],
+       [$self,    'response-sensitive#'.$self->RESPONSE_CLEAR]);
 
   require Gtk2::Ex::TextView::FollowAppend;
   my $textview = $self->{'textview'}
@@ -97,7 +107,6 @@ sub INIT_INSTANCE {
   $vbox->pack_start ($status, 0,0,0);
 
   _update_stop_sensitive ($self);
-  _update_clear_sensitive ($self);
   $vbox->show_all;
 
   # with sensible message area size
@@ -149,11 +158,6 @@ sub _do_response {
     # require App::Chart::Manual;
     # App::Chart::Manual->open(__p('manual-node','Vacuum'), $self);
   }
-}
-
-sub _do_textbuf_changed {
-  my ($textbuf, $self) = @_;
-  _update_clear_sensitive ($self);
 }
 
 sub start {
@@ -221,12 +225,6 @@ sub _update_stop_sensitive {
   my $running = $job && $job->is_stoppable;
   $self->set_response_sensitive (RESPONSE_START, ! $running);
   $self->set_response_sensitive (RESPONSE_STOP, $running);
-}
-sub _update_clear_sensitive {
-  my ($self) = @_;
-  my $textbuf = $self->{'textbuf'};
-  $self->set_response_sensitive (RESPONSE_CLEAR,
-                                 $textbuf->get_char_count != 0);
 }
 
 1;

@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -324,10 +324,10 @@ sub _init_graphs {
 #
 sub _update_attach {
   my ($self) = @_;
-  require App::Chart::Gtk2::Ex::TableBits;
+  require Gtk2::Ex::TableBits;
 
   my $y = 0;
-  App::Chart::Gtk2::Ex::TableBits::update_attach
+  Gtk2::Ex::TableBits::update_attach
       ($self, $self->{'heading'}, 0,3, $y,$y+1,
        ['fill','shrink','expand'], [], 0,0);
   $y++;
@@ -356,7 +356,7 @@ sub _update_attach {
     if ($i > 0) {
       my $gap = ($graph->{'gap'} ||= Glib::Object::new ('Gtk2::DrawingArea',
                                                         height_request => 2));
-      App::Chart::Gtk2::Ex::TableBits::update_attach
+      Gtk2::Ex::TableBits::update_attach
           ($self, $gap, 0,3, $y,$y+1,
            [], [], 0,0);
       $y++;
@@ -365,16 +365,16 @@ sub _update_attach {
     my $graphstyle = $graphstyles[$i];
     my $size = $graphstyle->{'size'};
 
-    App::Chart::Gtk2::Ex::TableBits::update_attach
+    Gtk2::Ex::TableBits::update_attach
         ($self, $graph, 0,1, $y,$y+$size,
          ['fill','shrink','expand'],
          ['fill','shrink','expand'], 0,0);
-    App::Chart::Gtk2::Ex::TableBits::update_attach
+    Gtk2::Ex::TableBits::update_attach
         ($self, $graph->{'noshrink'},
          1,2, $y,$y+$size,
          ['fill','shrink'],
          ['fill','shrink','expand'], 0,0);
-    App::Chart::Gtk2::Ex::TableBits::update_attach
+    Gtk2::Ex::TableBits::update_attach
         ($self, $graph->{'vscroll'},
          2,3, $y,$y+$size,
          ['fill','shrink'],
@@ -382,12 +382,12 @@ sub _update_attach {
     $y += $size;
   }
 
-  App::Chart::Gtk2::Ex::TableBits::update_attach
+  Gtk2::Ex::TableBits::update_attach
       ($self, $self->{'haxis'}, 0,1, $y,$y+1,
        ['fill','shrink','expand'],
        ['fill','shrink'], 0,0);
   $y++;
-  App::Chart::Gtk2::Ex::TableBits::update_attach
+  Gtk2::Ex::TableBits::update_attach
       ($self, $self->{'hscroll'}, 0,1, $y,$y+1,
        ['fill','shrink','expand'],
        ['fill','shrink'], 0,0);

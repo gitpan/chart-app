@@ -12,7 +12,7 @@
 @copying
 This manual describes how to install and use Chart, version @value{VERSION}.
 
-Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
 
 Chart is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -5677,32 +5677,50 @@ in the currency @samp{XXX}.  Currently these are as follows
 @quotation
 @multitable {@nicode{MMMMMM.RBA}} {MMMMMMMMMMMMMMMMMMMMMMM}
 @headitem Symbol @tab Currency
-@item AUDCNY.RBA @tab Chinese renminbi
-@c SYMBOL: AUDCNY.RBA
-@item AUDEUR.RBA @tab Euro
-@c SYMBOL: AUDEUR.RBA
-@item AUDJPY.RBA @tab Japanese yen
-@c SYMBOL: AUDJPY.RBA
-@item AUDHKD.RBA @tab Hong Kong dollar
-@c SYMBOL: AUDHKD.RBA
-@item AUDIDR.RBA @tab Indonesian rupiah
-@c SYMBOL: AUDIDR.RBA
-@item AUDMYR.RBA @tab Malaysian ringgit
-@c SYMBOL: AUDMYR.RBA
-@item AUDNZD.RBA @tab New Zealand dollar
-@c SYMBOL: AUDNZD.RBA
-@item AUDCHF.RBA @tab Swiss franc
-@c SYMBOL: AUDCHF.RBA
-@item AUDSGD.RBA @tab Singapore dollar
-@c SYMBOL: AUDSGD.RBA
-@item AUDKRW.RBA @tab South Korean won
-@c SYMBOL: AUDKRW.RBA
-@item AUDTWD.RBA @tab Taiwanese dollar
-@c SYMBOL: AUDTWD.RBA
-@item AUDGBP.RBA @tab British pound sterling
-@c SYMBOL: AUDGBP.RBA
 @item AUDUSD.RBA @tab US dollar
 @c SYMBOL: AUDUSD.RBA
+@item AUDCNY.RBA @tab Chinese renminbi
+@c SYMBOL: AUDCNY.RBA
+@item AUDJPY.RBA @tab Japanese yen
+@c SYMBOL: AUDJPY.RBA
+@item AUDEUR.RBA @tab Euro
+@c SYMBOL: AUDEUR.RBA
+@item AUDKRW.RBA @tab South Korean won
+@c SYMBOL: AUDKRW.RBA
+@item AUDGBP.RBA @tab British pound sterling
+@c SYMBOL: AUDGBP.RBA
+@item AUDSGD.RBA @tab Singapore dollar
+@c SYMBOL: AUDSGD.RBA
+@item AUDINR.RBA @tab Indian rupee
+@c SYMBOL: AUDINR.RBA
+@item AUDTHB.RBA @tab Thai baht
+@c SYMBOL: AUDTHB.RBA
+@item AUDNZD.RBA @tab New Zealand dollar
+@c SYMBOL: AUDNZD.RBA
+@item AUDTWD.RBA @tab Taiwanese dollar
+@c SYMBOL: AUDTWD.RBA
+@item AUDMYR.RBA @tab Malaysian ringgit
+@c SYMBOL: AUDMYR.RBA
+@item AUDIDR.RBA @tab Indonesian rupiah
+@c SYMBOL: AUDIDR.RBA
+@item AUDVND.RBA @tab Vietnamese dong
+@c SYMBOL: AUDVND.RBA
+@item AUDAED.RBA @tab UAE dirham
+@c SYMBOL: AUDAED.RBA
+@item AUDPNK.RBA @tab Papua New Guinea kina
+@c SYMBOL: AUDPNK.RBA
+@item AUDHKD.RBA @tab Hong Kong dollar
+@c SYMBOL: AUDHKD.RBA
+@item AUDCAD.RBA @tab Canadian dollar
+@c SYMBOL: AUDCAD.RBA
+@item AUDZAR.RBA @tab South African rand
+@c SYMBOL: AUDZAR.RBA
+@item AUDSAR.RBA @tab Saudi Arabian riyal
+@c SYMBOL: AUDSAR.RBA
+@item AUDCHF.RBA @tab Swiss franc
+@c SYMBOL: AUDCHF.RBA
+@item AUDSEK.RBA @tab Swedish krona
+@c SYMBOL: AUDSEK.RBA
 @end multitable
 @end quotation
 
