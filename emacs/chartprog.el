@@ -1,8 +1,8 @@
 ;;; chartprog.el --- stock quotes using Chart.
 
-;; Copyright 2004, 2005, 2006, 2007, 2008, 2009, 2010 Kevin Ryde
+;; Copyright 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2012, 2013, 2014 Kevin Ryde
 
-;; Author: Kevin Ryde <user42@zip.com.au>
+;; Author: Kevin Ryde <user42_kevin@yahoo.com.au>
 ;; Keywords: comm, finance
 ;; URL: http://user42.tuxfamily.org/chart/index.html
 
@@ -22,8 +22,12 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-;; See "Emacs" in the Chart manual for usage.
+;;; Commentary:
+;;
+;; See section "Emacs" in the Chart manual for usage.
 
+
+;;; Code:
 
 (require 'cl)  ;; for `remove*', `assoc*', `find', maybe more
 (require 'timer) ;; xemacs21
@@ -32,6 +36,7 @@
 ;;-----------------------------------------------------------------------------
 ;; customizations
 
+;;;autoload
 (defgroup chartprog nil
   "Chart program interface."
   :prefix "chartprog-"
@@ -68,7 +73,7 @@
 
 
 ;;-----------------------------------------------------------------------------
-;; xemacs workarounds
+;; xemacs compatibility
 
 ;; Past versions lacked propertize did they?  Forget when or what.
 
@@ -176,7 +181,7 @@ a point position."
 Elements are compared with `equal' and returned in the same order as they
 appear in X.
 
-This differs from the cl package `intersection' in preserving the order of
+This differs from the cl.el `intersection' in preserving the order of
 elements for the return, the cl package doesn't preserve the order."
 
   (remove* nil x :test-not (lambda (dummy xelem)
@@ -251,7 +256,7 @@ OBJ can be a list or other nested structure."
 (defun chartprog-incoming-init (codeset protocol-version)
   "Handle chart subprocess init message.
 CODESET is always \"UTF-8\".
-PROTOCOL-VERSION is the protocol number the suprocess is speaking, to be
+PROTOCOL-VERSION is the protocol number the subprocess is speaking, to be
 matched against `chartprog-protocol-version'."
 
   (unless (= protocol-version chartprog-protocol-version)
@@ -852,7 +857,7 @@ terminal with `\\[chartprog-watchlist-detail]'."
     (sit-for 0)
     (kill-all-local-variables)
     (use-local-map chartprog-watchlist-map)
-    (setq major-mode 'chartprog-watchlist
+    (setq major-mode 'chart-watchlist
           mode-name  "Watchlist"
           truncate-lines t
           buffer-read-only t
@@ -922,6 +927,8 @@ at point in the current buffer."
 ;;-----------------------------------------------------------------------------
 ;; latest from elisp
 
+(defvar chartprog-latest-record-calls nil)
+
 (defvar chartprog-latest-cache
   (make-hash-table :test 'equal :weakness 'value)
   "Hash table, key is a chart symbol (a string), value is a latest record.")
@@ -952,6 +959,8 @@ nil."
 
   (unless (stringp symbol)
     (error "Not a chart symbol (should be a string)"))
+  (if chartprog-latest-record-calls
+      (push symbol (aref chartprog-latest-record-calls 0)))
   (unless field
     (setq field 'last))
   (let ((latest (gethash symbol chartprog-latest-cache)))
@@ -985,30 +994,27 @@ tricky conditionals), then those are downloaded and the recalculate done
 again.  This is repeated until all prices used have been downloaded."
 
   (interactive)
-  (let (chartprog-ses-recalculate--fetched)
+  (let ((chartprog-latest-record-calls (vector nil))
+        fetched)
     (while
-        (let ((chartprog-ses-recalculate--orig-chart-latest
-               (symbol-function 'chart-latest))
-              chartprog-ses-recalculate--need)
-          (flet ((chartprog-latest
-                  (symbol &rest args)
-                  (unless (member symbol chartprog-ses-recalculate--fetched)
-                    (add-to-list 'chartprog-ses-recalculate--need symbol))
-                  (apply chartprog-ses-recalculate--orig-chart-latest symbol
-                         args)))
-            (ses-recalculate-all))
-          (and chartprog-ses-recalculate--need
-               (progn
-                 (chartprog-with-temp-message "Downloading quotes ..."
-                   (chartprog-exec-synchronous 'request-symbols-synchronous
-                                           chartprog-ses-recalculate--need))
-                 (setq chartprog-ses-recalculate--fetched
-                       (nconc chartprog-ses-recalculate--need
-                              chartprog-ses-recalculate--fetched))
-                 t))))))
+        (progn
+          (ses-recalculate-all)
+          (let ((more (set-difference (aref chartprog-latest-record-calls 0)
+                                      fetched)))
+            (and more
+                 (progn
+                   (chartprog-with-temp-message "Downloading quotes ..."
+                     (chartprog-exec-synchronous 'request-symbols-synchronous
+                                                 more))
+                   (setq fetched (nconc more fetched))
+                   t)))))))
 
 
 ;;-----------------------------------------------------------------------------
+
+;; LocalWords: Customizations eg ie watchlist symlist symlists initializing
+;; LocalWords: hscrolled hscrolling UTF minibuffer tooltip cl synchronize
+;; LocalWords: col init
 
 (provide 'chartprog)
 

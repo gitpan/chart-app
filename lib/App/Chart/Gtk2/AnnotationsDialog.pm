@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -29,6 +29,9 @@ use App::Chart;
 use App::Chart::Annotation;
 use App::Chart::DBI;
 
+# uncomment this to run the ### lines
+# use Smart::Comments;
+
 use Glib::Object::Subclass
   'Gtk2::Dialog',
   properties => [ Glib::ParamSpec->string
@@ -48,6 +51,7 @@ use constant { COL_ID => 0,
 
 sub INIT_INSTANCE {
   my ($self) = @_;
+  ### AnnotationsDialog() INIT_INSTANCE ...
 
   $self->set_title (__('Chart: Annotations'));
   $self->add_buttons (__('_Today') => RESPONSE_TODAY,
@@ -110,7 +114,9 @@ sub INIT_INSTANCE {
   my $hbox = Gtk2::HBox->new (0, 0);
   $vbox->pack_start ($hbox, 0,0,0);
 
+  ### $hbox
   my $datespinner = $self->{'datespinner'} = Gtk2::Ex::DateSpinner->new;
+  ### $datespinner
   $datespinner->set_today;
   $hbox->pack_start ($datespinner, 0,0,0);
 
@@ -133,10 +139,13 @@ sub INIT_INSTANCE {
       ($self,
        [$scrolled, -1, '15 lines'],
        [$entry,    '40 ems', -1]);
+  ### AnnotationsDialog() INIT_INSTANCE finished ...
 }
 
 sub SET_PROPERTY {
   my ($self, $pspec, $newval) = @_;
+  ### AnnotationsDialog() SET_PROPERTY ...
+
   my $pname = $pspec->get_name;
   $self->{$pname} = $newval;  # per default GET_PROPERTY
 

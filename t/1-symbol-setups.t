@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2007, 2008, 2009, 2010 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -41,6 +41,7 @@ foreach my $filename (@filenames) {
 
   App::Chart::symbol_setups ($symbol);
 
+  require App::Chart::TZ;
   if (! App::Chart::TZ->for_symbol ($symbol)) {
     die "no timezone for $symbol\n";
   }

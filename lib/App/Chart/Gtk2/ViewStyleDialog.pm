@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -111,25 +111,21 @@ sub INIT_INSTANCE {
 
 sub GET_PROPERTY {
   my ($self, $pspec) = @_;
-  given ($pspec->get_name) {
-    when ('viewstyle') {
-      return $self->get_viewstyle;
-    }
-    default {
-      return $self->{$_};
-    }
+  my $pname = $pspec->get_name;
+  if ($pspec->get_name eq 'viewstyle') {
+    return $self->get_viewstyle;
+  } else {
+    return $self->{$pname};
   }
 }
 
 sub SET_PROPERTY {
   my ($self, $pspec, $newval) = @_;
-  given ($pspec->get_name) {
-    when ('viewstyle') {
-      $self->set_viewstyle ($newval);
-    }
-    default {
-      $self->{$_} = $newval;
-    }
+  my $pname = $pspec->get_name;
+  if ($pname eq 'viewstyle') {
+    $self->set_viewstyle ($newval);
+  } else {
+    $self->{$pname} = $newval;
   }
 }
 
@@ -329,25 +325,21 @@ sub INIT_INSTANCE {
 
 sub GET_PROPERTY {
   my ($self, $pspec) = @_;
-  given ($pspec->get_name) {
-    when ('graphstyle') {
-      return $self->get_graphstyle;
-    }
-    default {
-      return $self->{$_};
-    }
+  my $pname = $pspec->get_name;
+  if ($pspec->get_name eq 'graphstyle') {
+    return $self->get_graphstyle;
+  } else {
+    return $self->{$pname};
   }
 }
 
 sub SET_PROPERTY {
   my ($self, $pspec, $newval) = @_;
-  given ($pspec->get_name) {
-    when ('graphstyle') {
-      $self->set_graphstyle ($newval);
-    }
-    default {
-      $self->{$_} = $newval;
-    }
+  my $pname = $pspec->get_name;
+  if ($pspec->get_name eq 'graphstyle') {
+    $self->set_graphstyle ($newval);
+  } else {
+    $self->{$pname} = $newval;
   }
 }
 
@@ -517,15 +509,13 @@ sub SET_PROPERTY {
   my $pname = $pspec->get_name;
   $self->{$pname} = $newval;
 
-  given ($pname) {
-    when ('indicatorstyle') {
-      my $indicatorstyle = $newval;
-      $self->{'combo'}->set_key ($indicatorstyle->{'key'});
-      $self->{'indicatorstyle'} = { %$newval }; # copy
-    }
-    when ('type') {
-      $self->{'combo'}->set (type => $newval);
-    }
+  if ($pname eq 'indicatorstyle') {
+    my $indicatorstyle = $newval;
+    $self->{'combo'}->set_key ($indicatorstyle->{'key'});
+    $self->{'indicatorstyle'} = { %$newval }; # copy
+
+  } elsif ($pname eq 'type') {
+    $self->{'combo'}->set (type => $newval);
   }
 }
 
@@ -672,54 +662,52 @@ sub SET_PROPERTY {
   $self->{$pname} = $newval;
   ### IndicatorParamWidget SET_PROPERTY: $pname, $newval
 
-  given ($pname) {
-    when ('paramvalue') {
-      my $paraminfo = $self->{'paraminfo'} // return;
+  if ($pname eq 'paramvalue') {
+    my $paraminfo = $self->{'paraminfo'} // return;
+    my $type = $paraminfo->{'type'} // 'integer';
+    if ($type eq 'boolean') {
+      $self->{'child'}->set_active ($newval);
+    } else {
+      $self->{'child'}->set_value ($newval);
+    }
+
+  } elsif ($pname eq 'paraminfo') {
+    my $paraminfo = $self->{'paraminfo'};
+    if ($paraminfo) {
+      if (my $child = delete $self->{'child'}) {
+        $self->remove ($child);
+      }
+
       my $type = $paraminfo->{'type'} // 'integer';
       if ($type eq 'boolean') {
-        $self->{'child'}->set_active ($newval);
+        my $check = $self->{'child'} = Gtk2::CheckButton->new;
+        $check->signal_connect ('notify::active',
+                                \&_do_checkbutton_changed);
+        $self->pack_start ($check, 0,0,0);
+
       } else {
-        $self->{'child'}->set_value ($newval);
+        # 'integer' or 'float'
+        my $step = $paraminfo->{'step'} // 1;
+        $self->{'adj'}->set
+          (lower          => $paraminfo->{'minimum'} // 0,
+           upper          => $paraminfo->{'maximum'} // POSIX::FLT_MAX(),
+           page_increment => $step,
+           step_increment => $step,
+           page_size      => 0);
+        $self->{'adj'}->changed;
+
+        my $spin = $self->{'child'}
+          = Glib::Object::new ('Gtk2::SpinButton',
+                               adjustment => $self->{'adj'},
+                               climb_rate => $step,
+                               digits => ($paraminfo->{'decimals'}
+                                          // ($type eq 'float' ? 1 : 0)),
+                               xalign => 1.0);
+        $self->pack_start ($spin, 0,0,0);
       }
-    }
-    when ('paraminfo') {
-      my $paraminfo = $self->{'paraminfo'};
-      if ($paraminfo) {
-        if (my $child = delete $self->{'child'}) {
-          $self->remove ($child);
-        }
+      $self->{'child'}->show;
 
-        my $type = $paraminfo->{'type'} // 'integer';
-        if ($type eq 'boolean') {
-          my $check = $self->{'child'} = Gtk2::CheckButton->new;
-          $check->signal_connect ('notify::active',
-                                  \&_do_checkbutton_changed);
-          $self->pack_start ($check, 0,0,0);
-
-        } else {
-          # 'integer' or 'float'
-          my $step = $paraminfo->{'step'} // 1;
-          $self->{'adj'}->set
-            (lower          => $paraminfo->{'minimum'} // 0,
-             upper          => $paraminfo->{'maximum'} // POSIX::FLT_MAX(),
-             page_increment => $step,
-             step_increment => $step,
-             page_size      => 0);
-          $self->{'adj'}->changed;
-
-          my $spin = $self->{'child'}
-            = Glib::Object::new ('Gtk2::SpinButton',
-                                 adjustment => $self->{'adj'},
-                                 climb_rate => $step,
-                                 digits => ($paraminfo->{'decimals'}
-                                            // ($type eq 'float' ? 1 : 0)),
-                                 xalign => 1.0);
-          $self->pack_start ($spin, 0,0,0);
-        }
-        $self->{'child'}->show;
-
-        $self->{'label'}->set_text ($paraminfo->{'name'} . ' ');
-      }
+      $self->{'label'}->set_text ($paraminfo->{'name'} . ' ');
     }
   }
 }

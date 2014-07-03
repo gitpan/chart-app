@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -53,21 +53,19 @@ sub SET_PROPERTY {
   my $pname = $pspec->get_name;
   $self->{$pname} = $newval;  # per default GET_PROPERTY
 
-  given ($pname) {
-    when ('symlist') {
-      my $symlist = $newval;
-      _update_text ($self);
+  if ($pname eq 'symlist') {
+    my $symlist = $newval;
+    _update_text ($self);
 
-      $self->{'symlist_ids'} = $symlist && do {
-        my $ref_weak_self = App::Chart::Glib::Ex::MoreUtils::ref_weak ($self);
-        Glib::Ex::SignalIds->new
-            ($symlist,
-             $symlist->signal_connect (row_inserted => \&_do_row_insdel,
-                                       $ref_weak_self),
-             $symlist->signal_connect (row_deleted  => \&_do_row_insdel,
-                                       $ref_weak_self))
-          };
-    }
+    $self->{'symlist_ids'} = $symlist && do {
+      my $ref_weak_self = App::Chart::Glib::Ex::MoreUtils::ref_weak ($self);
+      Glib::Ex::SignalIds->new
+          ($symlist,
+           $symlist->signal_connect (row_inserted => \&_do_row_insdel,
+                                     $ref_weak_self),
+           $symlist->signal_connect (row_deleted  => \&_do_row_insdel,
+                                     $ref_weak_self))
+        };
   }
 }
 

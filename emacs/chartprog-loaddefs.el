@@ -1,8 +1,8 @@
 ;;; chartprog-loaddefs.el --- autoloads for chart.el functions.
 
-;; Copyright 2005, 2006, 2007, 2008, 2009, 2010 Kevin Ryde
+;; Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2014 Kevin Ryde
 
-;; Author: Kevin Ryde <user42@zip.com.au>
+;; Author: Kevin Ryde <user42_kevin@yahoo.com.au>
 ;; Keywords: comm, finance
 ;; URL: http://user42.tuxfamily.org/chart/index.html
 
@@ -29,6 +29,11 @@
 (autoload 'chart-quote-at-point "chartprog" nil t)
 (autoload 'chart-latest         "chartprog" nil t)
 (autoload 'chart-ses-refresh    "chartprog" nil t)
+
+;; with :load of chartprog.el to create its member variables
+(defgroup chartprog nil "Chart program interface."
+  :group 'applications
+  :load   "chartprog")
 
 (provide 'chartprog-loaddefs)
 

@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -90,13 +90,11 @@ sub SET_PROPERTY {
   my $pname = $pspec->get_name;
   $self->{$pname} = $newval;  # per default GET_PROPERTY
 
-  given ($pname) {
-    when ('symbol') {
-      my $symbol = $newval;
-      my $entry = $self->{'entry'};
-      $entry->set_text ($symbol);
-      Gtk2::Ex::EntryBits::select_region_noclip ($entry, 0, -1);
-    }
+  if ($pname eq 'symbol') {
+    my $symbol = $newval;
+    my $entry = $self->{'entry'};
+    $entry->set_text ($symbol);
+    Gtk2::Ex::EntryBits::select_region_noclip ($entry, 0, -1);
   }
   _update_title_label ($self);
   _update_job_status ($self);

@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -42,6 +42,11 @@ if (! eval { require Finance::Quote }) {
 if (! eval { require GT::DB }) {
   diag "skip GT::DB::* since GT::DB not available -- $@";
   @files = grep {! m</GT/DB/> } @files;
+}
+
+if (! eval { require GT::Prices }) {
+  diag "skip GT::Prices::* since GT::Prices not available -- $@";
+  @files = grep {! m<Series/GT> } @files;
 }
 
 if (! eval { require Finance::TA }) {

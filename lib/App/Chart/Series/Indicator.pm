@@ -1,4 +1,4 @@
-# Copyright 2008, 2009 Kevin Ryde
+# Copyright 2008, 2009, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -35,25 +35,21 @@ sub name {
     my @parameters;
     foreach my $i (0 .. $#$parameters) {
       my $pinfo = $parameter_info->[$i];
-      given ($pinfo->{'type'}) {
-        when ('boolean') {
-          $parameters[$i] = ($parameters->[$i] ? $pinfo->{'name'} : '');
+      if ($pinfo->{'type'} eq 'boolean') {
+        $parameters[$i] = ($parameters->[$i] ? $pinfo->{'name'} : '');
+      } elsif ($pinfo->{'type'} eq 'float') {
+        # display just 1 decimal is that's enough
+        my $nf = App::Chart::number_formatter();
+        my $value = $parameters->[$i];
+        my $percent = $pinfo->{'type_hint'}//'' eq 'percent';
+        my $decimals = max ($pinfo->{'decimals'} // 0,
+                            App::Chart::count_decimals($value));
+        $parameters[$i] = $nf->format_number ($value, $decimals, 1);
+        if ($percent) {
+          $parameters[$i] .= '%';
         }
-        when ('float') {
-          # display just 1 decimal is that's enough
-          my $nf = App::Chart::number_formatter();
-          my $value = $parameters->[$i];
-          my $percent = $pinfo->{'type_hint'}//'' eq 'percent';
-          my $decimals = max ($pinfo->{'decimals'} // 0,
-                              App::Chart::count_decimals($value));
-          $parameters[$i] = $nf->format_number ($value, $decimals, 1);
-          if ($percent) {
-            $parameters[$i] .= '%';
-          }
-        }
-        default {
-          $parameters[$i] = $parameters->[$i];
-        }
+      } else {
+        $parameters[$i] = $parameters->[$i];
       }
     }
     $parameters = join (__p('separator',',') . ' ', @parameters);

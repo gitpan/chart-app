@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -61,18 +61,16 @@ sub SET_PROPERTY {
   my $pname = $pspec->get_name;
   $self->{$pname} = $newval;  # per default GET_PROPERTY
 
-  given ($pname) {
-    when ('symbol') {
-      my $symbol = $newval;
-      $self->set (text => "\n" . __x('Delete symbol {symbol} ?',
-                                     symbol => $symbol));
-      if ($symbol && symbol_any_notes ($symbol)) {
-        $self->{'notes_check'}->show;
-        $self->{'notes_none'}->hide;
-      } else {
-        $self->{'notes_check'}->hide;
-        $self->{'notes_none'}->show;
-      }
+  if ($pname eq 'symbol') {
+    my $symbol = $newval;
+    $self->set (text => "\n" . __x('Delete symbol {symbol} ?',
+                                   symbol => $symbol));
+    if ($symbol && symbol_any_notes ($symbol)) {
+      $self->{'notes_check'}->show;
+      $self->{'notes_none'}->hide;
+    } else {
+      $self->{'notes_check'}->hide;
+      $self->{'notes_none'}->show;
     }
   }
 }
@@ -203,7 +201,7 @@ L<http://user42.tuxfamily.org/chart/index.html>
 
 =head1 LICENCE
 
-Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 Chart is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

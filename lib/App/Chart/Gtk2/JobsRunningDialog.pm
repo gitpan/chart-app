@@ -1,4 +1,4 @@
-# Copyright 2009, 2010, 2011 Kevin Ryde
+# Copyright 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -78,21 +78,19 @@ sub _job_is_queryable {
 sub _do_response {
   my ($self, $response) = @_;
 
-  given ($response) {
-    when ('ok') {
-      Gtk2::Ex::WidgetCursor->busy;
-      if (my $parent = $self->get_transient_for) {
-        $parent->destroy;
-      } else {
-        warn 'JobsRunningDialog: no parent to destroy';
-      }
-      $self->destroy;
+  if ($response eq 'ok') {
+    Gtk2::Ex::WidgetCursor->busy;
+    if (my $parent = $self->get_transient_for) {
+      $parent->destroy;
+    } else {
+      warn 'JobsRunningDialog: no parent to destroy';
     }
-    when ('close') {
-      # as per a keyboard close, defaults to raising 'delete-event', which
-      # in turn defaults to a destroy
-      $self->signal_emit ('close');
-    }
+    $self->destroy;
+
+  } elsif ($response eq 'close') {
+    # as per a keyboard close, defaults to raising 'delete-event', which
+    # in turn defaults to a destroy
+    $self->signal_emit ('close');
   }
 }
 
@@ -183,7 +181,7 @@ L<http://user42.tuxfamily.org/chart/index.html>
 
 =head1 LICENCE
 
-Copyright 2009, 2010, 2011 Kevin Ryde
+Copyright 2009, 2010, 2011, 2013 Kevin Ryde
 
 Chart is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

@@ -1,6 +1,6 @@
 # Symbol predicates.
 
-# Copyright 2007, 2008, 2009, 2010 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -46,7 +46,7 @@ similar.
 
 =head1 FUNCTIONS
 
-=over 4
+=over
 
 =item $sympred->match ($symbol)
 
@@ -249,4 +249,4 @@ sub match {
 1;
 __END__
 
-==back
+=back

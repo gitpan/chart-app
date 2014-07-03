@@ -1,6 +1,6 @@
 # Graph widget.
 
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -138,36 +138,33 @@ sub SET_PROPERTY {
   my $oldval = $self->{$pname};
   $self->{$pname} = $newval;  # per default GET_PROPERTY
 
-  given ($pname) {
-    when ('hadjustment') {
-      my $hadj = $newval;
-      my $ref_weak_self = App::Chart::Glib::Ex::MoreUtils::ref_weak($self);
-      $self->{'hadjustment_ids'} = $hadj && Glib::Ex::SignalIds->new
-        ($hadj,
-         $hadj->signal_connect(value_changed => \&_do_hadj_value_changed,
-                               $ref_weak_self),
-         $hadj->signal_connect(changed => \&_do_hadj_other_changed,
-                               $ref_weak_self));
-    }
-    when ('vadjustment') {
-      my $vadj = $newval;
-      my $ref_weak_self = App::Chart::Glib::Ex::MoreUtils::ref_weak($self);
-      $self->{'vadjustment_ids'} = $vadj && Glib::Ex::SignalIds->new
-        ($vadj,
-         $vadj->signal_connect (value_changed => \&_do_vadj_changed,
-                                $ref_weak_self),
-         $vadj->signal_connect (changed       => \&_do_vadj_changed,
-                                $ref_weak_self));
+  if ($pname eq 'hadjustment') {
+    my $hadj = $newval;
+    my $ref_weak_self = App::Chart::Glib::Ex::MoreUtils::ref_weak($self);
+    $self->{'hadjustment_ids'} = $hadj && Glib::Ex::SignalIds->new
+      ($hadj,
+       $hadj->signal_connect(value_changed => \&_do_hadj_value_changed,
+                             $ref_weak_self),
+       $hadj->signal_connect(changed => \&_do_hadj_other_changed,
+                             $ref_weak_self));
 
+  } elsif ($pname eq 'vadjustment') {
+    my $vadj = $newval;
+    my $ref_weak_self = App::Chart::Glib::Ex::MoreUtils::ref_weak($self);
+    $self->{'vadjustment_ids'} = $vadj && Glib::Ex::SignalIds->new
+      ($vadj,
+       $vadj->signal_connect (value_changed => \&_do_vadj_changed,
+                              $ref_weak_self),
+       $vadj->signal_connect (changed       => \&_do_vadj_changed,
+                              $ref_weak_self));
+
+  } elsif ($pname eq 'series_list') {
+    # initial page size and position when going from empty to non-empty
+    ### Graph set series_list, count: scalar(@$newval)
+    if (@$newval && ! @$oldval) {
+      $self->initial_scale;
     }
-    when ('series_list') {
-      # initial page size and position when going from empty to non-empty
-      ### Graph set series_list, count: scalar(@$newval)
-      if (@$newval && ! @$oldval) {
-        $self->initial_scale;
-      }
-      $self->queue_draw;
-    }
+    $self->queue_draw;
   }
 }
 
@@ -577,12 +574,13 @@ sub centre {
 sub _do_scroll_event {
   my ($self, $event) = @_;
   ### Graph _do_scroll_event(): "$self->{'hadjustment'}, $self->{'vadjustment'}"
-  given ($event->direction) {
-    when ('up')    { $self->{'vadjustment'}->scroll_step(1); }
-    when ('down')  { $self->{'vadjustment'}->scroll_step(-1); }
-    when ('left')  { $self->{'hadjustment'}->scroll_step(1); }
-    when ('right') { $self->{'hadjustment'}->scroll_step(-1); }
-  }
+
+  my $direction = $event->direction;
+  if    ($direction eq 'up')    { $self->{'vadjustment'}->scroll_step(1); }
+  elsif ($direction eq 'down')  { $self->{'vadjustment'}->scroll_step(-1); }
+  elsif ($direction eq 'left')  { $self->{'hadjustment'}->scroll_step(1); }
+  elsif ($direction eq 'right') { $self->{'hadjustment'}->scroll_step(-1); }
+
   return $self->signal_chain_from_overridden ($event);
 }
 
@@ -688,7 +686,7 @@ L<http://user42.tuxfamily.org/chart/index.html>
 
 =head1 LICENCE
 
-Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 Chart is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

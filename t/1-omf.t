@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2005, 2006, 2007, 2009, 2010 Kevin Ryde
+# Copyright 2005, 2006, 2007, 2009, 2010, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -24,8 +24,14 @@ use File::Temp;
 use File::Spec;
 
 my $devnull = File::Spec->devnull;
-if (! system "scrollkeeper-install >$devnull 2>&1") {
-  plan skip_all => 'due to scrollkeeper-install program not available';
+{
+  my $exit_status = system "scrollkeeper-install >$devnull 2>&1";
+  if ($exit_status != 0) {
+    diag sprintf("exit status %#X",$exit_status);
+    my $output = `scrollkeeper-install 2>&1`;
+    diag "scrollkeeper-install output:\n", $output;
+    plan skip_all => 'due to scrollkeeper-install program not available';
+  }
 }
 plan tests => 1;
 
@@ -51,4 +57,6 @@ if ($wstat) {
   diag Perl6::Slurp::slurp('omf.err');
 }
 
+# chdir out of directory so File::Temp can remove it
+chdir(File::Spec->rootdir);
 exit 0;

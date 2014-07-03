@@ -1,6 +1,6 @@
 # Download functions.
 
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -1244,22 +1244,19 @@ sub command_line_download {
   my ($class, $output, $args) = @_;
   my $hash;
 
-  given ($output) {
-    when ('tty') {
-      if (-t STDOUT) {
-        binmode (STDOUT, ':via(EscStatus)')
-          or die 'Cannot push EscStatus';
-      } else {
-        require PerlIO::via::EscStatus::ShowNone;
-        binmode (STDOUT, ':via(EscStatus::ShowNone)')
-          or die 'Cannot push EscStatus::ShowNone';
-      }
+  if ($output eq 'tty') {
+    if (-t STDOUT) {
+      binmode (STDOUT, ':via(EscStatus)')
+        or die 'Cannot push EscStatus';
+    } else {
+      require PerlIO::via::EscStatus::ShowNone;
+      binmode (STDOUT, ':via(EscStatus::ShowNone)')
+        or die 'Cannot push EscStatus::ShowNone';
     }
-    when ('all-status') {
-      require PerlIO::via::EscStatus::ShowAll;
-      binmode (STDOUT, ':via(EscStatus::ShowAll)')
-        or die 'Cannot push EscStatus::ShowAll';
-    }
+  } elsif ($output eq  'all-status') {
+    require PerlIO::via::EscStatus::ShowAll;
+    binmode (STDOUT, ':via(EscStatus::ShowAll)')
+      or die 'Cannot push EscStatus::ShowAll';
   }
 
   if (! @$args) {

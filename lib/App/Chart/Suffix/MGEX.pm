@@ -139,18 +139,14 @@ sub barchart_customer_resp_to_url {
   # width/height in the document.write() in the <img> bit is computed, which
   # java_document_write() can't handle.  The src="" part of it is constant
   # though.  There's only a single <img> to pick out.
-  given ($content) {
-    when (/<img src="([^"]+)"/i) {
-      return $1;  # url
-    }
-    when (/no chart available/i) {
-      die __x("No chart available for {symbol}\n",
-              symbol => $symbol);
-    }
-    default {
-      die 'Barchart Customer: Intraday page not matched';
-    }
+  if ($content =~ /<img src="([^"]+)"/i) {
+    return $1;  # url
   }
+  if ($content =~ /no chart available/i) {
+    die __x("No chart available for {symbol}\n",
+            symbol => $symbol);
+  }
+  die 'Barchart Customer: Intraday page not matched';
 }
 
 1;

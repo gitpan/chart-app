@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010, 2012 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2012, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -119,7 +119,7 @@ $build_depends = depends_to_hash ($build_depends);
 sub file_to_deb {
   my ($filename) = @_;
   ### file_to_deb(): $filename
-  foreach my $prog ('dlocate',
+  foreach my $prog (# 'dlocate',
                     # 'dloc',
                     'dpkg') {
     my $matches = `$prog -S $filename`;

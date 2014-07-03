@@ -1,6 +1,6 @@
 #!perl -w
 
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -176,36 +176,34 @@ $option_output ||= 'tty';
 unshift @INC, File::Spec->catdir (App::Chart::chart_directory(), 'lib');
 initfile (File::Spec->catfile (App::Chart::chart_directory(), 'init.pl'));
 
-given ($option_mode) {
-  when ('gui') {
-    # default is the gui
-    require App::Chart::Gtk2::Main;
-    App::Chart::Gtk2::Main->main (\@args);
-  }
-  when ('download') {
-    require App::Chart::Download;
-    App::Chart::Download->command_line_download ($option_output, \@args);
-  }
-  when ('subprocess') {
-    require App::Chart::SubprocessMain;
-    App::Chart::SubprocessMain->main ();
-  }
-  when ('vacuum') {
-    require App::Chart::Vacuum;
-    App::Chart::Vacuum->command_line_vacuum ($option_output, \@args);
-  }
-  when ('emacs') {
-    require App::Chart::EmacsMain;
-    App::Chart::EmacsMain->main ();
-  }
-  when ('watchlist') {
-    require App::Chart::Gtk2::WatchlistDialog;
-    App::Chart::Gtk2::WatchlistDialog->main (\@args);
-  }
-  when ('ticker') {
-    require App::Chart::Gtk2::TickerMain;
-    App::Chart::Gtk2::TickerMain->main (\@args);
-  }
+if ($option_mode eq 'gui') {
+  # default is the gui
+  require App::Chart::Gtk2::Main;
+  App::Chart::Gtk2::Main->main (\@args);
+
+} elsif ($option_mode eq 'download') {
+  require App::Chart::Download;
+  App::Chart::Download->command_line_download ($option_output, \@args);
+
+} elsif ($option_mode eq 'subprocess') {
+  require App::Chart::SubprocessMain;
+  App::Chart::SubprocessMain->main ();
+
+} elsif ($option_mode eq 'vacuum') {
+  require App::Chart::Vacuum;
+  App::Chart::Vacuum->command_line_vacuum ($option_output, \@args);
+
+} elsif ($option_mode eq 'emacs') {
+  require App::Chart::EmacsMain;
+  App::Chart::EmacsMain->main ();
+
+} elsif ($option_mode eq 'watchlist') {
+  require App::Chart::Gtk2::WatchlistDialog;
+  App::Chart::Gtk2::WatchlistDialog->main (\@args);
+
+} elsif ($option_mode eq 'ticker') {
+  require App::Chart::Gtk2::TickerMain;
+  App::Chart::Gtk2::TickerMain->main (\@args);
 }
 
 exit 0;
@@ -347,7 +345,7 @@ L<http://user42.tuxfamily.org/chart/index.html>
 
 =head1 LICENCE
 
-Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 Chart is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

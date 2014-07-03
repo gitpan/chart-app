@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -762,9 +762,11 @@ sub set_symbol {
 
 sub SET_PROPERTY {
   my ($self, $pspec, $newval) = @_;
-  given ($pspec->get_name) {
-    when ('symbol') { $self->set_symbol ($newval); }
-    default { $self->{$_} = $newval; }  # per default GET_PROPERTY
+  my $pname = $pspec->get_name;
+  if ($pspec->get_name eq 'symbol') {
+    $self->set_symbol ($newval);
+  } else {
+    $self->{$pname} = $newval;   # per default GET_PROPERTY
   }
 }
 

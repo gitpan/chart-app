@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -69,34 +69,32 @@ sub main {
     #     Module::Load::load ($jobclass);
     #     $jobclass->run (@args);
 
-    given ($jobclass) {
-      when ('intraday') {
-        require App::Chart::Intraday;
-        App::Chart::Intraday->command_line_download (\@args);
+    if ($jobclass eq 'intraday') {
+      require App::Chart::Intraday;
+      App::Chart::Intraday->command_line_download (\@args);
+
+    } elsif ($jobclass eq 'latest') {
+      require App::Chart::LatestHandler;
+      App::Chart::LatestHandler->download (@args);
+
+    } elsif ($jobclass eq 'download') {
+      require App::Chart::Download;
+      if ($args[0] =~ /^--/p) {
+        my $key = ${^POSTMATCH};
+        require App::Chart::Gtk2::Symlist;
+        $args[0] = App::Chart::Gtk2::Symlist->new_from_key ($key);
       }
-      when ('latest') {
-        require App::Chart::LatestHandler;
-        App::Chart::LatestHandler->download (@args);
-      }
-      when ('download') {
-        require App::Chart::Download;
-        if ($args[0] =~ /^--/p) {
-          my $key = ${^POSTMATCH};
-          require App::Chart::Gtk2::Symlist;
-          $args[0] = App::Chart::Gtk2::Symlist->new_from_key ($key);
-        }
-        App::Chart::Download->command_line_download ('subprocess', \@args);
-      }
-      when ('vacuum') {
-        require App::Chart::Vacuum;
-        App::Chart::Vacuum::vacuum (@args);
-      }
-      when ('exit') {
-        last;
-      }
-      default {
-        print "Unknown job type $_\n";
-      }
+      App::Chart::Download->command_line_download ('subprocess', \@args);
+
+    } elsif ($jobclass eq 'vacuum') {
+      require App::Chart::Vacuum;
+      App::Chart::Vacuum::vacuum (@args);
+
+    } elsif ($jobclass eq 'exit') {
+      last;
+
+    } else {
+      print "Unknown job type $_\n";
     }
     #     App::Chart::Download::status ('Foo');
     #     sleep (2);

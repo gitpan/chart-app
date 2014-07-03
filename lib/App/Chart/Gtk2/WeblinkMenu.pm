@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -72,7 +72,7 @@ sub _do_notify {
       ([$self->get('model'), 'model-rows#not-empty'],
        [$parent, 'sensitive']);
   }
-  return shift->signal_chain_from_overridden(@_);
+  # return shift->signal_chain_from_overridden(@_);
 }
 
 sub _update_model_contents {

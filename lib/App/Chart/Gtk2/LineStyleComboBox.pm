@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010, 2011, 2012 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2012, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -88,36 +88,32 @@ sub _do_changed {
 
 sub GET_PROPERTY {
   my ($self, $pspec) = @_;
-  given ($pspec->get_name) {
-    when ('linestyle') {
-      my $iter = $self->get_active_iter;
-      return $self->get_model->get ($iter, COL_KEY);
-    }
+  if ($pspec->get_name eq 'linestyle') {
+    my $iter = $self->get_active_iter;
+    return $self->get_model->get ($iter, COL_KEY);
   }
 }
 sub SET_PROPERTY {
   my ($self, $pspec, $newval) = @_;
-  given ($pspec->get_name) {
-    when ('linestyle') {
-      my $linestyle = $newval;
-      if (! defined $linestyle) {
-        $self->set_active (-1);
-      } else {
-        my $found;
-        $self->get_model->foreach
-          (sub {
-             my ($model, $path, $iter) = @_;
-             if ($model->get($iter, COL_KEY) eq $linestyle) {
-               $self->set_active_iter ($iter);
-               $found = 1;
-               return 1; # stop looping
-             }
-             return 0; # continue
-           });
-        if (! $found) {
-          Glib->warning
-            (undef, "LineStyleComboBox: no such line style \"$linestyle\"");
-        }
+  if ($pspec->get_name eq 'linestyle') {
+    my $linestyle = $newval;
+    if (! defined $linestyle) {
+      $self->set_active (-1);
+    } else {
+      my $found;
+      $self->get_model->foreach
+        (sub {
+           my ($model, $path, $iter) = @_;
+           if ($model->get($iter, COL_KEY) eq $linestyle) {
+             $self->set_active_iter ($iter);
+             $found = 1;
+             return 1; # stop looping
+           }
+           return 0; # continue
+         });
+      if (! $found) {
+        Glib->warning
+          (undef, "LineStyleComboBox: no such line style \"$linestyle\"");
       }
     }
   }

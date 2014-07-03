@@ -1,6 +1,6 @@
 # Tokyo Grain Exchange (TGE) setups.                -*- coding: euc-jp -*-
 
-# Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -81,43 +81,45 @@ sub symbol_expiry {
   my $mdate = symbol_mdate($symbol) // return undef;
 
   my $commodity = App::Chart::symbol_commodity ($symbol);
-  given ($commodity) {
-    when ('CO') {
-      # corn
-      # 15th calendar day of the month preceding the delivery month
-      #       (receive-list (year month day)
-      #        (mdate->ymd mdate)
-      #        (ymd->tdate year (1- month) 15)))
-    }
-    when (['NG','RB','SB']) {
-      # non-gm soybeans, azuki
-      # 2 business days prior to delivery day; delivery day
-      # is the business day prior to the last business day of
-      # the delivery month or 24th for December
-      #     (receive-list (year month day)
-      #      (mdate->ymd mdate)
-      #      (- (if (= 12 month)
-      #          (ymd->tdate year month 24)
-      #          (- (mdate->tdate (1+ mdate)) 2))
-      #       2))
-    }
-    when (['NG','RB','SB']) {
-      # arabica, robusta, soybean meal
-      # 10 business days prior to the last business day of
-      # the delivery month
-      #     (- (mdate->tdate (1+ mdate)) 11)
-    }
-    when ('SG') {
-      # raw sugar
-      # last business day two months prior to delivery month
-      #    (1- (mdate->tdate (1- mdate))))
-    }
-    default {
-      # unknown, lets guess the last day of the contract month,
-      # this won't be right but at least won't be early
-      #       (1- (mdate->tdate (1+ mdate))))))
-    }
-  }
+  # if ($commodity eq 'CO') {
+  #     # corn
+  #     # 15th calendar day of the month preceding the delivery month
+  #     #       (receive-list (year month day)
+  #     #        (mdate->ymd mdate)
+  #     #        (ymd->tdate year (1- month) 15)))
+  #   }
+  #   when (['NG','RB','SB']) {
+  #     # non-gm soybeans, azuki
+  #     # 2 business days prior to delivery day; delivery day
+  #     # is the business day prior to the last business day of
+  #     # the delivery month or 24th for December
+  #     #     (receive-list (year month day)
+  #     #      (mdate->ymd mdate)
+  #     #      (- (if (= 12 month)
+  #     #          (ymd->tdate year month 24)
+  #     #          (- (mdate->tdate (1+ mdate)) 2))
+  #     #       2))
+  #   }
+  #   when (['NG','RB','SB']) {
+  #     # arabica, robusta, soybean meal
+  #     # 10 business days prior to the last business day of
+  #     # the delivery month
+  #     #     (- (mdate->tdate (1+ mdate)) 11)
+  #   }
+  #   when ('SG') {
+  #     # raw sugar
+  #     # last business day two months prior to delivery month
+  #     #    (1- (mdate->tdate (1- mdate))))
+  #   }
+  #   default {
+  #     # unknown, lets guess the last day of the contract month,
+  #     # this won't be right but at least won't be early
+  #     #       (1- (mdate->tdate (1+ mdate))))))
+  #   }
+  # }
+
+  # FIXME:
+  return undef;
 }
 
 # see table in http://www.tge.or.jp/japanese/price/prisel.js.php

@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -402,9 +402,11 @@ sub _init_symlists_page {
 
 sub SET_PROPERTY {
   my ($self, $pspec, $newval) = @_;
-  given ($pspec->get_name) {
-    when ('symlist') { $self->set_symlist ($newval); }
-    default { $self->{$_} = $newval; } # per default GET_PROPERTY
+  my $pname = $pspec->get_name;
+  if ($pspec->get_name eq 'symlist') {
+    $self->set_symlist ($newval);
+  } else {
+    $self->{$pname} = $newval;  # per default GET_PROPERTY
   }
 }
 
@@ -558,28 +560,26 @@ sub _update_edit_sensitive {
 sub _do_symbols_tab_button_press {
   my ($symbols_tab_eventbox, $event) = @_;
   my $self = $symbols_tab_eventbox->get_toplevel;
-  given ($event->button) {
-    when (3) {
-      require App::Chart::Gtk2::SymlistRadioMenu;
-      my $symlist_menu = App::Chart::Gtk2::SymlistRadioMenu->new;
-      ### menu destroy connection: $symlist_menu->signal_connect (destroy => sub { print "Watchlist symlist menu destroyed\n" })
-      Glib::Ex::ConnectProperties->new ([$self, 'symlist'],
-                                        [$symlist_menu, 'symlist']);
-      $symlist_menu->set_screen ($self->get_screen);
-      $symlist_menu->popup (undef,  # parent menushell
-                            undef,  # parent menuitem
-                            undef,  # position func
-                            undef,  # position userdata
-                            $_,     # button
-                            $event->time);
-      return Gtk2::EVENT_PROPAGATE;
-    }
-    default {
-      # GtkNotebook button press handler can cope with an event from a child
-      # widget
-      return $self->{'notebook'}->signal_emit ('button_press_event', $event);
-    }
+
+  if ($event->button == 3) {
+    require App::Chart::Gtk2::SymlistRadioMenu;
+    my $symlist_menu = App::Chart::Gtk2::SymlistRadioMenu->new;
+    ### menu destroy connection: $symlist_menu->signal_connect (destroy => sub { print "Watchlist symlist menu destroyed\n" })
+    Glib::Ex::ConnectProperties->new ([$self, 'symlist'],
+                                      [$symlist_menu, 'symlist']);
+    $symlist_menu->set_screen ($self->get_screen);
+    $symlist_menu->popup (undef,  # parent menushell
+                          undef,  # parent menuitem
+                          undef,  # position func
+                          undef,  # position userdata
+                          $_,     # button
+                          $event->time);
+    return Gtk2::EVENT_PROPAGATE;
   }
+
+  # GtkNotebook button press handler can cope with an event from a child
+  # widget
+  return $self->{'notebook'}->signal_emit ('button_press_event', $event);
 }
 
 sub _do_symbol_treeview_activate {

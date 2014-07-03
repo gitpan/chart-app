@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -33,12 +33,13 @@ install/chart::
 # debhelper 7.4.13 does this automatically, when ready to depend on that
 DEB_COMPRESS_EXCLUDE = .png
 
-# chart.bash completion moved to /etc/bash_completion.d and linked back
+# chart.bash completion moved to /usr/share/bash-completion/completions and
+# linked back
 install/chart::
-	mkdir -p debian/chart/etc/bash_completion.d
+	mkdir -p debian/chart/usr/share/bash-completion/completions
 	mv debian/chart/usr/share/perl5/App/Chart/chart.bash \
-	   debian/chart/etc/bash_completion.d/chart
-DEB_DH_LINK_chart += etc/bash_completion.d/chart \
+	   debian/chart/usr/share/bash-completion/completions/chart
+DEB_DH_LINK_chart += usr/share/bash-completion/completions/chart \
 	             usr/share/perl5/App/Chart/chart.bash
 
 # chart.omf, not installed by Makefile.PL yet

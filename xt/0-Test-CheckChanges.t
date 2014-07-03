@@ -1,8 +1,8 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 # 0-Test-CheckChanges.t -- run Test::CheckChanges if available
 
-# Copyright 2009, 2011 Kevin Ryde
+# Copyright 2009, 2011, 2014 Kevin Ryde
 
 # 0-Test-CheckChanges.t is shared by several distributions.
 #
@@ -20,7 +20,6 @@
 # with this file.  If not, see <http://www.gnu.org/licenses/>.
 
 use strict;
-use warnings;
 use Test::More;
 
 # This is very much an author test, but might stop an undescribed version

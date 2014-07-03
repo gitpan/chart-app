@@ -2,7 +2,7 @@
 
 # Emacs install: /usr/lib/emacsen-common/packages/install/chart
 
-# Copyright 2005, 2007, 2008, 2009, 2010 Kevin Ryde
+# Copyright 2005, 2007, 2008, 2009, 2010, 2012 Kevin Ryde
 # Copyright 1998, 2009 Robert Browning
 #
 # This file is part of Chart.  It was derived from the example code in
@@ -37,8 +37,8 @@ echo install/chart: Handling install of emacsen flavor $FLAVOR
 
 byte_compile_options="-q -no-site-file -batch -f batch-byte-compile"
 el_files="chartprog.el" 
-el_dir=/usr/share/emacs/site-lisp/chart/
-elc_dir=/usr/share/$FLAVOR/site-lisp/chart/
+el_dir=/usr/share/emacs/site-lisp/chart
+elc_dir=/usr/share/$FLAVOR/site-lisp/chart
 
 if [ $FLAVOR != emacs ]
 then
@@ -47,7 +47,7 @@ then
   [ -d $elc_dir ] || mkdir $elc_dir
 
   # Symlink all .el files
-  ln -s $el_dir/*.el $elc_dir
+  ln -sf $el_dir/*.el $elc_dir
 
   # Byte compile selected ones
   (cd $elc_dir && $FLAVOR $byte_compile_options $el_files )

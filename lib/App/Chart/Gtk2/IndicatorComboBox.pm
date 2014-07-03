@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2013, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -71,21 +71,23 @@ sub _do_changed {
 
 sub GET_PROPERTY {
   my ($self, $pspec) = @_;
-  given ($pspec->get_name) {
-    when ('key') { return $self->get_key; }
-    default      { return $self->{$_}; }
+  my $pname = $pspec->get_name;
+  if ($pspec->get_name eq 'key') {
+    return $self->get_key;
+  } else {
+    return $self->{$pname};
   }
 }
 sub SET_PROPERTY {
   my ($self, $pspec, $newval) = @_;
-  given ($pspec->get_name) {
-    when ('key')  { $self->set_key ($newval); }
-    when ('type') {
-      my $type = $self->{'type'} = $newval;
-      my $key = $self->get_key;
-      $self->set_model (App::Chart::Gtk2::IndicatorModel->by_type($type));
-      $self->set_key ($key);
-    }
+  my $pname = $pspec->get_name;
+  if ($pname eq 'key') {
+    $self->set_key ($newval);
+  } elsif ($pname eq 'type') {
+    my $type = $self->{'type'} = $newval;
+    my $key = $self->get_key;
+    $self->set_model (App::Chart::Gtk2::IndicatorModel->by_type($type));
+    $self->set_key ($key);
   }
 }
 sub get_key {

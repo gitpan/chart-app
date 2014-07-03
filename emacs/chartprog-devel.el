@@ -1,8 +1,8 @@
 ;;; chartprog-devel.el --- Chart development helpers for Emacs.
 
-;; Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Kevin Ryde
+;; Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2014 Kevin Ryde
 
-;; Author: Kevin Ryde <user42@zip.com.au>
+;; Author: Kevin Ryde <user42_kevin@yahoo.com.au>
 ;; Keywords: tools
 ;; URL: http://user42.tuxfamily.org/chart/index.html
 

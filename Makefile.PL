@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -29,13 +29,13 @@ WriteMakefile
   (NAME         => 'chart',
    VERSION_FROM => 'lib/App/Chart.pm',
    ABSTRACT     => 'Stock and commodity charting program.',
-   AUTHOR       => 'Kevin Ryde <user42@zip.com.au>',
+   AUTHOR       => 'Kevin Ryde <user42_kevin@yahoo.com.au>',
    SIGN         => 1,
    MIN_PERL_VERSION => '5.010',
 
    # valid LICENSE values per Module::Build::Base::valid_licenses(), or at
    # least the ones there have urls to link
-   LICENSE      => 'gpl',
+   LICENSE      => 'gpl_3',
 
    # Crib: see ExtUtils::MM_Unix on the "fixin()" for #!/usr/bin/perl
    EXE_FILES    => [ 'chart' ],
@@ -80,7 +80,7 @@ WriteMakefile
 
     # my Glib-Ex-ObjectBits
     'Glib::Ex::FreezeNotify' => 1,
-    'Glib::Ex::SignalIds'    => 5, # v.5 for add()
+    'Glib::Ex::SignalIds'    => 16, # v.16 for global destruction
     'Glib::Ex::SourceIds'    => 2, # new in v.2
     'Glib::Ex::SignalBits'   => 9, # new in v.9
     'Glib::Ex::ObjectBits'   => 12, # v.12 for set_property_maybe()

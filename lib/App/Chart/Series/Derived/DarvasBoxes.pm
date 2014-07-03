@@ -1,4 +1,4 @@
-# Copyright 2007, 2009, 2010 Kevin Ryde
+# Copyright 2007, 2009, 2010, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -107,76 +107,74 @@ sub fill_part {
     my $high = $ph->[$i] // $close;
     my $low  = $pl->[$i] // $close;
 
-    given ($state) {
-      when (0) {
-        # initial
+    if ($state == 0) {
+      # initial
+      $box_high = $high;
+      $box_start = $i;
+      $state = 1;
+
+    } elsif ($state == 1) {
+      if ($high > $box_high) {
+        # breakout, stay here
+        $box_high = $high;
+        $box_start = $i;
+      } else {
+        # held, go onwards
+        $state = 2;
+      }
+
+    } elsif ($state == 2) {
+      if ($high > $box_high) {
+        # breakout, back to 1
         $box_high = $high;
         $box_start = $i;
         $state = 1;
+      } else {
+        # held, go onwards
+        $box_low = $low;
+        $state = 3;
       }
-      when (1) {
-        if ($high > $box_high) {
-          # breakout, stay here
-          $box_high = $high;
-          $box_start = $i;
-        } else {
-          # held, go onwards
-          $state = 2;
-        }
-      }
-      when (2) {
-        if ($high > $box_high) {
-          # breakout, back to 1
-          $box_high = $high;
-          $box_start = $i;
-          $state = 1;
-        } else {
-          # held, go onwards
-          $box_low = $low;
-          $state = 3;
-        }
-      }
-      when (3) {
-        if ($high > $box_high) {
-          # broke high, back to 1
-          $box_high = $high;
-          $box_start = $i;
-          $state = 1;
-        } elsif ($low < $box_low) {
-          # break low, stay here
-          $box_low = $low;
-        } else {
-          # held, go onwards
-          $state = 4;
-        }
-      }
-      when (4) {
-        if ($high > $box_high) {
-          # broke high, back to 1
-          $box_high = $high;
-          $box_start = $i;
-          $state = 1;
-        } elsif ($low < $box_low) {
-          # break low, back to 3
-          $box_low = $low;
-          $state = 3;
-        } else {
-          # held, go onwards
-          $state = 5;
-        }
-      }
-      when (5) {
-        if ($high > $box_high
-            || $low < $box_low) {
-          # possible "close-must-penetrate" style
-          # ($close > $box_high || $close < $box_low)
 
-          # break either way, stop box
-          $fill_box->($i);
-          $box_high = $high;
-          $box_start = $i;
-          $state = 1;
-        }
+    } elsif ($state == 3) {
+      if ($high > $box_high) {
+        # broke high, back to 1
+        $box_high = $high;
+        $box_start = $i;
+        $state = 1;
+      } elsif ($low < $box_low) {
+        # break low, stay here
+        $box_low = $low;
+      } else {
+        # held, go onwards
+        $state = 4;
+      }
+
+    } elsif ($state == 4) {
+      if ($high > $box_high) {
+        # broke high, back to 1
+        $box_high = $high;
+        $box_start = $i;
+        $state = 1;
+      } elsif ($low < $box_low) {
+        # break low, back to 3
+        $box_low = $low;
+        $state = 3;
+      } else {
+        # held, go onwards
+        $state = 5;
+      }
+
+    } elsif ($state == 5) {
+      if ($high > $box_high
+          || $low < $box_low) {
+        # possible "close-must-penetrate" style
+        # ($close > $box_high || $close < $box_low)
+
+        # break either way, stop box
+        $fill_box->($i);
+        $box_high = $high;
+        $box_start = $i;
+        $state = 1;
       }
     }
   }

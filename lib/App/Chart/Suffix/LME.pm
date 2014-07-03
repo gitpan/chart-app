@@ -1,6 +1,6 @@
 # London Metal Exchange (LME) setups.
 
-# Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -87,20 +87,18 @@ App::Chart::Weblink->new
    proc => sub {
      my ($symbol) = @_;
 
-     given ($symbol) {
-       when (/^AA/) { return 'http://www.lme.co.uk/aluminiumalloy.asp' }
-       when (/^AH/) { return 'http://www.lme.co.uk/aluminium.asp' }
-       when (/^CA/) { return 'http://www.lme.co.uk/copper.asp' }
-       when (/^NA/) { return 'http://www.lme.co.uk/nasaac.asp' }
-       when (/^NI/) { return 'http://www.lme.co.uk/nickel.asp' }
-       when (/^PB/) { return 'http://www.lme.co.uk/lead.asp' }
-       when (/^SN/) { return 'http://www.lme.co.uk/tin.asp' }
-       when (/^ZS/) { return 'http://www.lme.co.uk/zinc.asp' }
-       when (/^F/)  { return 'http://www.lme.co.uk/steel.asp' }
-       when (/^P/)  { return 'http://www.lme.co.uk/plastics.asp' }
-       when (/^L/)  { return 'http://www.lme.co.uk/plastics.asp' }
-       default { return undef }
-     }
+     if ($symbol =~ /^AA/) { return 'http://www.lme.co.uk/aluminiumalloy.asp' }
+     if ($symbol =~ /^AH/) { return 'http://www.lme.co.uk/aluminium.asp' }
+     if ($symbol =~ /^CA/) { return 'http://www.lme.co.uk/copper.asp' }
+     if ($symbol =~ /^NA/) { return 'http://www.lme.co.uk/nasaac.asp' }
+     if ($symbol =~ /^NI/) { return 'http://www.lme.co.uk/nickel.asp' }
+     if ($symbol =~ /^PB/) { return 'http://www.lme.co.uk/lead.asp' }
+     if ($symbol =~ /^SN/) { return 'http://www.lme.co.uk/tin.asp' }
+     if ($symbol =~ /^ZS/) { return 'http://www.lme.co.uk/zinc.asp' }
+     if ($symbol =~ /^F/)  { return 'http://www.lme.co.uk/steel.asp' }
+     if ($symbol =~ /^P/)  { return 'http://www.lme.co.uk/plastics.asp' }
+     if ($symbol =~ /^L/)  { return 'http://www.lme.co.uk/plastics.asp' }
+     return undef;
    });
 
 
@@ -260,27 +258,26 @@ sub jar_set_login_timestamp {
 # 
 sub daily_available_date {
   my ($symbol) = @_;
-  given (type ($symbol)) {
-    when ('metals') {
-      # http://www.lme.co.uk/who_how_ringtimes.asp
-      #     Prices after second ring session each trading day, which would be
-      #     16:15 maybe, try at 16:30.
-      return App::Chart::Download::weekday_date_after_time
-        (16,30, App::Chart::TZ->london, -1);
-    }
-    when ('plastics') {
-      # https://secure.lme.com/Data/community/Dataprices_daily_prices_plastics.aspx
-      # per prices page, available at 2am the following day
-      return App::Chart::Download::weekday_date_after_time
-        (2,0, App::Chart::TZ->london, -1);
-    }
-    when ('steels') {
-      # per prices page, available at 2am the following day
-      return App::Chart::Download::weekday_date_after_time
-        (2,0, App::Chart::TZ->london, -1);
-    }
-    default { die }
+  my $type = type($symbol);
+  if ($type eq 'metals') {
+    # http://www.lme.co.uk/who_how_ringtimes.asp
+    #     Prices after second ring session each trading day, which would be
+    #     16:15 maybe, try at 16:30.
+    return App::Chart::Download::weekday_date_after_time
+      (16,30, App::Chart::TZ->london, -1);
   }
+  if ($type eq 'plastics') {
+    # https://secure.lme.com/Data/community/Dataprices_daily_prices_plastics.aspx
+    # per prices page, available at 2am the following day
+    return App::Chart::Download::weekday_date_after_time
+      (2,0, App::Chart::TZ->london, -1);
+  }
+  if ($type eq 'steels') {
+    # per prices page, available at 2am the following day
+    return App::Chart::Download::weekday_date_after_time
+      (2,0, App::Chart::TZ->london, -1);
+  }
+  die;
 }
 
 
@@ -336,20 +333,19 @@ sub daily_parse {
   foreach my $c (2 .. $lastcol) {
     my $commodity = $rows->[0]->[$c] || next;
     my $name;
-    given ($commodity) {
-      when (/ALUMINIUM ALLOY/i) { $commodity = 'AA'; }
-      when (/ALUMINIUM/i)       { $commodity = 'AH'; }
-      when (/COPPER/i)          { $commodity = 'CA'; }
-      when (/LEAD/i)            { $commodity = 'PB'; }
-      when (/NICKEL/i)          { $commodity = 'NI'; }
-      when (/TIN/i)             { $commodity = 'SN'; }
-      when (/ZINC/i)            { $commodity = 'ZS'; }
-      when (/NASAAC/i)          { $commodity = 'NI'; }
-      when (/STEEL.*MEDITERRANEAN/s) { $commodity = 'FM'; }
-      when (/STEEL.*FAR EAST/s)      { $commodity = 'FF'; }
-      when (/^([A-Z][A-Z])\s+(.*)/is) { $commodity = $1; $name = $2; }
-      default { next; }
-    }
+    if    ($commodity =~ /ALUMINIUM ALLOY/i)       { $commodity = 'AA'; }
+    elsif ($commodity =~ /ALUMINIUM/i)             { $commodity = 'AH'; }
+    elsif ($commodity =~ /COPPER/i)                { $commodity = 'CA'; }
+    elsif ($commodity =~ /LEAD/i)                  { $commodity = 'PB'; }
+    elsif ($commodity =~ /NICKEL/i)                { $commodity = 'NI'; }
+    elsif ($commodity =~ /TIN/i)                   { $commodity = 'SN'; }
+    elsif ($commodity =~ /ZINC/i)                  { $commodity = 'ZS'; }
+    elsif ($commodity =~ /NASAAC/i)                { $commodity = 'NI'; }
+    elsif ($commodity =~ /STEEL.*MEDITERRANEAN/s)  { $commodity = 'FM'; }
+    elsif ($commodity =~ /STEEL.*FAR EAST/s)       { $commodity = 'FF'; }
+    elsif ($commodity =~ /^([A-Z][A-Z])\s+(.*)/is) { $commodity = $1; $name = $2; }
+    else { next; }
+
     push @column,           $c;
     push @column_commodity, $commodity;
     push @column_name,      $name;

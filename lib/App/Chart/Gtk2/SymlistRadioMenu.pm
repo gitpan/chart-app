@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -71,9 +71,11 @@ sub INIT_INSTANCE {
 
 sub SET_PROPERTY {
   my ($self, $pspec, $newval) = @_;
-  given ($pspec->get_name) {
-    when ('symlist') { $self->set_symlist ($newval); }
-    default { $self->{$_} = $newval; }  # per default GET_PROPERTY
+  my $pname = $pspec->get_name;
+  if ($pspec->get_name eq 'symlist') {
+    $self->set_symlist ($newval);
+  } else {
+    $self->{$pname} = $newval;  # per default GET_PROPERTY
   }
 }
 
