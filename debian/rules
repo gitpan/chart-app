@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-# Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -17,7 +17,7 @@
 # with Chart.  If not, see <http://www.gnu.org/licenses/>.
 
 include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/perlmodule.mk
+include /usr/share/cdbs/1/class/perl-makemaker.mk
 
 # instead of makemaker default "chart.1p"
 DEB_MAKEMAKER_USER_FLAGS = MAN1EXT=1
@@ -48,8 +48,6 @@ DEB_DH_LINK_chart += usr/share/bash-completion/completions/chart \
 install/chart::
 	mkdir -p debian/chart/usr/share/omf/chart
 	cp doc/chart.omf debian/chart/usr/share/omf/chart
-binary-install/chart::
-	dh_scrollkeeper -pchart
 
 # chartprog.el, not installed by Makefile.PL yet
 install/chart::

@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -29,7 +29,7 @@ use App::Chart::Gtk2::GUI;
 
 use Glib::Object::Subclass 'Gtk2::AboutDialog';
 
-our $VERSION = 249;
+our $VERSION = 250;
 
 # this applies to the whole program
 my $copyright_string
@@ -140,7 +140,7 @@ L<http://user42.tuxfamily.org/chart/index.html>
 
 =head1 LICENCE
 
-Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
+Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2014 Kevin Ryde
 
 Chart is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

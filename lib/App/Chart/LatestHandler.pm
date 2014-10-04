@@ -1,6 +1,6 @@
 # Latest quotes download handlers.
 
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -21,7 +21,8 @@ use 5.010;
 use strict;
 use warnings;
 use Carp;
-use I18N::Langinfo::Wide;
+use Encode;
+use Encode::Locale;
 use List::Util;
 # use Locale::TextDomain ('App-Chart');
 
@@ -110,7 +111,9 @@ sub download {
          : $SIG{'__DIE__'});
       eval { $proc->(\@this_list); 1 };
     }) {
-      say "Latest download error: ", I18N::Langinfo::Wide::to_wide($@);
+      my $err = $@;
+      unless (utf8::is_utf8($err)) { $err = Encode::decode('locale',$err); }
+      say "Latest download error: ", $err;
       if (defined $trace) {
         say $trace->as_string;
       }

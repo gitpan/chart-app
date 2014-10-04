@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -21,8 +21,6 @@ use warnings;
 use Carp;
 use Date::Calc;
 use File::Spec;
-use I18N::Langinfo ();
-use I18N::Langinfo::Wide;
 use List::Util qw(min max);
 use POSIX qw(floor ceil);
 use Regexp::Common 'whitespace';
@@ -34,7 +32,7 @@ use Glib;
 # uncomment this to run the ### lines
 #use Smart::Comments;
 
-our $VERSION = 249;
+our $VERSION = 250;
 
 use Locale::Messages 1.16; # version 1.16 for turn_utf_8_on()
 BEGIN {
@@ -85,7 +83,15 @@ use constant { UP_COLOUR   => 'light green',
 
 our %option
   = (verbose => 0,
-     d_fmt   => I18N::Langinfo::Wide::langinfo(I18N::Langinfo::D_FMT()),
+     d_fmt   => do {
+       # langinfo D_FMT if available, otherwise fallback to a neutral YYYY-MM-DD
+       eval {
+         require I18N::Langinfo;
+         require I18N::Langinfo::Wide;
+         I18N::Langinfo::Wide::langinfo(I18N::Langinfo::D_FMT())
+         }
+         || '%Y-%m-%d'
+       },
      http_get_cost => 3000,
     );
 $option{'wd_fmt'} = __x('%a {d_fmt}', d_fmt => $option{'d_fmt'});
@@ -384,22 +390,32 @@ Various program options.
 
 =item C<verbose> (default false)
 
-Print more things (mainly during downloads).
+Print more things (mainly during downloads).  This is the C<--verbose>
+command line option.
 
-=item C<d_fmt> (default from C<langinfo()>, as wide chars)
+=item C<d_fmt> (default from C<langinfo()>)
 
-C<strftime> format string for a date.
+C<strftime> format string for a date.  Non-ASCII can be included as Perl
+wide-chars.
 
-=item C<wd_fmt> (default from C<langinfo()>, as wide chars)
+The default is from C<langinfo(D_FMT)> if the L<I18N::Langinfo> and
+L<I18N::Langinfo::Wide> modules are available.  Otherwise the default is
+C<%Y-%m-%d> which gives an ISO style YYYY-MM-DD.
+
+=item C<wd_fmt> (default C<%a> and C<d_fmt>)
 
 C<strftime> format string for a weekday name and date.
 
 =item C<http_get_cost> (default 3000)
 
-Byte cost of each separate HTTP request.  This is used when choosing between
-an individual download per symbol or a whole-day download of everything at
-the exchange.  If your connection is badly lagged you could increase this to
-prefer the single big file.
+Byte cost reckoned for each separate HTTP request.  This is used when
+choosing between an individual download per symbol or a whole-day download
+of everything at the exchange.
+
+If your connection is badly lagged you could increase this to prefer the
+single big file.  If you want to minimize downloaded bytes then reduce this
+to roughly HTTP per-request overhead (packet and headers each way), which
+might be a few hundred bytes.
 
 =back
 
@@ -487,7 +503,7 @@ many digits after the decimal point, or 0 if no decimal point.  Eg.
 =item App::Chart::min_maybe ($num, $num, ...)
 
 Return the maximum or minimum (respectively) among the given numbers.
-C<undef>s in the arguments are ignored, and if there's no arguments, or only
+C<undef>s in the arguments are ignored and if there's no arguments, or only
 C<undef> arguments, the return is C<undef>.
 
 =back
@@ -502,7 +518,7 @@ L<http://user42.tuxfamily.org/chart/index.html>
 
 =head1 LICENCE
 
-Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
+Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2014 Kevin Ryde
 
 Chart is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

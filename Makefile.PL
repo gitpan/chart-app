@@ -61,6 +61,8 @@ WriteMakefile
     # version 1.27 for incompatible change "sqlite_unicode"
     'DBD::SQLite' => 1.27,
 
+    'Encode::Locale' => 0,
+
     # think 0.61 is good, to get undef for a non-existent $HOME
     'File::HomeDir' => 0.61,
 
@@ -103,7 +105,6 @@ WriteMakefile
     'Gtk2::Ex::KeySnooper'     => 3,
     'Gtk2::Ex::MenuBits'       => 17,             # new in version 17
     'Gtk2::Ex::PixbufBits'     => 35,             # new in version 35
-    'Gtk2::Ex::Statusbar::DynamicContext'  => 20, # new in version 20
     'Gtk2::Ex::Statusbar::Message'         => 47, # new in version 47
     'Gtk2::Ex::Statusbar::MessageUntilKey' => 11, # new in version 11
     'Gtk2::Ex::TableBits'      => 47,             # new in version 47
@@ -144,9 +145,7 @@ WriteMakefile
     'HTML::TableExtract' => 0,
     'HTML::TreeBuilder' => 0,   # only for LME plastics hack actually
 
-    'I18N::Langinfo::Wide' => 2, # version 2 for netbsd "646"
     'POSIX::Wide' => 0,
-    'Math::Libm' => 0,
 
     # anything Archive::Zip is happy with is enough, 1.07 looks likely
     'IO::String' => '1.07',
@@ -197,8 +196,6 @@ WriteMakefile
     'PerlIO::via::EscStatus::Parser' => 0,
     'PerlIO::via::EscStatus::ShowAll' => 0,
     'PerlIO::via::EscStatus::ShowNone' => 0,
-
-    'PerlIO::locale' => '0.06',
 
     'Proc::SyncExec' => 0,
     'Regexp::Common' => 0,
@@ -263,7 +260,9 @@ WriteMakefile
    realclean => { FILES => 'TAGS' },
 
    META_MERGE =>
-   { recommends => { 'Set::IntSpan::Fast::XS' => '0.05' },
+   { recommends => { 'Set::IntSpan::Fast::XS' => '0.05',
+                     'I18N::Langinfo::Wide' => 2, # version 2 for netbsd "646"
+                   },
      resources =>
      { homepage => 'http://user42.tuxfamily.org/chart/index.html',
        license  => 'http://www.gnu.org/licenses/gpl.html',
@@ -348,7 +347,7 @@ WriteMakefile
      # don't index GET_SIZE() workaround addition to
      # Gtk2::Ex::Datasheet::DBI::CellRendererText
      #
-     no_index => { directory => [ 'devel', 'doc' ],
+     no_index => { directory => [ 'devel', 'doc', 'po' ],
                    package => [ 'Gtk2::Ex::Datasheet::DBI::CellRendererText' ],
                  }
    },

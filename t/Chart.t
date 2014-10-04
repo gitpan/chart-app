@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -28,7 +28,7 @@ BEGIN { MyTestHelpers::nowarnings() }
 require App::Chart;
 
 
-my $want_version = 249;
+my $want_version = 250;
 is ($App::Chart::VERSION, $want_version, 'VERSION variable');
 is (App::Chart->VERSION,  $want_version, 'VERSION class method');
 { ok (eval { App::Chart->VERSION($want_version); 1 },

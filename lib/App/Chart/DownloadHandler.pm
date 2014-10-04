@@ -1,6 +1,6 @@
 # Download data handlers.
 
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -22,7 +22,8 @@ use strict;
 use warnings;
 use sort 'stable'; # lexical in 5.10
 use Carp;
-use I18N::Langinfo::Wide;
+use Encode;
+use Encode::Locale;
 use List::Util qw(min max);
 use List::MoreUtils;
 use POSIX::Wide;
@@ -189,7 +190,8 @@ sub download {
     }
     1;
   }) {
-    my $err = I18N::Langinfo::Wide::to_wide($@);
+    my $err = $@;
+    unless (utf8::is_utf8($err)) { $err = Encode::decode('locale',$err); }
     $err = App::Chart::collapse_whitespace ($err);
     App::Chart::Download::download_message ("Download error: $err\n");
     return 0;

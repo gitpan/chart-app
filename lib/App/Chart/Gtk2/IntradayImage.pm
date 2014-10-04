@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2012, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -20,7 +20,8 @@ use strict;
 use warnings;
 use Carp;
 use Gtk2 1.220;
-use I18N::Langinfo::Wide;
+use Encode;
+use Encode::Locale;
 use List::Util qw(min max);
 use Locale::TextDomain ('App-Chart');
 
@@ -192,7 +193,9 @@ sub _load_pixbuf {
   } else {
     # Should be Glib::Error in $@ thrown by $loader, but allow for plain
     # string too.
-    return I18N::Langinfo::Wide::to_wide("$@");
+    my $err = "$@";
+    unless (utf8::is_utf8($err)) { $err = Encode::decode('locale',$err); }
+    return $err;
   }
 }
 

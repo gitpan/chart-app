@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -24,7 +24,6 @@ use POSIX ();
 use POSIX::Wide;
 use List::Util qw(min max);
 use List::MoreUtils;
-use I18N::Langinfo ();
 # use Locale::TextDomain ('App-Chart');
 
 use App::Chart::Glib::Ex::MoreUtils;
@@ -481,7 +480,7 @@ L<http://user42.tuxfamily.org/chart/index.html>
 
 =head1 LICENCE
 
-Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+Copyright 2007, 2008, 2009, 2010, 2011, 2014 Kevin Ryde
 
 Chart is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

@@ -4,7 +4,7 @@
       "Kevin Ryde <user42_kevin@yahoo.com.au>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 6.66, CPAN::Meta::Converter version 2.141520",
+   "generated_by" : "ExtUtils::MakeMaker version 6.98, CPAN::Meta::Converter version 2.142690",
    "license" : [
       "gpl_3"
    ],
@@ -18,7 +18,8 @@
          "t",
          "inc",
          "devel",
-         "doc"
+         "doc",
+         "po"
       ],
       "package" : [
          "Gtk2::Ex::Datasheet::DBI::CellRendererText"
@@ -165,6 +166,7 @@
       },
       "runtime" : {
          "recommends" : {
+            "I18N::Langinfo::Wide" : "2",
             "Set::IntSpan::Fast::XS" : "0.05"
          },
          "requires" : {
@@ -175,6 +177,7 @@
             "DBI::Const::GetInfoType" : "0",
             "Date::Calc" : "5.0",
             "Date::Parse" : "0",
+            "Encode::Locale" : "0",
             "File::HomeDir" : "0.61",
             "Glib" : "1.220",
             "Glib::Ex::ConnectProperties" : "18",
@@ -206,7 +209,6 @@
             "Gtk2::Ex::NoShrink" : "2",
             "Gtk2::Ex::NumAxis" : "4",
             "Gtk2::Ex::PixbufBits" : "35",
-            "Gtk2::Ex::Statusbar::DynamicContext" : "20",
             "Gtk2::Ex::Statusbar::Message" : "47",
             "Gtk2::Ex::Statusbar::MessageUntilKey" : "11",
             "Gtk2::Ex::TableBits" : "47",
@@ -230,7 +232,6 @@
             "HTTP::Cookies" : "0",
             "HTTP::Message" : "5.814",
             "HTTP::Request" : "0",
-            "I18N::Langinfo::Wide" : "2",
             "IO::String" : "1.07",
             "LWP" : "5.814",
             "LWP::UserAgent" : "0",
@@ -240,14 +241,12 @@
             "List::MoreUtils" : "0.24",
             "Locale::Messages" : "1.19",
             "Locale::TextDomain" : "1.19",
-            "Math::Libm" : "0",
             "Math::Round" : "0",
             "Module::Find" : "0.06",
             "Module::Util" : "0",
             "Number::Format" : "1.60",
             "POSIX::Wide" : "0",
             "Perl6::Slurp" : "0",
-            "PerlIO::locale" : "0.06",
             "PerlIO::via::EscStatus" : "2",
             "PerlIO::via::EscStatus::Parser" : "0",
             "PerlIO::via::EscStatus::ShowAll" : "0",
@@ -280,5 +279,5 @@
          "http://www.gnu.org/licenses/gpl.html"
       ]
    },
-   "version" : "249"
+   "version" : "250"
 }

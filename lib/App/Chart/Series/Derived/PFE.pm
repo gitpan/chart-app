@@ -1,4 +1,4 @@
-# Copyright 2006, 2007, 2009, 2010 Kevin Ryde
+# Copyright 2006, 2007, 2009, 2010, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -20,7 +20,6 @@ use strict;
 use warnings;
 use Carp;
 use List::Util qw(min max);
-use Math::Libm;
 use Locale::TextDomain 1.17; # for __p()
 use Locale::TextDomain ('App-Chart');
 
@@ -92,6 +91,16 @@ sub warmup_count {
   return $N-1 + App::Chart::Series::Derived::EMA->warmup_count($N);
 }
 
+# hypot(r,e)
+# h = sqrt(r^2 + e^2)
+# d = sqrt(r^2 + e^2) - r
+# d+r = sqrt(r^2 + e^2)
+# d^2 + 2dr + r^2 = r^2 + e^2
+# d^2 + 2dr = e^2
+# d^2 + 2dr - e^2 = 0
+# d = (-2r +/- sqrt(4r^2 + 4e^2) ) / 2
+# d = -r +/- sqrt(r^2 + e^2)
+
 sub proc {
   my ($class_or_self, $N, $smooth_N) = @_;
 
@@ -114,10 +123,10 @@ sub proc {
       my $prev1 = $values[0];
       my $roc1 = ($prev1 == 0 ? 0
                   : 100 * ($value - $prev1) / $prev1);
-      my $sum = $sum_proc->(Math::Libm::hypot($roc1,1));
+      my $sum = $sum_proc->(_hypot($roc1,1));
 
       my $raw = ($sum == 0 ? 0
-                 : 100 * Math::Libm::hypot($rocN,scalar @values) / $sum);
+                 : 100 * _hypot($rocN,scalar @values) / $sum);
       if ($rocN < 0) { $raw = -$raw; }
       $pfe = $ema_proc->($raw);
     }
@@ -126,6 +135,13 @@ sub proc {
 
     return $pfe;
   };
+}
+
+# could use Math::Libm hypot() here for a touch more accuracy, but not sure
+# how good its portability is on non-Unix systems
+sub _hypot {
+  my ($x,$y) = @_;
+  return sqrt($x*$x + $y*$y);
 }
 
 1;

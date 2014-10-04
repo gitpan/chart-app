@@ -15,24 +15,25 @@ not run its Makefile.PL or Build.PL.
 Hash: SHA1
 
 SHA1 842745cb706f8f2126506f544492f7a80dbe29b3 COPYING
-SHA1 490ad9eeacbb7d1c3d2a70e225d41263e36df4ba Changes
-SHA1 cc475dd6c05a6971d47856c6bfa4c81c27ecbb07 MANIFEST
+SHA1 06f308d6d8961eb4cd8f161f56228b0e7be3db77 Changes
+SHA1 a664776f48770577b1e0f5ee70fd90835b83c2d7 MANIFEST
 SHA1 d3e6d9037a54acd5989e3db8f5d5dc18b7ce81ad MANIFEST.SKIP
-SHA1 9a235e61808275b98013c36323da9eff663bb293 META.json
-SHA1 f3eb10031fe363f38b872828acc0a0843dc49188 META.yml
-SHA1 833ca6de8c055a5bd70a4c889e5b0bc8120be9b3 Makefile.PL
-SHA1 dc8e6ace5cdb46a58227b1a4696c6b7d92fb552a chart
+SHA1 0183b18ffb92639a512249a0ab7983b3a0c032fb META.json
+SHA1 17f82bdccf5deb44335b1f7ff2da2cb46236bab3 META.yml
+SHA1 7701b07e3936cde44c2ac132ecb84f460c1616c1 Makefile.PL
+SHA1 e7afce2907fe41fc02c8f661e3f730e5f7cc8604 chart
 SHA1 089c4d9c389343b95bffc9f376213fce1b30df5c debian/README.Debian
-SHA1 8d762da26bf74316d6055853bfd87987f1211ff2 debian/changelog
+SHA1 ed69e8e9fa2c8882a43bb5291ac936ac13a23177 debian/changelog
 SHA1 ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4 debian/compat
-SHA1 b0473849e0629463eea804fc175eed2242ce105b debian/control
+SHA1 3048d5469e7799fac14fc4e2d6c991c317a96a1b debian/control
 SHA1 9920e5ec83a21e72a3c1d0ffd6b287a67d955a55 debian/copyright
 SHA1 936e990e88fc373029fd3bbbd508d5b58bb6f44a debian/doc-base
+SHA1 09d2af8dd22201dd8d48e5dcfcaed281ff9422c7 debian/emacsen-compat
 SHA1 4aae0306ea229b80dd287ada4d89b4fd4fec758c debian/emacsen-install
 SHA1 79d8909196ab5b6188461bc611ad65f425ee8710 debian/emacsen-remove
 SHA1 9a71c387f83611809b0aa5f33d15f38f92fef406 debian/emacsen-startup
 SHA1 3187619a9d70c9acac20b596a3a285c565235024 debian/menu
-SHA1 b5af5132e64b0edda2dfa37a7f6b66eb98397c71 debian/rules
+SHA1 4e82d4ecd6cd19cf6744dd8d4fe6ad96c3453c41 debian/rules
 SHA1 61652cd1568dcf2614df833eba241755eee34e89 debian/source/format
 SHA1 3463e85927218c9ea462ee45972fd8d383163a6c debian/watch
 SHA1 4bc00ae5c77e110f30944e2ef3e448bfe5695dac devel/DownloadDialog.t
@@ -97,7 +98,7 @@ SHA1 2db918b9f2e915e06802089e2e13b0a0cf01222c examples/intraday.pl
 SHA1 32985e87fcbea03adbc6bd838e474a4cb42a92ac examples/print-prices.pl
 SHA1 355b182e01f918114bc6c85967b2de758e1dc9fe inc/MyMakeMakerExtras.pm
 SHA1 a2fa0855f3a1ea6140956ec567bea259e0099893 inc/MyMakeMakerGettext.pm
-SHA1 801f292c37b5ca0dd574e826cbeccda830e7b8ac lib/App/Chart.pm
+SHA1 973aea317fe021457c95777d8ed08a0a1f7f40fe lib/App/Chart.pm
 SHA1 41637d984510643dc3ac502338cae86fde6b1893 lib/App/Chart/Annotation.pm
 SHA1 eabc6a5d45d49adadbe37c88d33ea8b1307b3bdd lib/App/Chart/Barchart.pm
 SHA1 ae4aaf5dd494916feafb7058256fc6e1ae781ed8 lib/App/Chart/DBI.pm
@@ -105,11 +106,11 @@ SHA1 a038f25b8cee2a2572d75a3a9206cbd683092dd0 lib/App/Chart/Database.pm
 SHA1 9a079b006e3037bc62863f9fba445822b71c5f9a lib/App/Chart/Database/Create.pm
 SHA1 f0f039474d4bf78bbf281a89a395e0641a546a09 lib/App/Chart/Download.pm
 SHA1 e7556133b4d6148a59550069fa6a545cd191fbcc lib/App/Chart/DownloadCost.pm
-SHA1 d1b8860eb1d5b9766a2bbb4898ea70e6b6159cd1 lib/App/Chart/DownloadHandler.pm
+SHA1 b08b83abdad41578ecf522c8b7f0ac3c3e3f0e26 lib/App/Chart/DownloadHandler.pm
 SHA1 cce23d3fd7f410188d664b4d3b1c4b1470656574 lib/App/Chart/DownloadHandler/DividendsPage.pm
 SHA1 77886edaa9b28152565cec1d7293e453cce09e6f lib/App/Chart/DownloadHandler/IndivChunks.pm
 SHA1 1a2412a0ef38b6b33b3e5445201b1dde98b70c31 lib/App/Chart/DownloadHandler/IndivInfo.pm
-SHA1 84edd398174d87636fdb1c8b3cfb909f843f4b3f lib/App/Chart/EmacsMain.pm
+SHA1 bfa391b1d3930c4ffc6e8808855ab77b986c18f4 lib/App/Chart/EmacsMain.pm
 SHA1 a9ab3c543d734376b9978af78914bb2c47263fa7 lib/App/Chart/Finance/Yahoo/Exchanges.pm
 SHA1 4162f2340730e04bb8ac5b13f666ba6d85ce24db lib/App/Chart/FinanceQuote.pm
 SHA1 262fa29e32937746a78cf3cab0d2cebacf810f0e lib/App/Chart/Glib/Ex/ChildPid.pm
@@ -120,7 +121,7 @@ SHA1 3872643c87adf240be41ef9ee41d8d568cfd5a73 lib/App/Chart/Glib/Ex/SignalBlock.
 SHA1 3af973c9dda0698d47f228b2a9e6230b80f63e83 lib/App/Chart/Glib/Ex/TempProperty.pm
 SHA1 02058581fd1f2fec1d6b610f3d33768de6359a8c lib/App/Chart/Glib/Ex/TieWeakNotify.pm
 SHA1 992158757be9844bcb5b313a62c76012d64a93d2 lib/App/Chart/Google.pm
-SHA1 f053c34c66e528087530c924f6c9ed7a49e97bd1 lib/App/Chart/Gtk2/AboutDialog.pm
+SHA1 66f96ffb1ddfedf718533b2f8fcd5fb49b16e89c lib/App/Chart/Gtk2/AboutDialog.pm
 SHA1 493438cc79e5a69a78e8a17c74c9a484bb02673a lib/App/Chart/Gtk2/AdjScale.pm
 SHA1 a573827e0299bff1497ebdccdf9c7bacdf4b64f7 lib/App/Chart/Gtk2/AnnDrag.pm
 SHA1 ef9b864c429396f151fecbd92910e8320dadf6eb lib/App/Chart/Gtk2/AnnotationsDialog.pm
@@ -167,14 +168,14 @@ SHA1 3a08bb8980beac8b0674ea78a6e0aea0dad9b7e6 lib/App/Chart/Gtk2/Graph/Plugin/He
 SHA1 5cfc1646a56cf426f2adccaea02d6cee71f4affa lib/App/Chart/Gtk2/Graph/Plugin/Latest.pm
 SHA1 2ae29484dca106894892b9dba0243a57035c5d23 lib/App/Chart/Gtk2/Graph/Plugin/Text.pm
 SHA1 8fd7ad08b4e18c1c9e005e2a45d02c5d36d9c13a lib/App/Chart/Gtk2/Graph/Plugin/Today.pm
-SHA1 3f3a9b8383f75f59b9154c71a8822280a81c294a lib/App/Chart/Gtk2/HAxis.pm
+SHA1 12c88379b7ebbf317a4baaf782edd3b7cfe4d9cb lib/App/Chart/Gtk2/HAxis.pm
 SHA1 fb9d9144ab89730f67dfcb2344806b0b6ce32bb6 lib/App/Chart/Gtk2/HScale.pm
 SHA1 d793d771af1ac5fdf2f1854b5b4ad1e7ccb101c0 lib/App/Chart/Gtk2/Heading.pm
 SHA1 7cda6a4a65f54507f261d160acfb1c88e6855952 lib/App/Chart/Gtk2/IndicatorComboBox.pm
 SHA1 7b146ae8cea37df636455b4f859363ed261b9cd0 lib/App/Chart/Gtk2/IndicatorModel.pm
 SHA1 43d709e15c57d8aa80eda30c126ff49ebfb426ba lib/App/Chart/Gtk2/IndicatorModelGenerated.pm
 SHA1 1e04503b7af58b90f699b616520f63e38e47bd71 lib/App/Chart/Gtk2/IntradayDialog.pm
-SHA1 9fe88283b9db2576da7fd94abf709c8ed69a7121 lib/App/Chart/Gtk2/IntradayImage.pm
+SHA1 cd785b008cc1a548b75485172890f4b79e6308b8 lib/App/Chart/Gtk2/IntradayImage.pm
 SHA1 7289881f52f469e2c20efffa1b7efbe6642a71c7 lib/App/Chart/Gtk2/IntradayModeComboBox.pm
 SHA1 ca1175e220ea590aaa32b6076183442f2d7b6458 lib/App/Chart/Gtk2/IntradaySave.pm
 SHA1 a0b143d8a28c25aa6b8d180aa1eeec85c4778ade lib/App/Chart/Gtk2/Job.pm
@@ -234,8 +235,8 @@ SHA1 b3fe684d342c12ee3bddb3348cae1505f670885f lib/App/Chart/Gtk2/WeblinkMenu.pm
 SHA1 c3e67696c5f7549b9c081fd57e76181e7c406d5f lib/App/Chart/IndicatorInfo.pm
 SHA1 456fb3b0018c8631fc0adebdb6ce29549f1ae235 lib/App/Chart/Intraday.pm
 SHA1 541145ffffd325a33d8c43b0469d62550d7fc79e lib/App/Chart/IntradayHandler.pm
-SHA1 65fdcbff5e2cc8a8f12af0c9b211544c37205771 lib/App/Chart/Latest.pm
-SHA1 f6ee20ee5686934d0a3ebd535e23779a025bf74a lib/App/Chart/LatestHandler.pm
+SHA1 232a77582288d6774c241d99a86caf40f6cf0c4d lib/App/Chart/Latest.pm
+SHA1 6c4b3c41ad56053711524c91c20dd9d738e40ec3 lib/App/Chart/LatestHandler.pm
 SHA1 65e891910693f08caad3323d207d53937a4f5c19 lib/App/Chart/LinReg.pm
 SHA1 5e4a4f963ea58bca44e84c3687526540995dd880 lib/App/Chart/Manual.pm
 SHA1 339064207e63574f4d19bf4f556f29e0a082c7b3 lib/App/Chart/Math/Moving.pm
@@ -247,7 +248,7 @@ SHA1 da69dcf83a9cb6c8e899788047b424e098b94f8b lib/App/Chart/Proc/ChildPid.pm
 SHA1 3ba367d291b0da57fc1d5c32774667ae65445a9b lib/App/Chart/Series.pm
 SHA1 9bd00a90188e0ad81155432e94f785b8ec66f7ca lib/App/Chart/Series/AddSub.pm
 SHA1 6c5b5e1bb5509cb510fa89679b7c81f6d78e232e lib/App/Chart/Series/Calculation.pm
-SHA1 84eadc8028a156937e317716b182fd7f789d175a lib/App/Chart/Series/Database.pm
+SHA1 35b6e68451331ee26aad6a1ad421ae58000a029c lib/App/Chart/Series/Database.pm
 SHA1 4ad385f6e4c3a22f78d6d69d028995d5c8a3ccaf lib/App/Chart/Series/Derived/ADX.pm
 SHA1 66437ac1575b9db0bb1c46f45aeabb554433c1dc lib/App/Chart/Series/Derived/ASI.pm
 SHA1 8a8d010ea1d03d9a7fad5a2ce9d811b15c2e24ad lib/App/Chart/Series/Derived/ATR.pm
@@ -308,7 +309,7 @@ SHA1 d7c531563a31e60c935c5011c8bf3444422d5ae1 lib/App/Chart/Series/Derived/Mul.p
 SHA1 7161f21aebe5697a6be815f7883df80a349c7e82 lib/App/Chart/Series/Derived/NATR.pm
 SHA1 13f843da27bc4809c3ca28a45346fe2609220ef6 lib/App/Chart/Series/Derived/NVI.pm
 SHA1 123eb432cc1c6a2b829a07fbfb9cce7f09fc90d9 lib/App/Chart/Series/Derived/OBV.pm
-SHA1 79047b873a32bc003b006b13f399c0524025b4a3 lib/App/Chart/Series/Derived/PFE.pm
+SHA1 30fe06694caa7bd851aeee59de5ff440b5d6fa1c lib/App/Chart/Series/Derived/PFE.pm
 SHA1 2f00dd14a1b0b73f8d6632649fca8e80f88e994b lib/App/Chart/Series/Derived/PGO.pm
 SHA1 03404bf348ae3f6d81451a02f592dedda9b7fcbe lib/App/Chart/Series/Derived/PVI.pm
 SHA1 43e0a67e3567807af5f8d3693389bbd512389da1 lib/App/Chart/Series/Derived/PVT.pm
@@ -386,7 +387,7 @@ SHA1 2b57d87f01cdb21cea31096bb170decf89b4fe63 lib/App/Chart/Suffix/D.pm
 SHA1 bb05ca9096a21d62f5d64250f4fe4d630a1d6f7e lib/App/Chart/Suffix/DE.pm
 SHA1 0271b751550369a28c2e9c7c77c250bacdae56a3 lib/App/Chart/Suffix/F.pm
 SHA1 a4abeeff2a407b5e668e068bf1ed5282d17766a3 lib/App/Chart/Suffix/FQ.pm
-SHA1 8bde51b58ddd5e1492d3816d51ef29a4723f7f52 lib/App/Chart/Suffix/GHA.pm
+SHA1 f01ed2cff12dda5659b9815e33d2d20e059b5bb9 lib/App/Chart/Suffix/GHA.pm
 SHA1 5055312e2930f25ff0e4babd34a55e8f17d6eb8c lib/App/Chart/Suffix/H.pm
 SHA1 85f0310ba51260478d5ae032b8080e11ab62fa3e lib/App/Chart/Suffix/HA.pm
 SHA1 a3184b27a088a55e6956a98c1b567e2422cb05de lib/App/Chart/Suffix/HK.pm
@@ -478,8 +479,8 @@ SHA1 09dbfa252f16a924797e864818620d16e9cb60f9 lib/App/Chart/doc/chart-tma-weight
 SHA1 ff8f6287554b00a46d2572d2d7de0503afc65bc3 lib/App/Chart/doc/chart-wma-weights.png
 SHA1 43dbdacf1638112b1739134bb1d0f166789f84d6 lib/App/Chart/doc/chart-zlema-weights.png
 SHA1 34dce15d1461433a9d5299834b35b80eb16bd0fa lib/App/Chart/doc/chart.html
-SHA1 28294854aa55d2e3406da7638386099a9bb4b3be lib/Finance/Quote/Chart.pm
-SHA1 7cda8be4cb6a82f5ac9a331cc4bce2c94fd4f082 lib/GT/DB/Chart.pm
+SHA1 b6f6820407162dc419a3d759d050590fb47acdb7 lib/Finance/Quote/Chart.pm
+SHA1 8cda128087b060f090a6348448cdc087409b1a19 lib/GT/DB/Chart.pm
 SHA1 0ce392d85e15f9a1d0be45b80baba5f1075d5107 lib/LocaleData/de/LC_MESSAGES/App-Chart.mo
 SHA1 b8a47a4be52a7b62c83a9547d67e007ffe78c1e9 lib/LocaleData/en_US/LC_MESSAGES/App-Chart.mo
 SHA1 f4e1fc49b004d3846b18bdc5019a4cc3172e7d63 lib/LocaleData/fr/LC_MESSAGES/App-Chart.mo
@@ -631,13 +632,13 @@ SHA1 0a3d6969953d7054610a46726c1e00da7080d7c6 misc/two_face.pm
 SHA1 9c926d169940dce89c5786fa8b770bf83b544c93 misc/vruler.pl
 SHA1 e2567c9578c70676523a0afacfe2f3bb2d267ba2 misc/zip.pl
 SHA1 9881a0a52d8a4fbaf5e6e68231894055b88eb754 misc/zip2.pl
-SHA1 b660a44cceff53c8140a3978e41232c2ee9cff7b po/App-Chart.pot
+SHA1 79d0cd1d05f66a1996e51c9293a01e4cc73853d1 po/App-Chart.pot
 SHA1 f4669d15c62f3c8eaa0ad39f5af27f23aea303b1 po/README
-SHA1 d6a8451c122b5aeaf63c3a6a695824f4337b0d20 po/de.po
-SHA1 c0c1aeb0ddbfe6aa598340532a1da1b8c7c0bd37 po/en_US.po
-SHA1 9d35e322358fe535ff217250717488ac60362a9a po/fr.po
+SHA1 6fa66e416a3014fa7bc1fcca153a03fe358cfbe8 po/de.po
+SHA1 752a148240808d195d63e2017dffadedd5fbf59f po/en_US.po
+SHA1 e1150c57ee39322b03ea917a988116f7ade4634b po/fr.po
 SHA1 c903ff2cc1a81bca92eea7ce13a2160956eea577 po/header.pot
-SHA1 273d2092fe73d5bcbe24651e257b89f81db0dbfa po/la.po
+SHA1 1885b01b4eac665e05a6dcc0bcb07290c24bb327 po/la.po
 SHA1 58649d970a45241045dae3cbb3238df44dafb71d t/1-Test-Compile.t
 SHA1 1335923b591259f433a24a90c473c77b6a9652ed t/1-Test-UseAllModules.t
 SHA1 2fcd6136856242cc81cd46b93341864ed4f7304e t/1-omf.t
@@ -650,7 +651,7 @@ SHA1 da62a1d6cffcf63e6d394df068f0481a738fe089 t/AppChartTestHelpers.pm
 SHA1 e39130a69950849776933f6a8e4632c5280ff016 t/Aroon.t
 SHA1 8afd2c3f4b95d2863c7612be90bad220878e0340 t/COG.t
 SHA1 30f9f1d073368c4cd519a88c7df3d2a7c88295d6 t/Calculation.t
-SHA1 c6ac597ae803ed7e39820afd6d3efa2dc280e5f8 t/Chart.t
+SHA1 b44d09e503baeb19ca6d63fba1741bebcd832a11 t/Chart.t
 SHA1 fb28402ed694b6f42b4040a207dbc5505fcb2f0d t/Collapse.t
 SHA1 afa92e1a3899344ffd5cb5cdda7ebb68e7a6aa07 t/DEMA.t
 SHA1 475fba7eef8f7fedc778f015c5418446ee982dae t/DMI.t
@@ -665,9 +666,9 @@ SHA1 5002f0e03ca60d84fae08a3807d704c8ef54d5dc t/EMAx2.t
 SHA1 e1f4b6d6a2f08ca0d6022442bb1f5be37a7292ad t/EMAx3.t
 SHA1 fa8ab6663a63d048db74c32e1f75c95bfad0e2db t/FQ.t
 SHA1 c27606d61c2777a68e87e7be6b324f4f6a760536 t/Finance-Quote-Chart-load.t
-SHA1 ef84af44185653582a8b01efe85b977fff8aec23 t/Finance-Quote-Chart.t
+SHA1 e4830cd445457a2841e29b6753ff649c5f9f01db t/Finance-Quote-Chart.t
 SHA1 fdc0b5c86fc07da8c4d94f3e8e2ba6fd5cc13627 t/GT-DB-Chart-load.t
-SHA1 33d068279d3d0e49ed3ad74189376344c84b15a9 t/GT-DB-Chart.t
+SHA1 7cdf983aee698d7a4b31e6ac4942c2f2f5cd957f t/GT-DB-Chart.t
 SHA1 40d5ed6d6380539f5c982d80bedd471e7de3e552 t/GT.t
 SHA1 8711f6166d23fba6458d5036aaaee3598546099b t/GUI.t
 SHA1 4c2ce0ad3f315ec9b0bff5d3f07cf40156d28cf3 t/Glib-Ex-DirBroadcast.t
@@ -736,7 +737,7 @@ SHA1 42c04ae557ab86d3488c647ea17bd37cd2bd7d6a xt/0-exe-shebang.t
 SHA1 7bc810750906ae91a13b16c7bd833dd6e1c9741b xt/0-file-is-part-of.t
 SHA1 aeb6f41dfae96d04459448f6c3e3dee44691e722 xt/0-no-debug-left-on.t
 SHA1 381dff7f8bb358d4302bae9377072856ff1f604f xt/1-Test-Synopsis.t
-SHA1 848a462d8ccf0e7889f99cbb43d88975eb6db71b xtools/my-check-copyright-years.sh
+SHA1 92f32aa7a6bba4fe0ce6dc07a9c2581b67070232 xtools/my-check-copyright-years.sh
 SHA1 bfb75ffb7a834c345288e01f561b12695f191d12 xtools/my-check-file-part-of.sh
 SHA1 b12199bcc70c569ff43f8d8e2ea1c896f587c62f xtools/my-check-spelling.sh
 SHA1 fa07c8e559adbd1af5ba613e021991b0819fc7ba xtools/my-deb.sh
@@ -749,7 +750,7 @@ SHA1 f90084e1d6f95abb12eea896cd1cc850402d7726 xtools/my-wunused.sh
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iD8DBQFTtLw6LFMCIV9q3ToRAkKjAJsHDa/QAswv1OSivEj4RAoov1idugCfRXnn
-9Y7mSMKjKXtzsXExYRNw/Ac=
-=3S2R
+iD8DBQFUL4K/LFMCIV9q3ToRAnUDAJ9dZwaal5xQutH5L9ibHAF/aFN0VQCfSr/8
+DderqWstzAk4GgbquoFckYo=
+=un/C
 -----END PGP SIGNATURE-----

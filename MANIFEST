@@ -6,6 +6,7 @@ debian/compat
 debian/control
 debian/copyright
 debian/doc-base
+debian/emacsen-compat
 debian/emacsen-install
 debian/emacsen-remove
 debian/emacsen-startup

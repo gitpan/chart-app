@@ -1,6 +1,6 @@
 #!perl -w
 
-# Copyright 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2013, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -27,8 +27,8 @@ use warnings;
 use File::Spec;
 use Getopt::Long;
 use Glib 1.200; # for strerror()
-use I18N::Langinfo ();
-use I18N::Langinfo::Wide;
+use Encode;
+use Encode::Locale;
 use List::Util qw(min max);
 use Locale::Messages;
 use Locale::TextDomain 'App-Chart';
@@ -42,15 +42,26 @@ if (@ARGV >= 1 && ($ARGV[0] eq '--subprocess' || $ARGV[0] eq '--emacs')) {
 } else {
   # locale encoding conversion on the tty, wide-chars everywhere internally
   require Encode;           # Encode::PERLQQ
-  require PerlIO::encoding; # set fallback
-  # version 0.06 for bug fix of a struct size for perl 5.10 (there's some
-  # fragile duplication)
-  require PerlIO::locale; PerlIO::locale->VERSION(0.06);
-  { no warnings 'once';
-    local $PerlIO::encoding::fallback = Encode::PERLQQ; # \x{1234} style
-    (binmode (STDOUT, ':locale') && binmode (STDERR, ':locale'))
-      or die "Cannot set :encoding on stdout/stderr: $!\n";
+  require Encode::Locale;
+  require PerlIO::encoding;
+  unless (binmode(STDIN, ":encoding(console_in)")
+          && binmode(STDOUT, ":encoding(console_out)")
+          && binmode(STDERR, ":encoding(console_out)")) {
+    warn "Cannot set :encoding on stdin/out: $!\n";
   }
+
+  # Old code:
+  #
+  # # version 0.06 for bug fix of a struct size for perl 5.10 (there's some
+  # # fragile duplication)
+  # require PerlIO::locale; PerlIO::locale->VERSION(0.06);
+  # { no warnings 'once';
+  #   local $PerlIO::encoding::fallback = Encode::PERLQQ; # \x{1234} style
+  #   (binmode (STDOUT, ':locale') && binmode (STDERR, ':locale'))
+  #     or die "Cannot set :encoding on stdout/stderr: $!\n";
+  # }
+  # Makefile: 'PerlIO::locale' => '0.06',
+  # , libperlio-locale-perl (>= 0.06)
 }
 
 my $option_output;
@@ -155,9 +166,11 @@ sub initfile {
   if (! defined $ret) {
     my $display_filename = Glib::filename_display_name($filename);
     if ($@) {
+      my $err = $@;
+      unless (utf8::is_utf8($err)) { $err = Encode::decode('locale',$err); }
       print __x("chart: error in {filename}\n{error}\n  (starting anyway)\n",
                 filename => $display_filename,
-                error => I18N::Langinfo::Wide::to_wide($@));
+                error => $err);
     } elsif ($! != 0) {
       my $err = Glib::strerror($!);
       print __x("chart: cannot read {filename}: {error}\n  (starting anyway)\n",
@@ -345,7 +358,7 @@ L<http://user42.tuxfamily.org/chart/index.html>
 
 =head1 LICENCE
 
-Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013 Kevin Ryde
+Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2013, 2014 Kevin Ryde
 
 Chart is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

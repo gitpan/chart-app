@@ -4,7 +4,7 @@
 
 # Ghana Stock Exchange setups.
 
-# Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -19,6 +19,11 @@
 #
 # You should have received a copy of the GNU General Public License along
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# company profile
+# http://www.gse.com.gh/listedcomps.php?cmd=cmppro&scd=CAL
+#
 
 package App::Chart::Suffix::GHA;
 use 5.010;

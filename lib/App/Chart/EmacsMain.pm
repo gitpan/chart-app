@@ -3,7 +3,7 @@
 
 
 
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -23,7 +23,8 @@ package App::Chart::EmacsMain;
 use 5.010;
 use strict;
 use warnings;
-use I18N::Langinfo::Wide;
+use Encode;
+use Encode::Locale;
 use IO::Handle;
 use Lisp::Reader;
 use Lisp::Printer ('lisp_print');
@@ -137,7 +138,7 @@ sub send_update {
 sub exception_handler {
   my ($msg) = @_;
   # perhaps some modules like LWP will put through a locale $! or similar
-  $msg = I18N::Langinfo::Wide::to_wide ($msg);
+  unless (utf8::is_utf8($msg)) { $msg = Encode::decode('locale',$msg); }
   if (DEBUG) { print "Error ", $msg; }
 
   $msg =~ s/$RE{ws}{crop}//g;      # leading and trailing whitespace
@@ -606,7 +607,7 @@ L<http://user42.tuxfamily.org/chart/index.html>
 
 =head1 LICENCE
 
-Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+Copyright 2008, 2009, 2010, 2011, 2014 Kevin Ryde
 
 Chart is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

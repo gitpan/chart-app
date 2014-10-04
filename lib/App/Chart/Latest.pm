@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -20,7 +20,6 @@ use strict;
 use warnings;
 use Date::Calc;
 use Encode;
-use I18N::Langinfo ();
 use List::Util qw(min max);
 use POSIX ();
 use Locale::TextDomain ('App-Chart');
