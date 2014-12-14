@@ -29,14 +29,17 @@
 
 ;;; Code:
 
-(require 'cl)  ;; for `remove*', `assoc*', `find', maybe more
-(require 'timer) ;; xemacs21
+(require 'timer) ;; for xemacs21
 
+(eval-when-compile ;; for macros in emacs20
+  (unless (and (fboundp 'dolist)
+               (fboundp 'push))
+    (require 'cl)))
 
 ;;-----------------------------------------------------------------------------
 ;; customizations
 
-;;;autoload
+;;;###autoload
 (defgroup chartprog nil
   "Chart program interface."
   :prefix "chartprog-"
@@ -71,11 +74,35 @@
   :type  'hook
   :group 'chartprog)
 
+;;-----------------------------------------------------------------------------
+
+(defvar chartprog-debug nil)
+
+(defun chartprog-debug-message (&rest args)
+  (when chartprog-debug
+    (let ((buffer (get-buffer-create "*chartprog-debug*")))
+      (save-selected-window
+        (let ((window (get-buffer-window buffer)))
+          (if window (select-window window)))
+
+        (with-current-buffer buffer
+          (let ((orig-point (if (eobp) nil (point))))
+            (dolist (arg args)
+              (goto-char (point-max))
+              (if (stringp arg)
+                  (insert arg)
+                (pp arg (current-buffer))))
+            (goto-char (point-max))
+            (unless (bolp) (insert "\n"))
+            (goto-char (or orig-point (point-max)))
+            (goto-char (point-max))))))))
+
 
 ;;-----------------------------------------------------------------------------
 ;; xemacs compatibility
 
-;; Past versions lacked propertize did they?  Forget when or what.
+;; Some past versions didn't have propertize did they?  Forget when or what.
+;; xemacs 21.4 has propertize.
 
 ;;     (unless (fboundp 'propertize)
 ;;       (defun chartprog-propertize (str &rest properties)
@@ -89,37 +116,30 @@
 ;;----------------------------------------------------------------------------
 ;; emacs22 new stuff
 
-(cond ((eval-when-compile (fboundp 'completion-table-dynamic))
-       ;; emacs23
-       (eval-and-compile
-         (defalias 'chartprog--completion-table-dynamic
-           'completion-table-dynamic)))
+(if (eval-when-compile (fboundp 'complete-with-action))
+    ;; emacs22 (and in emacs23 recognising the "boundaries" thing)
+    (eval-and-compile
+      (defalias 'chartprog--complete-with-action
+        'complete-with-action))
 
-      ((eval-when-compile (fboundp 'dynamic-completion-table))
-       ;; emacs22
-       (defun chartprog--completion-table-dynamic (func)
-         (eval `(dynamic-completion-table ,func))))
+  ;; emacs21,xemacs21
+  (defun chartprog--complete-with-action (action table string pred)
+    "An internal part of chartprog.el.
+A version of emacs22 `complete-with-action'."
+    (cond ((null action)
+           (try-completion string table pred))
+          ((eq action t)
+           (all-completions string table pred))
+          (t
+           (eq t (try-completion string table pred))))))
 
-      (t
-       ;; emacs21,xemacs21
-       ;; a table as a function must be a symbol, can't be a lambda form
-       (defun chartprog--completion-table-dynamic (func)
-         (let ((sym (make-symbol "table-dynamic")))
-           (fset sym `(lambda (str pred action)
-                        (let ((table (funcall ',func str)))
-                          (cond ((null action)
-                                 (try-completion str table pred))
-                                ((eq action t)
-                                 (all-completions str table pred))
-                                (t
-                                 (eq t (try-completion str table pred)))))))
-           sym))))
 
 ;;-----------------------------------------------------------------------------
 ;; misc
 
 (defmacro chartprog-with-temp-message (message &rest body)
-  "Display MESSAGE temporarily while evaluating BODY.
+  "An internal part of chartprog.el.
+Display MESSAGE temporarily while evaluating BODY.
 This is the same as `with-temp-message' but has a workaround for a bug in
 Emacs 21.4 where the temporary message isn't erased if there was no previous
 message."
@@ -142,7 +162,8 @@ message."
 (put 'chartprog-with-temp-message 'lisp-indent-function 1)
 
 (defmacro chartprog-save-row-col (&rest body)
-  "Evaluate BODY, preserving point+mark row/col and window start positions.
+  "An internal part of chartprog.el.
+Evaluate BODY, preserving point+mark row/col and window start positions.
 This is a bit like `save-excursion', but working with row+column rather than
 a point position."
   `(let* ((point-row (count-lines (point-min) (point-at-bol)))
@@ -177,22 +198,22 @@ a point position."
 (put 'chartprog-save-row-col 'lisp-indent-function 0)
 
 (defun chartprog-intersection (x y)
-  "Return the intersection of lists X and Y, ie. elements common to both.
+  "An internal part of chartprog.el.
+Return the intersection of lists X and Y, ie. elements common to both.
 Elements are compared with `equal' and returned in the same order as they
 appear in X.
 
 This differs from the cl.el `intersection' in preserving the order of
-elements for the return, the cl package doesn't preserve the order."
-
-  (remove* nil x :test-not (lambda (dummy xelem)
-                             (member xelem y))))
-
-(defvar chartprog-symbol-history nil
-  "Interactive history list of Chart symbols.")
+elements for the return.  cl.el package doesn't preserve the order."
+  (let (ret)
+    (dolist (elem x) (if (member elem y) (push elem ret)))
+    (nreverse ret)))
 
 (defun chartprog-copy-tree-no-properties (obj)
-  "Return a copy of OBJ with no text properties on strings.
-OBJ can be a list or other nested structure."
+  "An internal part of chartprog.el.
+Return a copy of OBJ with no text properties on strings.
+OBJ can be a list or other nested structure understood by
+copy-sequence and mapcar."
   (cond ((stringp obj)
          (setq obj (copy-sequence obj))
          (set-text-properties 0 (length obj) nil obj)
@@ -206,12 +227,17 @@ OBJ can be a list or other nested structure."
 ;;-----------------------------------------------------------------------------
 ;; subprocess
 
-(defconst chartprog-protocol-version 101)  ;; see App::Chart::EmacsMain
+(defconst chartprog-protocol-version 102
+  "An internal part of chartprog.el.
+This must be the same as the number in App::Chart::EmacsMain, to
+ensure cooperation with the sub-process.")
 
 (defvar chartprog-process nil
-  "The running chart subprocess, or nil if not running.")
+  "An internal part of chartprog.el.
+The running chart subprocess, or nil if not running.")
 (defvar chartprog-process-timer nil
-  "Idle timer to kill chart subprocess when it's unused for a while.")
+  "An internal part of chartprog.el.
+Idle timer to kill chart subprocess when it's unused for a while.")
 
 ;; forward references
 (defvar chartprog-completion-symbols-alist)
@@ -219,9 +245,18 @@ OBJ can be a list or other nested structure."
 (defvar chartprog-symlist-alist)
 (defvar chartprog-watchlist-map)
 (defvar chartprog-watchlist-menu)
+(defvar chartprog-quote-symbol)
 
 (defun chartprog-exec (proc &rest args)
-  "Call chart PROC (a symbol) with ARGS (lists, strings, whatever)."
+  "An internal part of chartprog.el.
+Send the chart subprocess PROC (a symbol) with ARGS (lists,
+strings, etc).  This is for an asynchronous or a no-reply message
+to the subprocess.  See `chartprog-exec-synchronous' for
+executing with reply."
+
+  (unless (memq 'utf-8 (coding-system-list))
+    (message "Loading mule-ucs for `utf-8' in XEmacs")
+    (require 'un-define))
 
   ;; startup subprocess if not already running
   (unless chartprog-process
@@ -237,24 +272,28 @@ OBJ can be a list or other nested structure."
     (set-process-coding-system chartprog-process 'utf-8 'utf-8)
     (set-process-filter chartprog-process 'chartprog-process-filter)
     (set-process-sentinel chartprog-process 'chartprog-process-sentinel)
-    ;; `process-kill-without-query' is "obsolete" in emacs 22 (superceded by
-    ;; `set-process-query-on-exit-flag'), but keep using it for emacs 21
-    ;; compatibility
-    (process-kill-without-query chartprog-process)
+
+    (if (eval-when-compile (fboundp 'set-process-query-on-exit-flag))
+        (set-process-query-on-exit-flag chartprog-process nil) ;; emacs22
+      (process-kill-without-query chartprog-process)) ;; emacs21
+
     (buffer-disable-undo (process-buffer chartprog-process)))
 
   ;; send this command
-  (let ((form (cons proc args)))
-    (process-send-string chartprog-process
-                         (concat (prin1-to-string
-                                  (chartprog-copy-tree-no-properties form)) "\n")))
+  (let ((str (concat (prin1-to-string
+                      (chartprog-copy-tree-no-properties (cons proc args)))
+                     "\n")))
+    (chartprog-debug-message "\noutgoing " str)
+    (process-send-string chartprog-process str))
+
   ;; start or restart idle timer
   (when chartprog-process-timer
     (cancel-timer chartprog-process-timer))
   (setq chartprog-process-timer (run-at-time "5 min" nil 'chartprog-process-kill)))
 
 (defun chartprog-incoming-init (codeset protocol-version)
-  "Handle chart subprocess init message.
+  "An internal part of chartprog.el.
+Handle chart subprocess init message.
 CODESET is always \"UTF-8\".
 PROTOCOL-VERSION is the protocol number the subprocess is speaking, to be
 matched against `chartprog-protocol-version'."
@@ -262,7 +301,7 @@ matched against `chartprog-protocol-version'."
   (unless (= protocol-version chartprog-protocol-version)
     (when (get-buffer "*chartprog-watchlist*") ;; ignore if gone
       (with-current-buffer "*chartprog-watchlist*"
-        (let ((buffer-read-only nil))
+        (let ((inhibit-read-only t))
           (erase-buffer)
           (insert (format "Chart program doesn't match this chartprog.el.
 
@@ -277,7 +316,14 @@ Check your installation.
            chartprog-protocol-version protocol-version)))
 
 (defun chartprog-process-filter (proc str)
-  "Handle chart PROC subprocess output STR."
+  "An internal part of chartprog.el.
+The filter function for the chart subprocess per
+`set-process-filter'.
+STR is more text from the subprocess.
+An incoming message is a Lisp form like (FOO (\"ABC\")).
+When a complete form has arrived the corresponding
+`chart-incoming-FOO' function is called."
+
   (with-current-buffer (process-buffer proc)
     (goto-char (point-max))
     (insert str)
@@ -293,6 +339,8 @@ Check your installation.
                            (error nil))))
                (when form
                  (delete-region (point-min) (point))
+
+                 (chartprog-debug-message "incoming " form)
                  (apply (intern (concat "chartprog-incoming-"
                                         (symbol-name (car form))))
                         (cdr form)))
@@ -300,7 +348,7 @@ Check your installation.
                ;; no more processing after `synchronous', let the result get
                ;; back to the caller before further asynch stuff is
                ;; processed (that further stuff deferred under a timer)
-               (when (eq (first form) 'synchronous)
+               (when (eq (car form) 'synchronous)
                  (run-at-time 0.0000001 nil
                               (lambda ()
                                 (chartprog-process-filter chartprog-process "")))
@@ -310,10 +358,15 @@ Check your installation.
                form)))))
 
 (defun chartprog-process-sentinel (proc event)
-  "Handle chart PROC subprocess termination, per EVENT string."
+  "An internal part of chartprog.el.
+The sentinel for the chart subprocess per `set-process-sentinel'.
+
+The subprocess should stay alive forever, until we ask it to stop
+by the `chartprog-process-timer, so any termination is
+unexpected."
   (when (get-buffer "*chartprog-watchlist*")
     (with-current-buffer "*chartprog-watchlist*"
-      (let ((buffer-read-only nil))
+      (let ((inhibit-read-only t))
         (save-excursion
           (goto-char (point-min))
           (when (looking-at "\\s-*Starting")
@@ -323,7 +376,8 @@ Check your installation.
   (message "Chart subprocess died: %s" event))
 
 (defun chartprog-process-kill ()
-  "Kill chart subprocess."
+  "An internal part of chartprog.el.
+Kill chart subprocess."
   (when chartprog-process-timer
     (cancel-timer chartprog-process-timer)
     (setq chartprog-process-timer nil))
@@ -351,12 +405,14 @@ Check your installation.
 (defvar chartprog-exec-synchronous-result nil)
 
 (defun chartprog-incoming-synchronous (got result)
-  "Receive synchronize number GOT from Chart subprocess."
+  "An internal part of chartprog.el.
+Receive synchronize number GOT from Chart subprocess."
   (setq chartprog-exec-synchronous-got got)
   (setq chartprog-exec-synchronous-result result))
-  
+
 (defun chartprog-exec-synchronous (proc &rest args)
-  "Call chart PROC (a symbol) with ARGS (lists, strings, whatever).
+  "An internal part of chartprog.el.
+Call chart PROC (a symbol) with ARGS (lists, strings, etc).
 Return the return value from that call, when it completes."
 
   (setq chartprog-exec-synchronous-seq (1+ chartprog-exec-synchronous-seq))
@@ -365,7 +421,7 @@ Return the return value from that call, when it completes."
   (while (not (= chartprog-exec-synchronous-seq
                  chartprog-exec-synchronous-got)) ;; ignore old abandoned calls
     (if (not (eq 'run (process-status chartprog-process)))
-        (error "Chart process died"))
+        (error "Chart subprocess died"))
     (accept-process-output chartprog-process))
 
   chartprog-exec-synchronous-result)
@@ -375,23 +431,35 @@ Return the return value from that call, when it completes."
 ;; incoming from subprocess
 
 (defun chartprog-incoming-update (symbol-list)
-  "Receive advice from Chart subprocess that SYMBOL-LIST have updated.
-Any in the watchlist are reread, any cached data for `chartprog-latest' is
-discarded."
+  "An internal part of chartprog.el.
+Receive advice from Chart subprocess that the symbols (strings)
+in SYMBOL-LIST have updated.
+Any cached data for these symbols in `chartprog-latest-cache' is
+discarded.
+Any of these symbols in the watchlist are re-read."
   (dolist (symbol symbol-list)
     (remhash symbol chartprog-latest-cache))
+
+  (when (member chartprog-quote-symbol symbol-list)
+    (setq chartprog-quote-changed t))
+  (chartprog-debug-message "chartprog-quote-changed " chartprog-quote-symbol)
+
   (let ((want-list (chartprog-intersection (chartprog-watchlist-symbol-list)
-                                       symbol-list)))
+                                           symbol-list)))
+    (chartprog-debug-message "watchlist want-list " want-list)
     (if want-list
         (chartprog-exec 'latest-get-list want-list))))
 
 (defun chartprog-incoming-message (str)
-  "Receive a free-form message STR from the Chart subprocess."
+  "An internal part of chartprog.el.
+Receive a free-form message STR from the Chart subprocess."
   (message "%s" str))
 
 (defun chartprog-incoming-error (errstr backtrace)
-  "Receive an error message from the Chart subprocess.
-ERRSTR is a string, BACKTRACE is either a string or nil."
+  "An internal part of chartprog.el.
+Receive an error message from the Chart subprocess.
+ERRSTR is a string.
+BACKTRACE is either a string or nil."
   (when backtrace
     (with-current-buffer (get-buffer-create "*chartprog-process-backtrace*")
       (let ((follow (= (point) (point-max))))
@@ -407,27 +475,38 @@ ERRSTR is a string, BACKTRACE is either a string or nil."
 ;;-----------------------------------------------------------------------------
 ;; symbols completion
 
+(defvar chartprog-symbol-history nil
+  "History list of Chart symbols entered by the user.")
+
 (defun chartprog-minibuffer-local-completion-map ()
-  "Inherited `minibuffer-local-completion-map' but with <SPACE> self-inserting.
-Chart symbols can contain spaces, so <SPACE> is best as an ordinary insert,
-not a completion like the default in `minibuffer-local-completion-map'."
+  "An internal part of chartprog.el.
+Return a keymap which is like `minibuffer-local-completion-map'
+but with <SPACE> self-inserting.
+Chart symbols can contain spaces, so <SPACE> is best as an
+ordinary insert, not a completion like the default in
+`minibuffer-local-completion-map'."
   ;; `minibuffer-local-completion-map' might change so must
-  ;; `set-keymap-parent' each time, and if doing that then the keymap is
-  ;; small enough that may as well create a whole fresh one each time
+  ;; `set-keymap-parent' each time, and the keymap is small enough that may
+  ;; as well create a whole fresh one each time
   (let ((m (make-sparse-keymap)))
     (set-keymap-parent m minibuffer-local-completion-map)
     (define-key m " " 'self-insert-command)
     m))
 
 (defvar chartprog-completion-symbols-alist 'uninitialized
-  "Alist of Chart symbols for completing read, or 'uninitialized.
-Call function `chartprog-completion-symbols-alist' instead of reading this
-variable, the function gets the list from the Chart subprocess when
-'uninitialized.")
+  "An internal part of chartprog.el.
+Alist of Chart symbols for completing read, or symbol
+`uninitialized' if symbol list not yet obtained.
+
+Call function `chartprog-completion-symbols-alist' instead of
+using this variable directly.  The function gets the list from
+the Chart subprocess when 'uninitialized.")
 
 (defun chartprog-completion-symbols-alist (&optional dummy)
-  "Return an alist of Chart symbols for completing read.
-Currently there's nothing in the `cdr's, it's just ((SYMBOL) (SYMBOL) ...)."
+  "An internal part of chartprog.el.
+Return an alist of Chart symbols for completing read.
+Currently there's nothing in the `cdr's, it's just
+\((SYMBOL) (SYMBOL) ...)."
   (when (eq 'uninitialized chartprog-completion-symbols-alist)
     (chartprog-with-temp-message "Receiving database symbols ..."
       (setq chartprog-completion-symbols-alist
@@ -435,8 +514,15 @@ Currently there's nothing in the `cdr's, it's just ((SYMBOL) (SYMBOL) ...)."
   chartprog-completion-symbols-alist)
 
 (defun chartprog-incoming-completion-symbols-update ()
-  "Receive advice from Chart subprocess that completion symbols have changed."
+  "An internal part of chartprog.el.
+Receive advice from Chart subprocess that completion symbols have changed."
   (setq chartprog-completion-symbols-alist 'uninitialized))
+
+(defun chartprog-symbol-completion-handler (str pred action)
+  "An internal part of chartprog.el.
+Chart symbol (string) completion handler, for `completing-read'."
+  (chartprog--complete-with-action action (chartprog-completion-symbols-alist)
+                                   str pred))
 
 (defun chartprog-completing-read-symbol (&optional default)
   "Read a Chart symbol using `completing-read'.
@@ -448,8 +534,7 @@ Optional DEFAULT is a string."
     (completing-read (if default
                          (format "Symbol (%s): " default)
                        "Symbol: ")
-                     (chartprog--completion-table-dynamic
-                      'chartprog-completion-symbols-alist)
+                     'chartprog-symbol-completion-handler
                      nil  ;; pred
                      nil  ;; require-match
                      nil  ;; initial-input
@@ -461,36 +546,47 @@ Optional DEFAULT is a string."
 ;; symlist stuff
 
 (defvar chartprog-symlist-history nil
-  "Interactive history list of Chart symlists.")
+  "History list of Chart symlist names entered by the user.")
 
 (defvar chartprog-symlist-alist 'uninitialized
-  "Alist of symlists in Chart.
-Each element is (NAME KEY EDITABLE), where NAME is a string, KEY is a
-symbol, and EDITABLE is t or nil.  NAME is first so the list can be used
+  "An internal part of chartprog.el.
+List of of symlists in Chart, or Lisp symbol `uninitialized' if
+not yet set.  Currently each list element is a list
+    (NAME KEY EDITABLE)
+NAME is a string.
+KEY is a Lisp symbol.
+EDITABLE is t or nil.
+
+NAME is the first in each element so it can be used like an alist
 with `completing-read'.
 
-This is the symbol `uninitialized' when data hasn't yet been read.  See the
-function `chartprog-symlist-alist' for reading and initializing.")
+Call function `chartprog-symlist-alist' instead of using this
+variable directly.  The function gets the list from the Chart
+subprocess when `uninitialized'.")
 
 (defun chartprog-symlist-alist ()
-  "Return the variable `chartprog-symlist-alist', initializing it if necessary."
+  "An internal part of chartprog.el.
+Return the variable `chartprog-symlist-alist', initializing it if
+necessary."
   (when (eq 'uninitialized chartprog-symlist-alist)
     (chartprog-with-temp-message "Receiving symlist info ..."
       (chartprog-exec-synchronous 'get-symlist-alist)))
   chartprog-symlist-alist)
 
 (defun chartprog-incoming-symlist-alist (alist)
-  "Receive the `chartprog-symlist-alist' data from Chart subprocess."
+  "An internal part of chartprog.el.
+Receive the `chartprog-symlist-alist' data from Chart subprocess."
   (setq chartprog-symlist-alist alist)
 
-  ;; freshen name in watchlist, if in use
+  ;; freshen watchlist mode-line symlist name, if any
   (when (get-buffer "*chartprog-watchlist*")
-    (chartprog-watchlist-update-symlist-name))
+    (with-current-buffer "*chartprog-watchlist*"
+      (force-mode-line-update)))
 
   ;; fill Chart menu for watchlist
   (mapcar (lambda (elem)
-            (let ((name (first elem))
-                  (key  (second elem)))
+            (let ((name (car elem))
+                  (key  (cadr elem)))
               (define-key chartprog-watchlist-menu
                 (vector key)
                 (cons name `(lambda ()
@@ -498,58 +594,66 @@ function `chartprog-symlist-alist' for reading and initializing.")
                               (chartprog-watchlist-symlist ',key))))))
           (reverse chartprog-symlist-alist)))
 
+(defun chartprog-incoming-symlist-list-changed (alist)
+  "An internal part of chartprog.el.
+Receive advice from Chart subprocess that the symlist list
+entries have changed.  For example a name change."
+
+  ;; if watchlist then ask for a fresh symlist alist
+  (when (get-buffer "*chartprog-watchlist*")
+    (chartprog-exec 'get-symlist-alist)))
+
+(defun chartprog-symlist-find (key &optional no-freshen)
+  (let (ret)
+    (unless (and no-freshen
+                 (eq 'uninitialized chartprog-symlist-alist))
+      (dolist (elem (chartprog-symlist-alist))
+        (if (eq key (cadr elem))
+            (setq ret elem))))
+    ret))
+
 (defun chartprog-symlist-editable-p (key)
-  "Return true if symlist KEY (a Lisp symbol) is editable."
-  (third (find key (chartprog-symlist-alist) :key 'second)))
+  "Return non-nil if symlist KEY (a Lisp symbol) is editable."
+  (nth 2 (chartprog-symlist-find key)))
 
 
 ;;-----------------------------------------------------------------------------
 ;; symlist name completion
 
-;; emacs 22 has `dynamic-completion-table' to construct a function like
-;; this, but emacs 21 and xemacs 21 don't
-(defun chartprog-symlist-completion (str pred all)
+(defun chartprog-symlist-completion-handler (str pred action)
   "Chart symlist completion handler, for `completing-read'."
-  (cond ((null all)
-         (try-completion str (chartprog-symlist-alist) pred))
-        ((eq all t)
-         (all-completions str (chartprog-symlist-alist) pred))
-        ((eq all 'lambda)
-         (test-completion str (chartprog-symlist-alist) pred))))
-
-;; emacs has `compare-strings' to do this, but xemacs doesn't
-(defun chartprog-string-prefix-ci-p (part str)
-  "Return t if PART is a prefix of STR, case insensitive."
-  (and (>= (length str) (length part))
-       (string-equal (upcase part)
-                     (upcase (substring str 0 (length part))))))
+  (chartprog--complete-with-action action (chartprog-symlist-alist)
+                                   str pred))
 
 (defun chartprog-completing-read-symlist ()
-  "Read a Chart symlist using `completing-read'.
-The return is the symlist key (a symbol), eg. 'favourites."
+  "An internal part of chartprog.el.
+Read a Chart symlist using `completing-read'.
+The user is presented with the symlist names.
+The return is the symlist key, a Lisp symbol such as `favourites'."
   (let ((minibuffer-local-completion-map (chartprog-minibuffer-local-completion-map))
         (completion-ignore-case t))
     (let ((name (completing-read "Symlist: "
-                                 'chartprog-symlist-completion
+                                 'chartprog-symlist-completion-handler
                                  nil  ;; pred
                                  t    ;; require-match
                                  nil  ;; initial-input
                                  'chartprog-symlist-history)))
-      ;; completing-read with require-match will return with just a prefix
-      ;; of one or more names, go with the first
-      (second (assoc* name (chartprog-symlist-alist)
-                      :test 'chartprog-string-prefix-ci-p)))))
+      (cadr (assoc name (chartprog-symlist-alist))))))
 
 
 ;;-----------------------------------------------------------------------------
 ;; watchlist funcs
 
 (defvar chartprog-watchlist-current-symlist 'favourites
-  "Current symlist being displayed (it's Scheme `symlist-key').")
+  "An internal part of chartprog.el.
+The key of the current symlist being displayed in the watchlist.
+This is a symbol such as `favourites', or `user-1'.")
 
 (defun chartprog-watchlist-find (symbol)
-  "Move point to line for SYMBOL.
-Return true if found, or return nil and leave point unchanged if not found."
+  "An internal part of chartprog.el.
+Move point to line for Chart SYMBOL (a string).
+Return non-nil if found.
+Return nil and leave point unchanged if not found."
   (let ((oldpos (point))
         found)
     (goto-char (point-min))
@@ -561,11 +665,15 @@ Return true if found, or return nil and leave point unchanged if not found."
     found))
 
 (defun chartprog-watchlist-symbol ()
-  "Return symbol on current watchlist line, or nil if none."
+  "An internal part of chartprog.el.
+Return Char symbol (a string) on current watchlist line, or nil
+if none."
   (get-text-property (point-at-bol) 'chartprog-symbol))
 
 (defun chartprog-watchlist-symbol-list ()
-  "Return list of symbols in watchlist buffer."
+  "An internal part of chartprog.el.
+Return list of Chart symbols (strings) in watchlist buffer.
+If no watchlist buffer then return nil."
   (and (get-buffer "*chartprog-watchlist*") ;; ignore if gone
        (with-current-buffer "*chartprog-watchlist*"
          (let (lst)
@@ -582,29 +690,36 @@ Return true if found, or return nil and leave point unchanged if not found."
 ;; watchlist display
 
 (defun chartprog-incoming-symlist-update (key-list)
-  "Receive advice from Chart subprocess that symlists KEY-LIST have updated."
+  "An internal part of chartprog.el.
+Receive advice from Chart subprocess that symlists KEY-LIST have updated.
+KEY-LIST is a list of Lisp symbols."
   (if (and (get-buffer "*chartprog-watchlist*") ;; ignore if gone
            (memq chartprog-watchlist-current-symlist key-list))
       (chartprog-exec 'get-symlist chartprog-watchlist-current-symlist)))
 
 (defun chartprog-incoming-latest-line-list (lst)
-  "Receive LST of latest elements (SYMBOL STR FACE HELP)."
+  "An internal part of chartprog.el.
+Receive LST of latest elements (SYMBOL STR FACE HELP).
+The watchlist buffer is updated with the new data."
   (when (get-buffer "*chartprog-watchlist*") ;; ignore if gone
     (with-current-buffer "*chartprog-watchlist*"
       (chartprog-save-row-col
-        (let ((buffer-read-only nil))
+        (let ((inhibit-read-only t))
           (dolist (elem lst) ;; elements (SYMBOL STR FACE)
-            (when (chartprog-watchlist-find (first elem))
+            (when (chartprog-watchlist-find (car elem))
               (delete-region (point-at-bol) (point-at-eol))
-              (insert (propertize (second elem)
-                                  'chartprog-symbol (first elem)
-                                  'face (third elem)
-                                  'help-echo (fourth elem))))))))))
+              (insert (propertize (cadr elem)
+                                  'chartprog-symbol (car elem)
+                                  'face             (nth 2 elem)
+                                  'help-echo        (nth 3 elem))))))))))
 
 (defun chartprog-incoming-symlist-list (symlist symbol-list)
-  "Receive SYMLIST contents SYMBOL-LIST from Chart subprocess."
+  "An internal part of chartprog.el.
+SYMLIST is a Lisp symbol, a symlist key.
+SYMBOL-LIST is a list of Chart symbols (strings) which are the
+contents of that symlist."
   (when (and (get-buffer "*chartprog-watchlist*")              ;; ignore if gone
-             (eq symlist chartprog-watchlist-current-symlist)) ;; stray response
+             (eq symlist chartprog-watchlist-current-symlist)) ;; or if stray response
     (with-current-buffer "*chartprog-watchlist*"
       (let (alst need)
 
@@ -613,15 +728,14 @@ Return true if found, or return nil and leave point unchanged if not found."
           (goto-char (point-min))
           (while (let ((symbol (chartprog-watchlist-symbol)))
                    (when symbol
-                     (setq alst
-                           (acons symbol
-                                  (buffer-substring (point)
-                                                    (1+ (point-at-eol)))
-                                  alst)))
+                     (push (cons symbol
+                                 (buffer-substring (point)
+                                                   (1+ (point-at-eol))))
+                           alst))
                    (= 0 (forward-line)))))
 
         ;; fill buffer, and use existing lines from alst
-        (let ((buffer-read-only nil))
+        (let ((inhibit-read-only t))
           (chartprog-save-row-col
             (erase-buffer)
             (dolist (symbol symbol-list)
@@ -631,11 +745,13 @@ Return true if found, or return nil and leave point unchanged if not found."
                             (propertize (concat symbol "\n")
                                         'chartprog-symbol symbol)))))
             (unless symbol-list
-              (insert (format "\n\n(Empty list, use `%s' to add a symbol.)"
-                              (key-description
-                               (car (where-is-internal
-                                     'chartprog-watchlist-add
-                                     chartprog-watchlist-map))))))))
+              (if (chartprog-symlist-editable-p chartprog-watchlist-current-symlist)
+                  (insert (format "\n\n(Empty list, use `%s' to add a symbol.)"
+                                  (key-description
+                                   (car (where-is-internal
+                                         'chartprog-watchlist-add
+                                         chartprog-watchlist-map)))))
+                (insert (format "\n\n(Empty list.)"))))))
         (if need
             (chartprog-exec 'latest-get-list (nreverse need)))))))
 
@@ -645,13 +761,16 @@ Return true if found, or return nil and leave point unchanged if not found."
 
 (defconst chartprog-header-line-scrolling-align0
   (propertize " " 'display '((space :align-to 0)))
-  "An align-to 0 space string.")
+  "An internal part of chartprog.el.
+An string which is space with align-to 0 property.")
 
 (defvar chartprog-header-line-scrolling-str nil
-  "Buffer local full `header-line-format' string to be hscrolled.")
+  "An internal part of chartprog.el.
+Buffer local full `header-line-format' string to be hscrolled.")
 
 (defun chartprog-header-line-scrolling-align ()
-  "Return a string which will align to column 0 in a `header-line-format'."
+  "An internal part of chartprog.el.
+Return a string which will align to column 0 in a `header-line-format'."
   (if (string-match "^21\\." emacs-version)
       (and (display-graphic-p)
            (concat " "  ;; the fringe
@@ -661,14 +780,16 @@ Return true if found, or return nil and leave point unchanged if not found."
     chartprog-header-line-scrolling-align0))
 
 (defun chartprog-header-line-scrolling-eval ()
-  "Install hscrolling header line updates on the windows of the current frame."
+  "An internal part of chartprog.el.
+Install hscrolling header line updates on the windows of the current frame."
   (concat (chartprog-header-line-scrolling-align)
           (substring chartprog-header-line-scrolling-str
                      (min (length chartprog-header-line-scrolling-str)
                           (window-hscroll)))))
 
 (defun chartprog-header-line-scrolling (str)
-  "Set STR as `header-line-format' and make it follow any hscrolling."
+  "An internal part of chartprog.el.
+Set STR as `header-line-format' and make it follow any hscrolling."
   (set (make-local-variable 'chartprog-header-line-scrolling-str) str)
   (set (make-local-variable 'header-line-format)
        '(:eval (chartprog-header-line-scrolling-eval))))
@@ -678,7 +799,8 @@ Return true if found, or return nil and leave point unchanged if not found."
 ;; watchlist commands
 
 (defvar chartprog-watchlist-menu (make-sparse-keymap "Chart")
-  "Menu for Chart watchlist.")
+  "An internal part of chartprog.el.
+Menu for Chart watchlist.")
 
 (defvar chartprog-watchlist-map
   (let ((m (make-sparse-keymap)))
@@ -698,12 +820,13 @@ Return true if found, or return nil and leave point unchanged if not found."
   "Keymap for Chart watchlist.")
 
 (defun chartprog-watchlist-want-edit ()
-  "Check that the watchlist being displayed is editable."
+  "An internal part of chartprog.el.
+Check that the watchlist being displayed is editable."
   (or (chartprog-symlist-editable-p chartprog-watchlist-current-symlist)
       (error "This list is not editable")))
 
 (defun chartprog-watchlist-detail ()
-  "Show detail for this line (stock name and full quote/last times)."
+  "Show detail for this line (stock name and full quote and times)."
   (interactive)
   (let ((str (get-text-property (point-at-bol) 'help-echo)))
     (if str
@@ -714,12 +837,13 @@ Return true if found, or return nil and leave point unchanged if not found."
 Use \\[chartprog-watchlist-yank] to yank it back at a new position."
   (interactive)
   (chartprog-watchlist-want-edit)
-  (let ((buffer-read-only nil))
+  (let ((inhibit-read-only t))
     (save-excursion
       (beginning-of-line)
       (kill-line 1)))
   (chartprog-exec 'symlist-delete chartprog-watchlist-current-symlist
-              (count-lines (point-min) (point-at-bol)) 1))
+                  (count-lines (point-min) (point-at-bol))
+                  1))
 
 (defun chartprog-watchlist-kill-region ()
   "Kill watchlist region between point and mark into the kill ring.
@@ -730,27 +854,38 @@ Use \\[chartprog-watchlist-yank] to yank them back at a new position."
   (let* ((point-row (count-lines (point-min) (point)))
          (mark-bol  (save-excursion (goto-char (mark)) (point-at-bol)))
          (mark-row   (count-lines (point-min) mark-bol)))
-    (let ((buffer-read-only nil))
+    (let ((inhibit-read-only t))
       (kill-region mark-bol (point)))
     (chartprog-exec 'symlist-delete chartprog-watchlist-current-symlist
-                (min point-row mark-row)
-                (abs (- point-row mark-row)))))
+                    (min point-row mark-row)
+                    (abs (- point-row mark-row)))))
+
+(defun chartprog-watchlist-mode-line-symlist-name ()
+  "An internal part of chartprog.el.
+Return the name of the current symlist, for display in the mode line."
+  (let ((name (car (chartprog-symlist-find
+                    chartprog-watchlist-current-symlist
+                    t)))) ;; no freshen
+    (when name
+      (when (> (length name) 20)
+        (setq name (concat (substring name 0 17) "...")))
+      (setq name (concat " " name)))
+    name))
 
 (defun chartprog-watchlist-update-symlist-name ()
   "Update the symlist name shown in the mode line."
-  (with-current-buffer "*chartprog-watchlist*"
+
+  '(with-current-buffer "*chartprog-watchlist*"
     (setq mode-name (concat "Watchlist - "
-                            (first (find chartprog-watchlist-current-symlist
-                                         (chartprog-symlist-alist)
-                                         :key 'second))))))
+                            (car (chartprog-symlist-find
+                                  chartprog-watchlist-current-symlist))))))
 
 (defun chartprog-watchlist-symlist (symlist)
   "Select SYMLIST to view."
   (interactive (list (chartprog-completing-read-symlist)))
   (unless (eq symlist chartprog-watchlist-current-symlist)
     (chartprog-exec 'get-symlist symlist))
-  (setq chartprog-watchlist-current-symlist symlist)
-  (chartprog-watchlist-update-symlist-name))
+  (setq chartprog-watchlist-current-symlist symlist))
 
 (defun chartprog-watchlist-add (symbol)
   "Add a symbol to the watchlist (after the current one).
@@ -762,9 +897,9 @@ SYMBOL is read from the minibuffer, with completion from the database symbols."
     (beginning-of-line)
     (forward-line)
     (chartprog-exec 'symlist-insert chartprog-watchlist-current-symlist
-                (count-lines (point-min) (point)) ;; position
-                (list symbol))
-    (let ((buffer-read-only nil))
+                    (count-lines (point-min) (point)) ;; position
+                    (list symbol))
+    (let ((inhibit-read-only t))
       (insert (propertize (concat symbol "\n") 'chartprog-symbol symbol)))
     (forward-line -1)
     (chartprog-exec 'latest-get-list (list symbol))
@@ -786,9 +921,9 @@ Only lines from the watchlist buffer can be yanked
           (error "Can only yank killed watchlist line(s)"))
       (beginning-of-line)
       (chartprog-exec 'symlist-insert chartprog-watchlist-current-symlist
-                  (count-lines (point-min) (point)) ;; position
-                  symbol-list)
-      (let ((buffer-read-only nil))
+                      (count-lines (point-min) (point)) ;; position
+                      symbol-list)
+      (let ((inhibit-read-only t))
         (yank)))))
 
 (defun chartprog-watchlist-undo ()
@@ -797,28 +932,28 @@ Only lines from the watchlist buffer can be yanked
   (error "Sorry, not working yet")
 
   (chartprog-watchlist-want-edit)
-  (let ((buffer-read-only nil))
+  (let ((inhibit-read-only t))
     (undo)))
 
 (defun chartprog-watchlist-refresh (arg)
   "Refresh watchlist quotes.
 With a prefix ARG (\\[universal-argument]), refresh only current line.
 
-For the Alerts list, all symbols with alert levels are refreshed, and the
-list contents updated accordingly.  (It's not merely those already showing
-which are refreshed.)"
+For the Alerts list, all symbols with alert levels are refreshed,
+and the list contents updated accordingly.  (So not merely those
+already showing which are refreshed.)"
 
   (interactive "P")
-  ;; updates from the subprocess with come with an in-progress face, but
-  ;; apply that here explicitly to get it shown immediately
+  ;; updates from the subprocess will come with an in-progress face, but
+  ;; apply that here explicitly to have it show immediately
   (if arg
       (progn ;; one symbol
-        (let ((buffer-read-only nil))
+        (let ((inhibit-read-only t))
           (add-text-properties (point-at-bol) (point-at-eol)
                                (list 'face 'chartprog-in-progress)))
         (chartprog-exec 'request-explicit (list (chartprog-watchlist-symbol))))
     (progn ;; whole list
-      (let ((buffer-read-only nil))
+      (let ((inhibit-read-only t))
         (add-text-properties (point-min) (point-max)
                              (list 'face 'chartprog-in-progress)))
       (chartprog-exec 'request-explicit-symlist chartprog-watchlist-current-symlist))))
@@ -857,21 +992,23 @@ terminal with `\\[chartprog-watchlist-detail]'."
     (sit-for 0)
     (kill-all-local-variables)
     (use-local-map chartprog-watchlist-map)
-    (setq major-mode 'chart-watchlist
-          mode-name  "Watchlist"
-          truncate-lines t
+    (setq major-mode       'chart-watchlist
+          mode-name        "Watchlist"
+          truncate-lines   t
           buffer-read-only t
-          chartprog-watchlist-current-symlist 'favourites
-          ;; header-line-format "Symbol       bid/offer     last  change    low    high    volume   when   note"
-          )
+          chartprog-watchlist-current-symlist 'favourites)
     (chartprog-header-line-scrolling "Symbol       bid/offer     last  change    low    high    volume   when   note")
+
+    (set (make-local-variable 'mode-line-buffer-identification)
+         (append (default-value 'mode-line-buffer-identification)
+                 '((:eval (chartprog-watchlist-mode-line-symlist-name)))))
 
     (when (fboundp 'make-local-hook) ;; "obsolete" in emacs21
       (make-local-hook 'kill-buffer-hook)) ;; for xemacs21
     (add-hook 'kill-buffer-hook 'chartprog-process-kill t t)
 
     (make-local-variable 'window-scroll-functions)
-    (chartprog-exec 'get-symlist chartprog-watchlist-current-symlist)
+    (chartprog-exec 'get-symlist     chartprog-watchlist-current-symlist)
     (chartprog-exec 'request-symlist chartprog-watchlist-current-symlist)
     (chartprog-exec 'get-symlist-alist)
     (run-hooks 'chartprog-watchlist-hook)))
@@ -906,16 +1043,37 @@ terminal with `\\[chartprog-watchlist-detail]'."
                     (setq str (concat "^" (substring str 1))))
                 str)))))
 
+(defvar chartprog-quote-symbol nil)
+
 ;;;###autoload
 (defun chart-quote (symbol)
   "Show a quote in the message area for the Chart stock SYMBOL.
-Interactively SYMBOL is read from the minibuffer, the default is the symbol
-at point in the current buffer."
+Interactively SYMBOL is read from the minibuffer, the default is
+the symbol at point.
+
+A fresh quote is downloaded like an update in the watchlist.
+
+The current quote is shown with `chartprog-in-progress' face
+until it arrives.  \\[keyboard-quit] in the usual way to stop waiting."
+
   (interactive (list (chartprog-completing-read-symbol (thing-at-point
                                                         'chart-symbol))))
   (message "Fetching ...")
-  (let ((elem (chartprog-exec-synchronous 'quote-one symbol)))
-    (message "%s" (propertize (second elem) 'face (third elem)))))
+  (setq chartprog-quote-symbol symbol)
+  (setq chartprog-quote-changed t)
+  (chartprog-exec 'request-explicit (list symbol))
+
+  (while chartprog-quote-symbol
+    (when chartprog-quote-changed
+      (setq chartprog-quote-changed nil)
+      (let* ((elem (chartprog-exec-synchronous 'quote-one symbol))
+             (face (nth 2 elem)))
+        (message "%s" (propertize (cadr elem) 'face face))
+        (redisplay t)
+        (when (not (eq face 'chartprog-in-progress))
+          (setq chartprog-quote-symbol nil))))
+    (if chartprog-quote-symbol
+        (accept-process-output))))
 
 ;;;###autoload
 (defun chart-quote-at-point ()
@@ -927,40 +1085,84 @@ at point in the current buffer."
 ;;-----------------------------------------------------------------------------
 ;; latest from elisp
 
-(defvar chartprog-latest-record-calls nil)
+(defvar chartprog-latest-record-calls nil
+  "An internal part of chartprog.el.
+This is a vector containing a list of Chart symbols (strings).
+It's a list in vector, not just a list, so that this variable can
+be let-bound to make nested recordings.")
 
 (defvar chartprog-latest-cache
   (make-hash-table :test 'equal :weakness 'value)
-  "Hash table, key is a chart symbol (a string), value is a latest record.")
+  "An internal part of chartprog.el.
+A hash table SYMBOL => LATEST-RECORD.
+The key is a Chart symbol (a string).
+The value is a latest record (a plist).")
 
 ;;;###autoload
 (defun chart-latest (symbol &optional field scale)
   "Return the latest price for SYMBOL (a string) from Chart.
-If there's no information available (an unknown stock, not online and
-nothing cached, or whatever) the return is nil.
+If there's no information available (an unknown symbol, not
+online and nothing cached, etc) then return is nil.
 
-FIELD is a symbol (a Lisp symbol) for what data to return.  The default is
-`last' which is the last price, other possibilities are: name, bid, offer,
-open, high, low, change, volume, decimals, note.  Which fields actually have
-data depends on the data source.
+This function can be used to get Chart prices in Lisp code.  It
+reads the Chart database (using the chart subprocess) but does
+not download anything.  Prices are cached so getting multiple
+fields doesn't re-query the subprocess.  If using this function
+in a SES spreadsheet then see `chart-ses-refresh' to download
+prices for symbols used in the spreadsheet.
 
-SCALE is a power of 10 to apply to prices.  For example if SCALE is 2 then a
-price 1.23 is returned as 123.  This can be useful for instance if you want
-to work in cents but quotes are in dollars.  The default is 0, for no
-scaling.
+----
+FIELD is a Lisp symbol for what data to return.  The default is
+`last' which is the last traded price.  The possible FIELDs are
+as follows.  Which ones actually have data depends on the data
+source.
 
-FIELD `decimals' is how many decimal places Chart is using for prices
-internally.  Internally prices are kept as an integer and count of decimals.
-Using this value for SCALE will ensure an integer return.
+    name           string, or nil
+    bid            \\=\\
+    offer           |
+    open            |  price, or nil
+    high            |
+    low             |
+    last            |
+    change         /
+    volume         number, or nil
+    note           string, or nil
 
-FIELD `name' is the stock or commodity name as a string, or nil.  FIELD
-`note' is a string with extra notes, like ex-dividend or limit up, or
-nil."
+`name' is the stock or commodity name as a string, or nil.
 
+`volume' is in whatever unit the stock or commodity uses, such as
+number of shares or number of contracts.  Usually it's an integer
+but could be quite large (automatically promoted to a flonum as
+necessary).
+
+`note' is a string with extra notes, like a note about
+ex-dividend today or trading halted at limit up.  nil if no
+notes.
+
+SCALE is how many places to move the decimal point down.  For
+example if SCALE is 2 then price 1.23 is returned as 123.  This
+is good for working in cents when quotes are in dollars, etc."
+
+  ;; FIXME: Umm, always flonums?
+  ;; Prices are returned as flonums of the relevant currency, or if
+  ;; the price is an integer then a fixnum.
+  ;; If
+  ;; prices have fractions of a cent they they might still be flonums.
+  
+  ;; In the distant past there was a `decimals' field which was how many
+  ;; decimal places on prices.  Now always 0.
+  ;;     decimals       integer
+  ;; `decimals' is how many decimal places Chart uses for the
+  ;; prices internally.  Internally prices are kept as an integer and
+  ;; count of decimals.  Using this value for SCALE will ensure an
+  ;; integer return.
+  
   (unless (stringp symbol)
-    (error "Not a chart symbol (should be a string)"))
+    (error "Not a Chart symbol (should be a string)"))
   (if chartprog-latest-record-calls
-      (push symbol (aref chartprog-latest-record-calls 0)))
+      (unless (member symbol (aref chartprog-latest-record-calls 0))
+        (aset chartprog-latest-record-calls 0
+              (cons symbol (aref chartprog-latest-record-calls 0)))))
   (unless field
     (setq field 'last))
   (let ((latest (gethash symbol chartprog-latest-cache)))
@@ -986,35 +1188,54 @@ nil."
 ;;;###autoload
 (defun chart-ses-refresh ()
   "Refresh Chart prices in a SES spreadsheet.
-`ses-recalculate-all' is run first to find what `chartprog-latest' prices are
-required, then it's run again after downloading new data for those.
+`ses-recalculate-all' is run first to find what `chart-latest'
+prices are required.  Then quotes for those symbols are
+downloaded and `ses-recalculate-all' run a second time to update
+the spreadsheet with the new prices.
 
-If the second recalculate uses prices for further symbols (perhaps through
-tricky conditionals), then those are downloaded and the recalculate done
-again.  This is repeated until all prices used have been downloaded."
+If the second `ses-recalculate-all' uses prices for further
+symbols, perhaps due to tricky conditionals in spreadsheet
+formulas, then another downloaded and `ses-recalculate-all' is
+done.  This is repeated until all prices used in the recalculate
+have been downloaded."
 
   (interactive)
-  (let ((chartprog-latest-record-calls (vector nil))
-        fetched)
-    (while
-        (progn
-          (ses-recalculate-all)
-          (let ((more (set-difference (aref chartprog-latest-record-calls 0)
-                                      fetched)))
-            (and more
-                 (progn
-                   (chartprog-with-temp-message "Downloading quotes ..."
-                     (chartprog-exec-synchronous 'request-symbols-synchronous
-                                                 more))
-                   (setq fetched (nconc more fetched))
-                   t)))))))
+  (let (fetched want)
+    (while (let ((record
+                  (let ((chartprog-latest-record-calls (vector nil)))
+                    (ses-recalculate-all)
+                    (aref chartprog-latest-record-calls 0)))
+                 want)
 
+             ;; want symbols not already fetched
+             (dolist (symbol record)
+               (unless (member symbol fetched)
+                 (push symbol want)))
+
+             (when want
+               (chart-ses-refresh-download want)
+               (setq fetched (nconc want fetched))
+               t)))))
+
+(defun chart-ses-refresh-download (symbol-list)
+  "An internal part of chartprog.el.
+Download the symbols (strings) in SYMBOL-LIST for a SES
+spreadsheet update."
+  (chartprog-with-temp-message (format "Downloading %d quote(s) ..."
+                                       (length symbol-list))
+    (chartprog-exec 'request-explicit symbol-list)
+
+    (while symbol-list
+      (accept-process-output)
+      (dolist (symbol symbol-list)
+        (if (not (eq (chart-latest symbol 'face) 'chartprog-in-progress))
+            (setq symbol-list (remove symbol symbol-list)))))))
 
 ;;-----------------------------------------------------------------------------
 
 ;; LocalWords: Customizations eg ie watchlist symlist symlists initializing
 ;; LocalWords: hscrolled hscrolling UTF minibuffer tooltip cl synchronize
-;; LocalWords: col init
+;; LocalWords: col init chartprog
 
 (provide 'chartprog)
 

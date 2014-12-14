@@ -28,7 +28,7 @@ use File::Spec;
 use Getopt::Long;
 use Glib 1.200; # for strerror()
 use Encode;
-use Encode::Locale;
+use Encode::Locale 0.02;  # version 0.02 for console_in,console_out
 use List::Util qw(min max);
 use Locale::Messages;
 use Locale::TextDomain 'App-Chart';

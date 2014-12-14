@@ -1,6 +1,6 @@
 # Database creation.
 
-# Copyright 2007, 2008, 2009, 2011 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2011, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -147,7 +147,7 @@ sub initial_database {
   File::Path::mkpath (File::Basename::dirname ($database_filename));
   my $dbh = DBI->connect ("dbi:SQLite:dbname=$database_filename",
                        '', '', {RaiseError=>1});
-  $dbh->{unicode} = 1;
+  $dbh->{sqlite_unicode} = 1;
 
   $dbh->do ('PRAGMA encoding = "UTF-8"');
 
@@ -246,7 +246,7 @@ sub initial_notes {
             filename => Glib::filename_display_name($notes_filename));
 
   my $nbh = nbh();
-  $nbh->{unicode} = 1;
+  $nbh->{sqlite_unicode} = 1;
   $nbh->do ('PRAGMA encoding = "UTF-8"');
 
   $nbh->do ($create_preference);

@@ -1,8 +1,3 @@
-# remember which latests sent, only give 'update' for them
-
-
-
-
 # Copyright 2008, 2009, 2010, 2011, 2014 Kevin Ryde
 
 # This file is part of Chart.
@@ -19,6 +14,11 @@
 # You should have received a copy of the GNU General Public License along
 # with Chart.  If not, see <http://www.gnu.org/licenses/>.
 
+
+# ENHANCE-ME:
+# remember which latests sent, only give 'update' for them
+
+
 package App::Chart::EmacsMain;
 use 5.010;
 use strict;
@@ -29,7 +29,7 @@ use IO::Handle;
 use Lisp::Reader;
 use Lisp::Printer ('lisp_print');
 use Lisp::Symbol ('symbol');
-use POSIX ('EWOULDBLOCK');
+use POSIX ();
 use Regexp::Common 'whitespace';
 use Locale::TextDomain 'App-Chart';
 
@@ -40,10 +40,10 @@ use constant { DEBUG => 0,
                DEBUG_TTY_FILENAME => '/dev/tty7' };
 
 
-use constant PROTOCOL_VERSION => 101;
+use constant PROTOCOL_VERSION => 102;
 my $emacs_fh;
 
-# reopen $fd on $filename with $omode a POSIX::O_WRONLY etc value
+# reopen $fd on $filename with $omode a POSIX::O_WRONLY() etc value
 # return $fd on success, or undef with $! set on error
 sub fdreopen {
   my ($fd, $filename, $omode) = @_;
@@ -78,14 +78,14 @@ sub main {
   #
   # stdout/stderr fds 1 and 2 put to /dev/null to discard other prints
   my $devnull = File::Spec->devnull;
-  fdreopen (1, $devnull, POSIX::O_WRONLY)
+  fdreopen (1, $devnull, POSIX::O_WRONLY())
     // die "Cannot send STDOUT to $devnull: ", Glib::strerror($!);
   POSIX::dup2 (1, 2) // die;
 
   if (DEBUG) {
     # fds 1 and 2 changed (again) to DEBUG_TTY_FILENAME, if it's possible to
     # open that
-    if (fdreopen (1, DEBUG_TTY_FILENAME, POSIX::O_WRONLY)) {
+    if (fdreopen (1, DEBUG_TTY_FILENAME, POSIX::O_WRONLY())) {
       POSIX::dup2 (1, 2) // die "Cannot dup fd 1 to fd 2: $!";
 
       print "EmacsMain started, emacs_fh fd=",fileno($emacs_fh),
@@ -114,6 +114,7 @@ sub main {
   $dirb->connect ('symlist-content-inserted', \&_do_symlist_content_inserted);
   $dirb->connect ('symlist-content-deleted',  \&_do_symlist_content_deleted);
   $dirb->connect ('symlist-content-reordered',\&_do_symlist_content_reordered);
+  $dirb->connect ('symlist-list-changed',     \&_do_symlist_list_changed);
 
   $dirb->connect ('latest-changed', \&send_update);
   $dirb->connect ('data-changed', \&send_update);
@@ -173,7 +174,7 @@ sub _do_read {
     my $got = read STDIN, $buf, 8192, length($buf);
     if (DEBUG >= 2) { print "  got ",$got//'undef'," $!\n"; }
     if (! defined $got) {
-      if ($! == EWOULDBLOCK) { last; }  # no more data for now
+      if ($! == POSIX::EWOULDBLOCK()) { last; }  # no more data for now
       if ($!) {
         print STDERR "Read error: ",Glib::strerror($!),"\n";
       }
@@ -216,6 +217,14 @@ sub call_command {
 #-----------------------------------------------------------------------------
 # broadcast handlers
 
+# 'symlist-list-changed' handler
+sub _do_symlist_list_changed {
+  my ($key, $pos) = @_;
+  if ($key eq 'all' || $key eq 'favourites') {
+    completions_update();
+  }
+  emacs_write (symbol('symlist-list-changed'), [ $key ]);
+}
 # 'symlist-content-changed' handler
 sub _do_symlist_content_changed {
   my ($key, $pos) = @_;
@@ -304,23 +313,27 @@ sub format_price {
   return $nf->format_number ($str, App::Chart::count_decimals($str), 1);
 }
 
+sub latest_to_face {
+  my ($latest) = @_;
+  if ($App::Chart::Gtk2::Job::Latest::inprogress{$latest->{'symbol'}}) {
+    return symbol('chartprog-in-progress');
+  }
+  my $change = $latest->{'change'} || 0;
+  if ($change > 0) {
+    return  symbol('chartprog-up');
+  } elsif ($change < 0) {
+    return symbol('chartprog-down');
+  }
+  return undef;
+}
+
 # return element list [$symbol, $string, $face, $help]
 sub latest_elem {
   my ($symbol) = @_;
   require App::Chart::Latest;
   my $latest = App::Chart::Latest->get ($symbol);
 
-  my $face;
-  if ($App::Chart::Gtk2::Job::Latest::inprogress{$symbol}) {
-    $face = symbol('pchart-in-progress');
-  } else {
-    my $change = $latest->{'change'} || 0;
-    if ($change > 0) {
-      $face = symbol('pchart-up');
-    } elsif ($change < 0) {
-      $face = symbol('pchart-down');
-    }
-  }
+  my $face = latest_to_face($latest);
 
   my $help = join (' - ', $symbol, $latest->{'name'}//'') . "\n";
   if (my $quote_date = $latest->{'quote_date'}) {
@@ -396,6 +409,9 @@ sub emacs_command_noop {
 #-----------------------------------------------------------------------------
 # symlist manipulations
 
+# (request-symlist KEY)
+# Begin a download of latest prices for all symbols in symlist KEY.
+#
 sub emacs_command_request_symlist {
   my ($key) = @_;
   require App::Chart::Gtk2::Symlist;
@@ -408,6 +424,8 @@ sub emacs_command_request_explicit_symlist {
   goto &emacs_command_request_symlist;
 }
 
+# (symlist-delete KEY POS COUNT)
+#
 sub emacs_command_symlist_delete {
   my ($key, $pos, $count) = @_;
   my $symlist = App::Chart::Gtk2::Symlist->new_from_key ($key);
@@ -494,29 +512,17 @@ sub emacs_command_get_symlist_alist {
 
 
 #-----------------------------------------------------------------------------
-# individual quotes
+# individual `chart-quote'
 
-# (define (string-append-sep s1 sep s2)
-#   (cond ((string-null? s1)
-# 	 s2)
-# 	((string-null? s2)
-# 	 s1)
-# 	(else
-# 	 (string-append s1 sep s2))))
-# 
-# # return when SYMBOL has been retrieved
-# (define (latest-explicit-synchronous symbol)
-#   (call-with-current-continuation
-#    (lambda (cont)
-#      (define (callback symbol-list)
-#        (if (and (not (latest-in-progress? symbol))
-# 		(member symbol symbol-list))
-# 	   (begin
-# 	     (notify-disconnect 'latest-update callback)
-# 	     (cont #f))))
-#      (notify-connect 'latest-update callback)
-#      (c-main-enq! latest-request-explicit (list symbol))
-#      (c-main-goto-top))))
+# Return [$symbol, $string, $face, $help] intended for display in the
+# message area of an `M-x chart-quote' single-symbol quote.
+#
+# The return is the current latest quote.  Nothing is downloaded.  (That's
+# done by a separate `request-explicit'.)
+#
+# The symbol name and timezone are appended to the $string returned so as to
+# show that as a second line in the message area (in GNU emacs which has
+# multi-line messages, but not XEmacs circa its 21.4).
 # 
 sub emacs_command_quote_one {
   my ($symbol) = @_;
@@ -531,15 +537,17 @@ sub emacs_command_quote_one {
   # " - name", when the name is available
   my $latest = App::Chart::Latest->get ($symbol);
   if (my $name = $latest->{'name'}) {
-    $extra = join (' - ', $extra, $name);
+    if ($extra) {
+      $extra = join (' - ', $extra, $name);
+    } else {
+      $extra = $name;
+    }
   }
-
   my $timezone = App::Chart::TZ->for_symbol($symbol);
   if ($timezone != App::Chart::TZ->loco) {
     $extra = join ('  ', $extra, '[' . $timezone->name . ']');
   }
-
-  $elem->[0] = join ("\n", $elem->[0], $extra);
+  $elem->[1] = join ("\n", $elem->[1], $extra);
 
   return $elem;
 }
@@ -565,6 +573,7 @@ sub emacs_command_get_latest_record {
            symbol('decimals'), 0,
            symbol('note'),     $latest->{'note'},
            symbol('source'),   $latest->{'source'},
+           symbol('face'),     latest_to_face($latest),
          ];
 }
 

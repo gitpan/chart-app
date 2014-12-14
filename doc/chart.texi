@@ -12,7 +12,7 @@
 @copying
 This manual describes how to install and use Chart, version @value{VERSION}.
 
-Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012 Kevin Ryde
+Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2014 Kevin Ryde
 
 Chart is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -1351,7 +1351,7 @@ The following graph shows how the weights decrease for @math{N=15}.
 The double exponential moving average (DEMA) and triple exponential moving
 average (TEMA) are combination EMAs (@pxref{Exponential Moving Average}) by
 Patrick Mulloy, designed to track recent prices even more closely than the
-plain EMA.  The calculation for DEMA is
+plain EMA@.  The calculation for DEMA is
 
 @tex
 $$ DEMA = 2 \times EMA[N] - EMAofEMA[N] $$
@@ -1757,10 +1757,10 @@ which projects from yesterday's REMA according to whether it was rising or
 falling relative to the REMA of the day before.  The two parts are averaged
 with a weighting 1 for the EMA part and @m{\lambda,lambda} for the projection.
 
-If @m{\lambda,lambda} is zero then REMA is the same as a plain EMA.  Satchwell
-suggests fairly small values for @m{\lambda,lambda}, and the default in Chart
-is 0.5.  John Ehlers noted that if @m{\lambda,lambda} is large REMA becomes
-unstable.
+If @m{\lambda,lambda} is zero then REMA is the same as a plain EMA@.
+Satchwell suggests fairly small values for @m{\lambda,lambda}, and the default
+in Chart is 0.5.  John Ehlers noted that if @m{\lambda,lambda} is large REMA
+becomes unstable.
 
 In any case the result of the calculation is still an average of past prices
 with a certain set of weights that progressively decrease for older data.  The
@@ -1844,7 +1844,7 @@ DEMA (@pxref{Double and Triple Exponential Moving Average}) and a plain EMA
 
 A given ``volume factor'' V (default 0.7) controls how much of the DEMA is
 used.  The factor ranges from 0 which gives a plain EMA, up to 1 which gives a
-full DEMA.  Values in between are a combination.  The formula for this
+full DEMA@.  Values in between are a combination.  The formula for this
 ``generalized DEMA'' is
 
 @tex
@@ -3371,12 +3371,11 @@ trading range and suggesting a reversal in price is likely.
 @anchor{EMA of EMA}
 @section EMA of EMA
 
-Applying an EMA a second time gives a quite different
-result from a plain EMA.  It's still a weighted average of recent prices, but
-whereas a plain EMA is dominated by the most recent prices, a double EMA
-spreads more broadly, and the latest few days' influence is in fact smaller
-than the peak weights (at about N/2 days back).  The following graph shows the
-weights for @math{N=10}.
+Applying an EMA a second time gives a quite different result from a plain
+EMA@.  It's still a weighted average of recent prices, but whereas a plain EMA
+is dominated by the most recent prices, a double EMA spreads more broadly, and
+the latest few days' influence is in fact smaller than the peak weights (at
+about N/2 days back).  The following graph shows the weights for @math{N=10}.
 
 @myimage{chart-ema-2-weights, EMA of EMA weights graph}
 
@@ -3671,8 +3670,8 @@ change over the past N days.
 Hannula looked at price changes over 10 day period (horizontal distance of 9),
 and this is the default in Chart.  A smoothing parameter is provided too; it
 applies an exponential moving average (@pxref{Exponential Moving Average}) to
-the PFE.  The default is 5 days smoothing, a value of 0 means no smoothing (to
-see the raw values).
+the PFE@.  The default is 5 days smoothing, a value of 0 means no smoothing
+(to see the raw values).
 
 @subsection Additional Resources
 @itemize
@@ -3797,8 +3796,8 @@ of the prices versus a straight line.  This coefficient is written @math{r^2},
 hence the name of the indicator.
 
 For reference, the formulas are as follows, where X values are the closing
-prices and Y values are a straight line 1,2,@dots{},N.  Variance is the square
-of standard deviation (@pxref{Standard Deviation}).
+prices and Y values are a straight line 1,2,@dots{},N@.  Variance is the
+square of standard deviation (@pxref{Standard Deviation}).
 
 @tex
 $$ r^2 = { (\mathop{Covariance} X,Y)^2
@@ -4084,7 +4083,7 @@ High[today] - Low[K]     1
 which is the move from the low K days ago up to today's high, scaled by an
 average of the true range (TR, @pxref{True Range}).  Such terms are calculated
 for each number of days 2, 3, etc, up to the given RWI parameter N, and the
-maximum is the RWI.  The first term for instance is today's high less
+maximum is the RWI@.  The first term for instance is today's high less
 yesterday's low, compared to a two-day average of the true range (yesterday's
 true range and the day before's).  RWI low is similar, but using @math{High[K]
 - Low[today]} for the movement down from past high to today's low.
@@ -4373,11 +4372,11 @@ A triple smoothed EMA is prices smoothed with an EMA then those values
 smoothed again with another EMA and finally a third time with a further EMA
 (all of the same given period).
 
-The result is quite different from a plain EMA.  It's still a weighted average
-of recent prices, but whereas a plain EMA is dominated by the most recent
-prices, a triple EMA spreads much more broadly, and the latest few days'
-influence is in fact smaller than the peak weights (at about N-days back).
-The following graph shows the weights for @math{N=10}.
+The result is quite different from a plain EMA@.  It's still a weighted
+average of recent prices, but whereas a plain EMA is dominated by the most
+recent prices, a triple EMA spreads much more broadly, and the latest few
+days' influence is in fact smaller than the peak weights (at about N-days
+back).  The following graph shows the weights for @math{N=10}.
 
 @myimage{chart-ema-3-weights, EMA of EMA of EMA weights graph}
 
@@ -4999,12 +4998,12 @@ somewhere in your Perl module path (@env{PERL5LIB} etc).
 
 TA-Lib has a Perl interface generated by Swig.  As of version 0.5 the
 interface is statically linked, so once compiled you only need to ensure the
-swig @file{.pm} and @file{.so} files are in your Perl module path.
+generated @file{.pm} and @file{.so} files are in your Perl module path.
 
 Various indicators and averages are available both natively in Chart and in GT
 and/or TA-Lib too.  Sometimes there's subtle differences in the calculations
-near the start of data, but otherwise it's merely a case of more than one way
-to do it.
+near the start of data, but generally it's just ``more than one way to do
+it''.
 
 
 @c ---------------------------------------------------------------------------
@@ -6362,15 +6361,15 @@ for stock and commodity names.
 @cindex XEmacs
 @file{chartprog.el} shows the Chart watchlist and gets quotes within Emacs
 (@CHARTpxreftop{emacs, The Emacs Editor}).  It's designed for Emacs 21 and
-higher, but also works with XEmacs 21 if you have the UTF-8 coding system (see
+higher, and also works with XEmacs 21 if you have the UTF-8 coding system (see
 below).
 
 @cindex Autoload @file{chartprog.el}
 @cindex @file{chartprog-loaddefs.el}
 @cindex @file{.emacs}
 The best way to use @file{chartprog.el} is with autoloads for the commands.
-@file{chartprog-loaddefs.el} is a small file which sets this up, you can add
-the following to your @file{.emacs} file (@pxref{Init File,, The Init File
+@file{chartprog-loaddefs.el} is a small file which sets this up.  Add the
+following to your @file{.emacs} file (@pxref{Init File,, The Init File
 @file{~/.emacs}, emacs, The Emacs Editor}),
 
 @lisp
@@ -6389,7 +6388,7 @@ Code for Emacs, emacs, The Emacs Editor}).
 @c @code{load-path} 
 
 
-@section Quotes
+@section Watchlist and Quotes
 
 @findex @code{chart-watchlist}
 @kbd{M-x chart-watchlist} displays the Favourites list in a buffer.  Key
@@ -6398,12 +6397,12 @@ Code for Emacs, emacs, The Emacs Editor}).
 Alerts list).  The usual @kbd{C-h m} mode help shows other key bindings.
 
 Chart communicates changes to the lists between the Emacs display and a
-running Chart GUI.  So if you've got both open then changes in one are
+running Chart GUI@.  So if you have both open then changes in one are
 reflected in the other a moment later.
 
 @findex @code{chart-quote}
 @kbd{M-x chart-quote} displays a quote for a given symbol in the message area.
-It prompts for the symbol, the default is a symbol at point.  @key{Tab}
+It prompts for the symbol with default a symbol at point.  @key{Tab}
 completion is available (@pxref{Completion,,, emacs, The Emacs Editor}) using
 the database symbols, favourites list, and previously requested symbols.
 
@@ -6433,9 +6432,10 @@ in the display.  Install the MULE-UCS package to add to the builtin
 characters: @uref{http://www.m17n.org}
 
 @item XEmacs 21
-If you use XEmacs 21 you probably know it has no UTF-8 builtin.  To run
-@code{chartprog.el} you must get one of the add-ons providing that, MULE-UCS
-is recommended (@uref{http://www.m17n.org}).
+If you use XEmacs 21 you probably know it has no builtin UTF-8.  To run
+@code{chartprog.el} you must get one of the add-ons providing that.  MULE-UCS
+is recommended (@uref{http://www.m17n.org}), and @code{chartprog.el} will
+attempt to load it automatically.
 @end table
 
 
@@ -6453,23 +6453,28 @@ whatever) the return is @code{nil}.
 @c SYMBOL: F
 
 @var{field} is a lisp symbol for what data to return.  The default is
-@code{last} which is the last price.  The possibilities are:
+@code{last} which is the last traded price.  The possibilities are:
 
 @example
-name bid offer
-open high low last change
-volume note
+name                          string or nil
+bid offer                     \ prices or nil
+open high low last change     /
+volume                        number or nil
+note                          string or nil
 @end example
 
 Which fields actually have data depends on the data source.  @code{name} is
-the stock or commodity name as a string (or @code{nil} if not available).
+the stock or commodity name as a string, or @code{nil} if not available.
 @code{note} is a string with extra notes, such as ex-dividend or limit up, or
-@code{nil} if nothing.
+@code{nil} if no other notes.
 
 @example
 (chart-latest "F" 'volume) @result{} 10492900
 @end example
 @c SYMBOL: F
+
+@code{chart-latest} doesn't download new quotes but just returns existing
+data.
 @end defun
 
 @c The @var{scale} argument is a power of 10 to apply to prices.  For example if
@@ -6503,17 +6508,22 @@ elisp, GNU Emacs Lisp Reference Manual}).  Note that you must @code{(require
 
 @cindex @file{example.ses}
 @code{chart-latest} above can be used in SES (@CHARTpxreftop{ses, Simple Emacs
-Spreadsheet}) to get prices for a portfolio etc.  See @file{emacs/example.ses}
-in the Chart sources for a sample spreadsheet showing this.
+Spreadsheet}) expressions to include prices in a portfolio etc.  See
+@file{emacs/example.ses} in the Chart sources for a sample spreadsheet doing
+this.
+
+Since @code{chart-latest} doesn't download new data an
+@kbd{M-x ses-recalculate-all} just shows existing downloaded quotes
+(@pxref{Formulas, @code{ses-recalculate-all}, Cell formulas, ses, SES: Simple
+Emacs Spreadsheet}).
 
 @findex @code{chart-ses-refresh}
-@kbd{M-x chart-ses-refresh} downloads new prices for any @code{chart-latest}
-usage in a SES spreadsheet, and recalculates with those (@pxref{Formulas,
-@code{ses-recalculate-all}, Cell formulas, ses, SES: Simple Emacs
-Spreadsheet}).  The required symbols are found by tracing the calls to
-@code{chart-latest}, so those calls can be in any sort of complicated formula
-or conditional.
-
+@kbd{M-x chart-ses-refresh} does a combination @code{ses-recalculate-all} and
+download of Chart prices used.  A first recalculate records calls to
+@code{chart-latest} for which prices are used in the spreadsheet, they're
+downloaded, then a second recalculate applies the new data.  (Further rounds
+of download and recalculate are done as necessary if conditionals in
+expressions use yet more symbols.)
 
 @c @item
 @c @cindex @command{gnuserv}

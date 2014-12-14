@@ -6,19 +6,19 @@ Use `M-x chart-ses-refresh' to download.
                                                   
                                                   
   Stock   Quant       Last       Value            
-     GM     500      32.69    16345.00            
-  BRK-A       1      83390    83390.00            
- BHP.AX     800      20.38    16304.00            
-  ^GSPC      10     1231.2    12312.00            
+     GM     500      32.68    16340.00            
+  BRK-A       1     227800   227800.00            
+ BHP.AX     800      28.88    23104.00            
+  ^GSPC      10    2060.31    20603.10            
                                                   
    Cash                       10000.00            
-                     Total $ 138351.00            
+                     Total $ 297847.10            
                                                   
                                                   
                                                   
                                                   
                                                   
-Copyright 2005, 2007 Kevin Ryde                   
+Copyright 2005, 2007, 2014 Kevin Ryde             
                                                   
 This file is part of Chart.                       
                                                   
@@ -89,26 +89,26 @@ If not, see http://www.gnu.org/licenses/.
 
 (ses-cell A9 "GM" "GM" nil (C9))
 (ses-cell B9 500 500 nil (D9))
-(ses-cell C9 32.69 (chart-latest A9) nil (D9))
-(ses-cell D9 16344.999999999998 (* B9 C9) nil (D15))
+(ses-cell C9 32.68 (chart-latest A9) nil (D9))
+(ses-cell D9 16340.0 (* B9 C9) nil (D15))
 (ses-cell E9 nil nil nil nil)
 
 (ses-cell A10 "BRK-A" "BRK-A" nil (C10))
 (ses-cell B10 1 1 nil (D10))
-(ses-cell C10 83390.0 (chart-latest A10) nil (D10))
-(ses-cell D10 83390.0 (* B10 C10) nil (D15))
+(ses-cell C10 227800 (chart-latest A10) nil (D10))
+(ses-cell D10 227800 (* B10 C10) nil (D15))
 (ses-cell E10 nil nil nil nil)
 
 (ses-cell A11 "BHP.AX" "BHP.AX" nil (C11))
 (ses-cell B11 800 800 nil (D11))
-(ses-cell C11 20.38 (chart-latest A11) "%.2f" (D11))
-(ses-cell D11 16304.0 (* B11 C11) nil (D15))
+(ses-cell C11 28.88 (chart-latest A11) "%.2f" (D11))
+(ses-cell D11 23104.0 (* B11 C11) nil (D15))
 (ses-cell E11 nil nil nil nil)
 
 (ses-cell A12 "^GSPC" "^GSPC" nil (C12))
 (ses-cell B12 10 10 nil (D12))
-(ses-cell C12 1231.2 (chart-latest A12) nil (D12))
-(ses-cell D12 12312.0 (* B12 C12) nil (D15))
+(ses-cell C12 2060.31 (chart-latest A12) nil (D12))
+(ses-cell D12 20603.1 (* B12 C12) nil (D15))
 (ses-cell E12 nil nil nil nil)
 
 (ses-cell A13 nil nil nil nil)
@@ -126,7 +126,7 @@ If not, see http://www.gnu.org/licenses/.
 (ses-cell A15 nil nil nil nil)
 (ses-cell B15 nil nil nil nil)
 (ses-cell C15 "Total" "Total" nil nil)
-(ses-cell D15 138351.0 (apply (quote ses+) (ses-range D9 D14)) "$ %.2f" nil)
+(ses-cell D15 297847.1 (apply (quote ses+) (ses-range D9 D14)) "$ %.2f" nil)
 (ses-cell E15 nil nil nil nil)
 
 (ses-cell A16 nil nil nil nil)
@@ -159,7 +159,7 @@ If not, see http://www.gnu.org/licenses/.
 (ses-cell D20 nil nil nil nil)
 (ses-cell E20 nil nil nil nil)
 
-(ses-cell A21 "Copyright 2005, 2007 Kevin Ryde" "Copyright 2005, 2007 Kevin Ryde" nil nil)
+(ses-cell A21 "Copyright 2005, 2007, 2014 Kevin Ryde" "Copyright 2005, 2007, 2014 Kevin Ryde" nil nil)
 (ses-cell B21 *skip* nil nil nil)
 (ses-cell C21 *skip* nil nil nil)
 (ses-cell D21 *skip* nil nil nil)

@@ -30,9 +30,9 @@ and in the Debian scrollkeeper package
   <resource>
     <creator>Kevin Ryde</creator>
     <title>Chart Manual</title>
-    <date>2012-09-25</date>
-    <version identifier="248"
-             date="2012-09-25"/>
+    <date>2014-12-14</date>
+    <version identifier="251"
+             date="2014-12-14"/>
     <subject category="Applications|Office|Financial"/>
     <description>
       Chart is a program for stock and commodity charting, featuring

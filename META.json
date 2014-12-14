@@ -167,6 +167,7 @@
       "runtime" : {
          "recommends" : {
             "I18N::Langinfo::Wide" : "2",
+            "Module::Pluggable" : "4.7",
             "Set::IntSpan::Fast::XS" : "0.05"
          },
          "requires" : {
@@ -243,6 +244,7 @@
             "Locale::TextDomain" : "1.19",
             "Math::Round" : "0",
             "Module::Find" : "0.06",
+            "Module::Pluggable" : "0",
             "Module::Util" : "0",
             "Number::Format" : "1.60",
             "POSIX::Wide" : "0",
@@ -279,5 +281,5 @@
          "http://www.gnu.org/licenses/gpl.html"
       ]
    },
-   "version" : "250"
+   "version" : "251"
 }

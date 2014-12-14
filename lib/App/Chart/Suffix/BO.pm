@@ -1,6 +1,6 @@
 # Bombay Stock Exchange (BSE) setups.
 
-# Copyright 2005, 2006, 2007, 2008, 2009 Kevin Ryde
+# Copyright 2005, 2006, 2007, 2008, 2009, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -32,7 +32,7 @@ use App::Chart::Yahoo;
 my $timezone_bombay = App::Chart::TZ->new
   (name     => __('Bombay'),
    # or calcutta as no separate entry for Bombay in the Olson database
-   choose   => [ 'Asia/Bombay', 'Asia/Calcutta' ],
+   choose   => [ 'Asia/Bombay', 'Asia/Calcutta', 'Asia/Kolkata' ],
    fallback => 'IST-5:30');
 
 # ^BSESN bse sensitive

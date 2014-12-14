@@ -91,6 +91,7 @@ optional_features:
       Finance::Quote: '0'
 recommends:
   I18N::Langinfo::Wide: '2'
+  Module::Pluggable: '4.7'
   Set::IntSpan::Fast::XS: '0.05'
 requires:
   Class::Singleton: '1.4'
@@ -166,6 +167,7 @@ requires:
   Locale::TextDomain: '1.19'
   Math::Round: '0'
   Module::Find: '0.06'
+  Module::Pluggable: '0'
   Module::Util: '0'
   Number::Format: '1.60'
   POSIX::Wide: '0'
@@ -195,4 +197,4 @@ requires:
 resources:
   homepage: http://user42.tuxfamily.org/chart/index.html
   license: http://www.gnu.org/licenses/gpl.html
-version: '250'
+version: '251'

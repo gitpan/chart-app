@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -39,7 +39,7 @@ sub show {
   unlink ('/tmp/foo.sqdb');
   my $dbh = DBI->connect ("dbi:SQLite:dbname=/tmp/foo.sqdb",
                           '', '', {RaiseError=>1});
-  $dbh->{unicode} = 1;
+  $dbh->{sqlite_unicode} = 1;
 
   $dbh->do ('CREATE TABLE symlist (
     seq        INT      NOT NULL,

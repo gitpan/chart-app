@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -78,7 +78,7 @@ sub _do_symlist_inserted {
   if ($self->{'reading_database'}) {
     # this is a broadcast resulting from an insert on the ListStore, it's
     # only for everyone else (locally and remotely), not a ListStore/DB sync
-    ### Symlist-List symlist-list-inserted handler while reading_database
+    ### Symlist-List symlist-list-inserted handler while reading_database ...
     return;
   }
   # someone external has changed the database
@@ -96,7 +96,7 @@ sub _do_symlist_deleted {
   if ($self->{'reading_database'}) {
     # this is a broadcast resulting from a delete on the ListStore, so it's
     # only for everyone else (locally and remotely), not a ListStore/DB sync
-    ### Symlist-List symlist-list-deleted handler while reading_database
+    ### Symlist-List symlist-list-deleted handler while reading_database ...
     return;
   }
 

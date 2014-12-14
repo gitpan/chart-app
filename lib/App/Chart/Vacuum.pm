@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010, 2011, 2013 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011, 2013, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -99,7 +99,7 @@ sub vacuum_notes {
   my $nbh = DBI->connect ("dbi:SQLite:dbname=$notes_filename",
                           '', '', {RaiseError=>1});
   $nbh->func(90_000, 'busy_timeout');  # 90 seconds
-  $nbh->{unicode} = 1;
+  $nbh->{sqlite_unicode} = 1;
   $nbh->do ('VACUUM');
   my $notes_newsize = -s $notes_filename;
   print __x("Notes was {oldsize} now {newsize} bytes\n",

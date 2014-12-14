@@ -25,7 +25,7 @@ use App::Chart::Database;
 use App::Chart::DBI;
 use base 'App::Chart::Series::OHLCVI';
 
-our $VERSION = 250;
+our $VERSION = 251;
 
 use constant DEBUG => 0;
 

@@ -1,6 +1,6 @@
 # National Stock Exchange of India (NSE) setups.
 
-# Copyright 2005, 2006, 2007, 2008, 2009 Kevin Ryde
+# Copyright 2005, 2006, 2007, 2008, 2009, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -32,7 +32,7 @@ use App::Chart::Yahoo;
 my $timezone_mumbai = App::Chart::TZ->new
   (name     => __('Mumbai'),
    # or calcutta as no separate entry for Mumbai in the Olson database
-   choose   => [ 'Asia/Bombay', 'Asia/Calcutta' ],
+   choose   => [ 'Asia/Bombay', 'Asia/Calcutta', 'Asia/Kolkata' ],
    fallback => 'IST-5:30');
 
 my $pred = App::Chart::Sympred::Suffix->new ('.NS');

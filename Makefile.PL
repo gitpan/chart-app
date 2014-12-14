@@ -184,6 +184,7 @@ WriteMakefile
     'Math::Round' => 0,
     'Module::Find' => 0.06, # version 0.06 avoids duplicates
     'Module::Util' => 0,
+    'Module::Pluggable' => 0,
 
     # version 1.60 for fixups to initializing in locales like de_DE with "."
     # as the monetary thousands sep
@@ -260,9 +261,15 @@ WriteMakefile
    realclean => { FILES => 'TAGS' },
 
    META_MERGE =>
-   { recommends => { 'Set::IntSpan::Fast::XS' => '0.05',
-                     'I18N::Langinfo::Wide' => 2, # version 2 for netbsd "646"
-                   },
+   { recommends =>
+     {
+      'Set::IntSpan::Fast::XS' => '0.05',
+      'I18N::Langinfo::Wide' => 2, # version 2 for netbsd "646"
+      
+      # version 4.7 to avoid warnings about removal from the core perl dist
+      # which was a ridiculous way to communicate to authors
+      'Module::Pluggable' => '4.7',
+     },
      resources =>
      { homepage => 'http://user42.tuxfamily.org/chart/index.html',
        license  => 'http://www.gnu.org/licenses/gpl.html',

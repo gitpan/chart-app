@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2009, 2010 Kevin Ryde
+# Copyright 2009, 2010, 2014 Kevin Ryde
 
 # This file is part of Chart.
 #
@@ -26,6 +26,16 @@ use App::Chart::Suffix::GHA;
 
 {
   my $resp = HTTP::Response->new();
+  my $content = slurp ($ENV{'HOME'}.'/chart/samples/ghana/equitiesdef.asp.11apr08.html');
+  $resp->content($content);
+  $resp->content_type('text/html');
+  my @sessions = App::Chart::Suffix::GHA::daily_sessions ($resp);
+  print Dumper (\@sessions);
+  exit 0;
+}
+
+{
+  my $resp = HTTP::Response->new();
   my $content = slurp (<~/chart/samples/ghana/equitiesdef.asp.13nov08.html>);
   $resp->content($content);
   $resp->content_type('text/html');
@@ -44,15 +54,5 @@ use App::Chart::Suffix::GHA;
   my $h = App::Chart::Suffix::GHA::name_parse ($symbol, $resp);
   print Dumper (\$h);
   App::Chart::Download::write_daily_group ($h);
-  exit 0;
-}
-
-{
-  my $resp = HTTP::Response->new();
-  my $content = slurp ($ENV{'HOME'}.'/chart/samples/ghana/equitiesdef.asp.11apr08.html');
-  $resp->content($content);
-  $resp->content_type('text/html');
-  my @sessions = App::Chart::Suffix::GHA::daily_sessions ($resp);
-  print Dumper (\@sessions);
   exit 0;
 }

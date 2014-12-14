@@ -35,6 +35,7 @@ devel/Main.t
 devel/makefile-from-grep.pl
 devel/makefile-to-debs.pl
 devel/meta-read.pl
+devel/misc.el
 devel/my-extract-use.pl
 devel/MyExtractUse.pm
 devel/myshare.pl
